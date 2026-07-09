@@ -31,28 +31,23 @@ The platform treats all qualification routes — including university degrees, T
 
 ## 🚀 How to Open and Run
 
-Since the application is built entirely as a client-side Single Page Application (SPA), it does not require complex build steps or database setups.
+The application is powered by a modern **React frontend** built with **Vite** for incredibly fast local development and instant hot module replacement.
 
-### Option 1: Run via a Local HTTP Server (Recommended)
-Running through a local web server ensures that resources, routing, and Chart.js load reliably.
+### Setup and Running Locally
 
 1. Open your terminal in the root project folder:
    ```bash
    cd /path/to/PathWayZA
    ```
-2. Start a lightweight HTTP server using Python:
+2. Install the required Node.js dependencies:
    ```bash
-   python3 -m http.server 8080
+   npm install
    ```
-3. Open your browser and navigate to:
+3. Start the Vite development server (bound to `0.0.0.0` for local network access):
+   ```bash
+   npm run dev -- --host 0.0.0.0
    ```
-   http://localhost:8080
-   ```
-
-### Option 2: Open Directly in Browser
-1. Navigate to the `/PathWayZA` directory on your computer.
-2. Locate the `index.html` file.
-3. Right-click `index.html` and select **Open With** -> **Google Chrome** (or your preferred web browser).
+4. Open your browser and navigate to the Local or Network URL provided in the terminal (usually `http://localhost:5173`).
 
 ---
 
