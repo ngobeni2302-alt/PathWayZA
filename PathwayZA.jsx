@@ -1227,6 +1227,109 @@ function InstitutionsPage({ T, dark }) {
 }
 
 // ── APS CALCULATOR ────────────────────────────────────────────────────────────
+function getApplyLink(instName) {
+  const name = (instName || "").toLowerCase();
+  
+  // Universities
+  if (name.includes("cape town") || name.includes("uct")) return "https://uct.ac.za/apply-to-uct";
+  if (name.includes("witwatersrand") || name.includes("wits")) return "https://www.wits.ac.za/applications/";
+  if (name.includes("pretoria") || name.includes("up")) return "https://www.up.ac.za/online-application";
+  if (name.includes("stellenbosch") || name.includes("su")) return "https://www.sun.ac.za/english/matrics/apply";
+  if (name.includes("kwazulu-natal") || name.includes("ukzn")) return "https://applications.ukzn.ac.za/";
+  if (name.includes("johannesburg") || name.includes("uj")) return "https://www.uj.ac.za/admission-aid/undergraduate/";
+  if (name.includes("north-west") || name.includes("nwu")) return "https://studies.nwu.ac.za/studies/apply";
+  if (name.includes("free state") || name.includes("ufs")) return "https://www.ufs.ac.za/templates/apply";
+  if (name.includes("western cape") || name.includes("uwc")) return "https://www.uwc.ac.za/study/applying-to-uwc";
+  if (name.includes("rhodes") || name.includes("ru")) return "https://www.ru.ac.za/admissiongateway/";
+  if (name.includes("nelson mandela") || name.includes("nmu")) return "https://www.mandela.ac.za/Study-at-Mandela/Apply";
+  if (name.includes("limpopo") || name.includes("ul")) return "https://www.ul.ac.za/index.php?Entity=Apply";
+  if (name.includes("fort hare") || name.includes("ufh")) return "https://www.ufh.ac.za/Apply";
+  if (name.includes("walter sisulu") || name.includes("wsu")) return "https://www.wsu.ac.za/index.php/apply-online";
+  if (name.includes("venda") || name.includes("univen")) return "https://www.univen.ac.za/apply-online/";
+  if (name.includes("zululand") || name.includes("unizulu")) return "https://www.unizulu.ac.za/apply/";
+  if (name.includes("sefako makgatho") || name.includes("smu")) return "https://www.smu.ac.za/students/apply/";
+  if (name.includes("mpumalanga") || name.includes("ump")) return "https://www.ump.ac.za/Study-with-us/Application-Info";
+  if (name.includes("sol plaatje") || name.includes("spu")) return "https://www.spu.ac.za/index.php/how-to-apply/";
+  if (name.includes("south africa") || name.includes("unisa")) return "https://www.unisa.ac.za/apply";
+  if (name.includes("cape peninsula") || name.includes("cput")) return "https://www.cput.ac.za/study/apply";
+  if (name.includes("tshwane") || name.includes("tut")) return "https://www.tut.ac.za/apply-now";
+  if (name.includes("central university") || name.includes("cut")) return "https://www.cut.ac.za/apply";
+  if (name.includes("durban university") || name.includes("dut")) return "https://www.dut.ac.za/admissions/student_portal/";
+  if (name.includes("vaal university") || name.includes("vut")) return "https://www.vut.ac.za/apply-to-vut/";
+  if (name.includes("mangosuthu") || name.includes("mut")) return "https://www.mut.ac.za/apply/";
+
+  // Colleges
+  if (name.includes("rosebank")) return "https://www.rosebankcollege.co.za/apply-now";
+  if (name.includes("eduvos")) return "https://www.eduvos.com/apply-now/";
+  if (name.includes("varsity")) return "https://www.varsitycollege.co.za/apply-now";
+  if (name.includes("boston")) return "https://www.boston.co.za/apply-now/";
+  if (name.includes("stadio")) return "https://stadio.ac.za/apply-now";
+  if (name.includes("mancosa")) return "https://www.mancosa.co.za/apply/";
+  if (name.includes("afda")) return "https://www.afda.co.za/apply/";
+  if (name.includes("inscape")) return "https://www.inscape.co.za/apply/";
+  if (name.includes("iie msa") || name.includes("monash")) return "https://www.iiemsa.co.za/apply-now/";
+  if (name.includes("richfield")) return "https://www.richfield.ac.za/apply-now/";
+  if (name.includes("damelin")) return "https://www.damelin.co.za/apply-now";
+  if (name.includes("lyceum")) return "https://lyceum.co.za/apply-now/";
+  if (name.includes("sae institute")) return "https://www.sae.edu.za/apply/";
+  if (name.includes("cti")) return "https://www.cti.ac.za/apply/";
+  if (name.includes("milpark")) return "https://www.milpark.ac.za/apply/";
+
+  // TVETs
+  if (name.includes("port elizabeth")) return "https://www.pecollege.edu.za";
+  if (name.includes("east cape midlands")) return "https://www.emcol.co.za";
+  if (name.includes("buffalo city")) return "https://www.bccollege.co.za";
+  if (name.includes("lovedale")) return "https://www.lovedale.edu.za";
+  if (name.includes("king sabata")) return "https://www.ksdcollege.edu.za";
+  if (name.includes("ingwe")) return "https://www.ingwecollege.edu.za";
+  if (name.includes("ikhala")) return "https://www.ikhala.edu.za";
+  if (name.includes("king hintsa")) return "https://www.kinghintsacollege.edu.za";
+  if (name.includes("goldfields")) return "https://www.goldfieldstvet.edu.za";
+  if (name.includes("motheo")) return "https://www.motheotvet.edu.za";
+  if (name.includes("maluti")) return "https://www.malutitvet.co.za";
+  if (name.includes("flavius mareka")) return "https://www.flaviusmareka.net";
+  if (name.includes("tshwane south")) return "https://www.tsc.edu.za";
+  if (name.includes("tshwane north")) return "https://www.tnc.edu.za";
+  if (name.includes("ekurhuleni west")) return "https://www.ewc.edu.za";
+  if (name.includes("ekurhuleni east")) return "https://www.eec.edu.za";
+  if (name.includes("south west")) return "https://www.swgc.co.za";
+  if (name.includes("central johannesburg")) return "https://www.cjc.edu.za";
+  if (name.includes("western college") || name.includes("westcol")) return "https://www.westcol.co.za";
+  if (name.includes("sedibeng")) return "https://www.sedcol.co.za";
+  if (name.includes("mthashana")) return "https://www.mthashanacollege.co.za";
+  if (name.includes("umfolozi")) return "https://www.umfolozicollege.edu.za";
+  if (name.includes("majuba")) return "https://www.majuba.edu.za";
+  if (name.includes("mnambithi")) return "https://www.mnambithicollege.co.za";
+  if (name.includes("elangeni")) return "https://www.elangeni.edu.za";
+  if (name.includes("coastal kzn")) return "https://www.coastalkzn.co.za";
+  if (name.includes("thekwini")) return "https://www.thekwini.edu.za";
+  if (name.includes("umgungundlovu")) return "https://www.utvet.co.za";
+  if (name.includes("esayidi")) return "https://www.esayiditvet.co.za";
+  if (name.includes("lephalale")) return "https://www.lephalaletvetcollege.co.za";
+  if (name.includes("capricorn")) return "https://www.capricorncollege.edu.za";
+  if (name.includes("waterberg")) return "https://www.waterbergcollege.co.za";
+  if (name.includes("vhembe")) return "https://www.vhembecollege.edu.za";
+  if (name.includes("mopani")) return "https://www.mopani.edu.za";
+  if (name.includes("letaba")) return "https://www.letabacollege.co.za";
+  if (name.includes("sekhukhune")) return "https://www.sekhukhune-tvet.co.za";
+  if (name.includes("ehlanzeni")) return "https://www.ehlanzenicollege.edu.za";
+  if (name.includes("nkangala")) return "https://www.ntc.edu.za";
+  if (name.includes("gert sibande")) return "https://www.gscollege.edu.za";
+  if (name.includes("northern cape urban")) return "https://www.ncutvet.edu.za";
+  if (name.includes("northern cape rural")) return "https://www.ncrtvet.edu.za";
+  if (name.includes("taletso")) return "https://www.taletso.edu.za";
+  if (name.includes("vuselela")) return "https://www.vuselelacollege.co.za";
+  if (name.includes("orbit")) return "https://www.orbitcollege.co.za";
+  if (name.includes("west coast")) return "https://www.westcoastcollege.co.za";
+  if (name.includes("boland")) return "https://www.bolandcollege.com";
+  if (name.includes("south cape")) return "https://www.sccollege.co.za";
+  if (name.includes("northlink")) return "https://www.northlink.co.za";
+  if (name.includes("college of cape town")) return "https://www.cct.edu.za";
+  if (name.includes("false bay")) return "https://www.falsebaycollege.co.za";
+
+  return `https://www.google.com/search?q=How+to+apply+to+${encodeURIComponent(instName)}`;
+}
+
 const SA_SUBJECTS = [
   "English Home Language",
   "English First Additional Language",
@@ -1541,13 +1644,46 @@ function ApsCalculatorPage({ T, dark }) {
                       background: T.navyCard, border: `1px solid ${T.border}`,
                       borderRadius: 12, padding: 18, marginBottom: 16
                     }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                        <h5 style={{ fontSize: 14, fontWeight: 700, color: T.chalk }}>{inst.details.name}</h5>
-                        <span style={{ 
-                          background: inst.details.type.includes("Public") ? `${T.teal}22` : "rgba(255, 165, 0, 0.2)",
-                          color: inst.details.type.includes("Public") ? T.teal : "orange",
-                          fontSize: 10, fontWeight: 700, padding: "3px 6px", borderRadius: 4
-                        }}>{inst.details.type}</span>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, gap: 10 }}>
+                        <div style={{ flex: 1 }}>
+                          <h5 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 4 }}>{inst.details.name}</h5>
+                          <span style={{ 
+                            background: inst.details.type.includes("Public") ? `${T.teal}22` : "rgba(255, 165, 0, 0.2)",
+                            color: inst.details.type.includes("Public") ? T.teal : "orange",
+                            fontSize: 10, fontWeight: 700, padding: "3px 6px", borderRadius: 4
+                          }}>{inst.details.type}</span>
+                        </div>
+                        <a 
+                          href={getApplyLink(inst.details.name)} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: T.teal,
+                            textDecoration: "none",
+                            padding: "6px 12px",
+                            borderRadius: 6,
+                            border: `1px solid ${T.teal}40`,
+                            background: `${T.teal}11`,
+                            cursor: "pointer",
+                            transition: "all 0.2s ease-in-out",
+                            whiteSpace: "nowrap"
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.background = `${T.teal}22`;
+                            e.target.style.borderColor = T.teal;
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.background = `${T.teal}11`;
+                            e.target.style.borderColor = `${T.teal}40`;
+                          }}
+                        >
+                          Apply Direct ↗
+                        </a>
                       </div>
                       
                       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
