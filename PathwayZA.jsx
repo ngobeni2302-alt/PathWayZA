@@ -343,11 +343,37 @@ const PATH_META = {
 
 function ThemeToggle({ dark, setDark }) {
   return (
-    <button onClick={() => setDark(d => !d)} title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"} style={{
-      background: "none", border: "none", cursor: "pointer",
-      fontSize: 20, lineHeight: 1, padding: "4px 6px", borderRadius: 8,
-    }}>
-      {dark ? "☀️" : "🌙"}
+    <button 
+      onClick={() => setDark(d => !d)} 
+      title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"} 
+      style={{
+        width: 44,
+        height: 24,
+        borderRadius: 12,
+        background: dark ? "#00C2A8" : "#94A3B8",
+        position: "relative",
+        cursor: "pointer",
+        transition: "background 0.3s ease",
+        border: "none",
+        padding: 0,
+        outline: "none",
+        display: "flex",
+        alignItems: "center"
+      }}
+    >
+      <div 
+        style={{
+          width: 18,
+          height: 18,
+          borderRadius: "50%",
+          background: "#FFFFFF",
+          position: "absolute",
+          top: 3,
+          left: dark ? 23 : 3,
+          transition: "left 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+          boxShadow: "0 1px 4px rgba(0,0,0,0.3)"
+        }}
+      />
     </button>
   );
 }
@@ -510,7 +536,7 @@ function CareerModal({ career, onClose, T, dark }) {
           {career.paths.map((p, i) => <PathBadge key={i} path={p} T={T} dark={dark} />)}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div className="modal-grid">
           <div>
             <h3 style={{ color: T.chalk, fontSize: 13, marginBottom: 8, fontWeight: 700 }}>Bursaries & Funding</h3>
             {career.bursaries.map(b => (
@@ -1169,10 +1195,12 @@ function InstitutionsPage({ T, dark }) {
                 {report.course.name}
               </p>
               
-              <div style={{ 
-                display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, 
-                borderTop: `1px solid ${T.border}`, paddingTop: 20, textAlign: "left"
-              }}>
+              <div 
+                className="report-grid" 
+                style={{ 
+                  borderTop: `1px solid ${T.border}`, paddingTop: 20, textAlign: "left"
+                }}
+              >
                 <div>
                   <span style={{ fontSize: 11, color: T.muted, display: "block" }}>INSTITUTION</span>
                   <span style={{ fontSize: 14, color: T.chalk, fontWeight: 700 }}>{report.institution.name}</span>
@@ -1506,10 +1534,13 @@ function ApsCalculatorPage({ T, dark }) {
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 28 }} className="calculator-layout">
         
         {/* Left Form: Inputs */}
-        <div style={{
-          background: T.navyCard, border: `1px solid ${T.border}`,
-          borderRadius: 16, padding: "24px 28px", boxShadow: "0 8px 30px rgba(0,0,0,0.2)"
-        }}>
+        <div 
+          className="calculator-card" 
+          style={{
+            background: T.navyCard, border: `1px solid ${T.border}`,
+            borderRadius: 16, boxShadow: "0 8px 30px rgba(0,0,0,0.2)"
+          }}
+        >
           <h3 style={{ fontSize: 18, color: T.chalk, fontWeight: 700, marginBottom: 12 }}>Enter Your Marks</h3>
           
           <div style={{ marginBottom: 16 }}>
@@ -1540,12 +1571,13 @@ function ApsCalculatorPage({ T, dark }) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
             {subjects.map((sub, idx) => (
-              <div key={idx} style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <div key={idx} className="subject-row">
                 <select
                   value={sub.name}
                   onChange={e => handleSubjectChange(idx, "name", e.target.value)}
+                  className="subject-select"
                   style={{
-                    flex: 2, padding: "10px 14px", borderRadius: 8,
+                    padding: "10px 14px", borderRadius: 8,
                     background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
                     border: `1px solid ${T.border}`, outline: "none", fontSize: 14
                   }}
@@ -1562,8 +1594,9 @@ function ApsCalculatorPage({ T, dark }) {
                   min="0"
                   max="100"
                   onChange={e => handleSubjectChange(idx, "mark", e.target.value)}
+                  className="subject-input"
                   style={{
-                    width: 70, padding: "10px 10px", borderRadius: 8, textAlign: "center",
+                    padding: "10px 10px", borderRadius: 8, textAlign: "center",
                     background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
                     border: `1px solid ${T.border}`, outline: "none", fontSize: 14
                   }}
@@ -1693,7 +1726,7 @@ function ApsCalculatorPage({ T, dark }) {
                             border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 12px",
                             display: "flex", justifyContent: "space-between", alignItems: "center"
                           }}>
-                            <div>
+                            <div style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
                               <span style={{ fontSize: 13, color: T.chalk, fontWeight: 600 }}>{course.name}</span>
                               <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>
                                 NQF Level {course.nqf_level} • SAQA ID: {course.saqa_id}
@@ -1744,9 +1777,23 @@ function ApsCalculatorPage({ T, dark }) {
 
 // ── APP ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage] = useState("Home");
-  const [dark, setDark] = useState(true);
+  const [page, setPage] = useState(() => {
+    const saved = localStorage.getItem("pathway_page");
+    return saved && ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends"].includes(saved) ? saved : "Home";
+  });
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem("pathway_dark");
+    return saved !== null ? saved === "true" : true;
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("pathway_page", page);
+  }, [page]);
+
+  useEffect(() => {
+    localStorage.setItem("pathway_dark", dark);
+  }, [dark]);
   const T = dark ? DARK : LIGHT;
 
   const pageHeader = (title, sub) => (
