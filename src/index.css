@@ -219,3 +219,73 @@ body {
   }
 }
 
+/* Responsive Subject Selection Rows */
+.subject-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.subject-select {
+  flex: 2;
+  min-width: 0;
+}
+
+.subject-input {
+  width: 70px;
+}
+
+@media (max-width: 480px) {
+  .subject-row {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .subject-select {
+    flex: 1 1 100%;
+  }
+  .subject-input {
+    flex: 1;
+  }
+}
+
+/* Card Padding Adjustments on Mobile */
+.calculator-card {
+  padding: 24px 28px;
+}
+
+@media (max-width: 480px) {
+  .calculator-card {
+    padding: 16px 14px !important;
+  }
+}
+
+/* Institutions Validator Report Grid */
+.report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .report-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Career Modal Funding Grid */
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .modal-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
