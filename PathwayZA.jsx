@@ -339,6 +339,181 @@ const PATH_META = {
   online:        { accent: "#34D399", label: "Online / Bootcamp" },
 };
 
+// ── ARTISAN & WORK-BASED OPPORTUNITIES DATA ──────────────────────────────────
+const OPPORTUNITIES = [
+  {
+    id: 1,
+    title: "Apprentice Electrician (Solar Energy Focus)",
+    type: "Apprenticeship",
+    company: "Rubicon Clean Energy SA",
+    stipend: "R5 500 / month",
+    location: "Gauteng (Midrand)",
+    duration: "36 Months",
+    description: "Gain hands-on experience under master electricians. Focuses on commercial solar installation, inverter diagnostics, and smart grid automation. Prepares for the Red Seal trade test."
+  },
+  {
+    id: 2,
+    title: "Learnership: IT Systems Development (NQF 5)",
+    type: "Learnership",
+    company: "BCX South Africa",
+    stipend: "R4 800 / month",
+    location: "Cape Town",
+    duration: "12 Months",
+    description: "Combination of theoretical classroom training (NQF 5 Systems Development certificate) and practical application. Covers database schemas, software testing, and core web languages."
+  },
+  {
+    id: 3,
+    title: "Software Engineering Graduate Internship",
+    type: "Internship",
+    company: "First National Bank (FNB)",
+    stipend: "R12 500 / month",
+    location: "Johannesburg",
+    duration: "12 Months",
+    description: "Open to recent graduates holding a Diploma or BSc in Computer Science. Work inside active sprint teams building banking solutions. High likelihood of permanent placement."
+  },
+  {
+    id: 4,
+    title: "Apprentice Diesel Fitter / Mechanic",
+    type: "Apprenticeship",
+    company: "Transnet Engineering",
+    stipend: "R6 200 / month",
+    location: "Durban",
+    duration: "48 Months",
+    description: "Structured artisan training at Transnet workshops. Focuses on repair and maintenance of massive rail diesel locomotives and heavy machinery. Prepares for red seal trade test."
+  },
+  {
+    id: 5,
+    title: "Learnership: Wealth Management & Banking",
+    type: "Learnership",
+    company: "Nedbank Group",
+    stipend: "R4 500 / month",
+    location: "Gauteng",
+    duration: "12 Months",
+    description: "Earn a Wealth Management NQF level 5 certification while working in retail branch operations and advisor support. Matric with Maths/MathLit required."
+  }
+];
+
+// Helper to map bursaries and internships to their official application websites
+function getExternalLink(name) {
+  const links = {
+    // Bursaries
+    "Sasol Bursary": "https://www.sasolbursaries.com",
+    "Anglo American": "https://www.angloamerican.com",
+    "Vodacom Foundation": "https://www.vodacom.co.za",
+    "MERSETA Bursary": "https://www.merseta.org.za",
+    "Eskom Foundation": "https://www.eskom.co.za",
+    "City Power Learnership": "https://www.citypower.co.za",
+    "NSFAS": "https://www.nsfas.org.za",
+    "Netcare Bursary": "https://www.netcare.co.za",
+    "Life Healthcare Foundation": "https://www.lifehealthcare.co.za",
+    "Old Mutual Foundation": "https://www.oldmutual.co.za",
+    "MTN Foundation": "https://www.mtn.co.za",
+    "SAICA Bursary": "https://www.saica.co.za",
+    "Deloitte Bursary": "https://www2.deloitte.com/za",
+    "PwC Foundation": "https://www.pwc.co.za",
+    "SANRAL Bursary": "https://www.sanral.co.za",
+    "Murray & Roberts": "https://www.murrob.com",
+    "ESKOM Engineering Bursary": "https://www.eskom.co.za",
+    "Funza Lushaka Bursary": "https://www.funzalushaka.gov.za",
+    "Department of Education Bursary": "https://www.education.gov.za",
+    "SANBI Bursary": "https://www.sanbi.org",
+    "WWF South Africa": "https://www.wwf.org.za",
+    "Department of Environment Bursary": "https://www.dffe.gov.za",
+    "NYDA Grant": "https://www.nyda.gov.za",
+    "SEDA Business Support": "http://www.seda.org.za",
+    "IDC Youth Fund": "https://www.idc.co.za",
+    "Department of Social Development Bursary": "https://www.dsd.gov.za",
+    "Lotto Social Development Fund": "http://www.nlcsa.org.za",
+    "Cisco NetAcad Scholarship": "https://www.netacad.com",
+    "MTN ICT Bursary": "https://www.mtn.co.za",
+    "MDDA Bursary": "https://www.mdda.org.za",
+    "M&G Foundation Bursary": "https://mg.co.za",
+    "CATHSSETA Bursary": "https://cathsseta.org.za",
+    "Tsogo Sun Foundation": "https://www.tsogosun.com",
+    "Sun International Learnership": "https://www.suninternational.com",
+    "SACAP Bursary": "https://www.sacapspace.co.za",
+    "SANRAL Infrastructure Bursary": "https://www.sanral.co.za",
+    "Property Point Foundation": "https://www.propertypoint.org.za",
+    "DAFF Bursary": "https://www.dalrrd.gov.za",
+    "Land Bank Bursary": "https://www.landbank.co.za",
+    "Afgri Bursary": "https://www.afgri.co.za",
+    "NAC Bursary": "https://www.nac.org.za",
+    "Mnet Music Foundation": "https://www.mnetcorporate.co.za",
+    "SASCOC Bursary": "https://www.sascoc.co.za",
+    "Sport Trust Bursary": "https://www.sportstrust.co.za",
+    "CETA Bursary": "https://www.ceta.org.za",
+    "Rand Water Bursary": "https://www.randwater.co.za",
+    "DWS Bursary": "https://www.dws.gov.za",
+    "HPCSA Bursary": "https://www.hpcsa.co.za",
+    "Department of Health Bursary": "https://www.health.gov.za",
+    "Standard Bank Bursary": "https://www.standardbank.co.za",
+    "Discovery Bursary": "https://www.discovery.co.za",
+    "FNB Foundation Bursary": "https://www.fnb.co.za",
+
+    // Internships
+    "Allan Gray Orbis": "https://www.allangrayorbis.org",
+    "Graduate Programme at Takealot": "https://www.takealot.com/careers",
+    "Google STEP Internship": "https://careers.google.com",
+    "Eskom Learnership": "https://www.eskom.co.za",
+    "City Power Apprenticeship": "https://www.citypower.co.za",
+    "Local Municipality Programme": "https://www.gov.za",
+    "Community Service Year": "https://www.health.gov.za",
+    "Hospital Internship": "https://www.health.gov.za",
+    "Mediclinic Graduate Programme": "https://www.mediclinic.co.za",
+    "Agency Internship": "https://www.google.com/search?q=design+agency+internships+south+africa",
+    "Freelance Portfolio Route": "https://www.upwork.com",
+    "In-House Design Learnerships": "https://www.google.com/search?q=in+house+design+learnerships+south+africa",
+    "Big 4 Audit Firms": "https://www.google.com/search?q=big+4+audit+firms+south+africa+articles",
+    "SAICA Articles": "https://www.saica.co.za",
+    "Corporate Finance Graduate Schemes": "https://www.google.com/search?q=corporate+finance+graduate+schemes+south+africa",
+    "SANRAL Graduate Programme": "https://www.sanral.co.za",
+    "SMEC South Africa": "https://www.smec.com",
+    "AECOM Graduate Scheme": "https://aecom.com",
+    "School-Based Teaching Practice": "https://www.education.gov.za",
+    "Department of Education Internship": "https://www.education.gov.za",
+    "Teach SA Programme": "https://www.teach-sa.org",
+    "SANParks Graduate Programme": "https://www.sanparks.org",
+    "SANBI Internship": "https://www.sanbi.org",
+    "Municipal Environmental Learnerships": "https://www.gov.za",
+    "NYDA Entrepreneurship Programme": "https://www.nyda.gov.za",
+    "Allan Gray Fellowship": "https://www.allangrayorbis.org",
+    "Business Incubator Programmes": "https://www.seda.org.za",
+    "Department of Social Development Internship": "https://www.dsd.gov.za",
+    "NGO Learnerships": "https://www.google.com/search?q=ngo+learnerships+south+africa",
+    "SASSA Graduate Programme": "https://www.sassa.gov.za",
+    "Cisco CCNA Learnership": "https://www.netacad.com",
+    "Telkom Internship": "https://www.telkom.co.za",
+    "IT Helpdesk Learnerships": "https://www.google.com/search?q=it+helpdesk+learnerships+south+africa",
+    "SABC Graduate Programme": "https://www.sabc.co.za",
+    "News24 Internship": "https://www.news24.com",
+    "Community Radio Learnerships": "https://www.google.com/search?q=community+radio+learnerships+south+africa",
+    "Tsogo Sun Graduate Programme": "https://www.tsogosun.com",
+    "Hotel Kitchen Internship": "https://www.google.com/search?q=hotel+kitchen+internship+south+africa",
+    "Paragon Architects Internship": "https://www.paragon.co.za",
+    "Government Public Works Internship": "http://www.publicworks.gov.za",
+    "SACAP Community Service": "https://www.sacapspace.co.za",
+    "AgriSETA Learnership": "https://www.agriseta.co.za",
+    "Tongaat Hulett Graduate Programme": "https://www.tongaat.com",
+    "Grain SA Internship": "https://www.grainsa.co.za",
+    "Recording Studio Internship": "https://www.google.com/search?q=recording+studio+internship+south+africa",
+    "NAC Artist Development": "https://www.nac.org.za",
+    "Community Arts Centre Learnership": "https://www.nac.org.za",
+    "SASCOC High Performance Programme": "https://www.sascoc.co.za",
+    "Provincial Sport Coaching Internship": "https://www.sascoc.co.za",
+    "Gym & Wellness Learnerships": "https://www.google.com/search?q=gym+and+wellness+learnerships+south+africa",
+    "Rand Water Learnership": "https://www.randwater.co.za",
+    "Johannesburg Water Apprenticeship": "https://www.johannesburgwater.co.za",
+    "eThekwini Water Internship": "http://www.durban.gov.za",
+    "SANCA Counselling Internship": "https://www.sancagauteng.org",
+    "School Psychologist Internship": "https://www.education.gov.za",
+    "EAP Counsellor Learnership": "https://www.google.com/search?q=eap+counsellor+learnership+south+africa",
+    "Discovery Graduate Programme": "https://www.discovery.co.za",
+    "Standard Bank Internship": "https://www.standardbank.co.za",
+    "Stats SA Graduate Internship": "http://www.statssa.gov.za",
+  };
+  return links[name] || `https://www.google.com/search?q=${encodeURIComponent(name + " South Africa")}`;
+}
+
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
 
 function ThemeToggle({ dark, setDark }) {
@@ -540,16 +715,16 @@ function CareerModal({ career, onClose, T, dark }) {
           <div>
             <h3 style={{ color: T.chalk, fontSize: 13, marginBottom: 8, fontWeight: 700 }}>Bursaries & Funding</h3>
             {career.bursaries.map(b => (
-              <div key={b} style={{ fontSize: 12, color: T.muted, padding: "4px 0", borderBottom: `1px solid ${T.border}` }}>
-                💰 {b}
+              <div key={b} style={{ fontSize: 12, padding: "6px 0", borderBottom: `1px solid ${T.border}` }}>
+                💰 <a href={getExternalLink(b)} target="_blank" rel="noreferrer" className="modal-link" style={{ color: T.teal, textDecoration: "none", fontWeight: 500 }}>{b} ↗</a>
               </div>
             ))}
           </div>
           <div>
             <h3 style={{ color: T.chalk, fontSize: 13, marginBottom: 8, fontWeight: 700 }}>Internships & Experience</h3>
             {career.internships.map(i => (
-              <div key={i} style={{ fontSize: 12, color: T.muted, padding: "4px 0", borderBottom: `1px solid ${T.border}` }}>
-                🔗 {i}
+              <div key={i} style={{ fontSize: 12, padding: "6px 0", borderBottom: `1px solid ${T.border}` }}>
+                🔗 <a href={getExternalLink(i)} target="_blank" rel="noreferrer" className="modal-link" style={{ color: T.teal, textDecoration: "none", fontWeight: 500 }}>{i} ↗</a>
               </div>
             ))}
           </div>
@@ -771,6 +946,48 @@ function CareersPage({ T, dark }) {
       </div>
       <div className="career-grid">
         {filtered.map(c => <CareerCard key={c.id} career={c} onClick={setModal} T={T} dark={dark} />)}
+      </div>
+
+      {/* Artisan & Work-Based Opportunities Section */}
+      <div style={{ marginTop: 52, paddingTop: 36, borderTop: `1px solid ${T.border}` }}>
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ fontSize: 22, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>Artisan & Work-Based Opportunities</h2>
+          <p style={{ color: T.muted, fontSize: 13 }}>Earn a stipend while you learn. Explore apprenticeships, learnerships, and practical work experience.</p>
+        </div>
+        <div className="career-grid">
+          {OPPORTUNITIES.map(op => {
+            const badgeColor = op.type === "Apprenticeship" ? "#A78BFA" : op.type === "Learnership" ? "#F59E0B" : "#00C2A8";
+            return (
+              <div key={op.id} className="opportunity-card" style={{
+                background: T.navyCard, border: `1px solid ${T.border}`,
+                borderRadius: 12, padding: 20, display: "flex", flexDirection: "column", justifyContent: "space-between"
+              }}>
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
+                    <span style={{
+                      fontSize: 9, background: `${badgeColor}18`, color: badgeColor,
+                      border: `1px solid ${badgeColor}30`, borderRadius: 6, padding: "3px 8px", fontWeight: 700,
+                      textTransform: "uppercase", letterSpacing: 1
+                    }}>{op.type}</span>
+                    <span style={{ fontSize: 12, color: T.amber, fontWeight: 600 }}>💰 {op.stipend}</span>
+                  </div>
+                  <h3 style={{ fontSize: 16, color: T.chalk, fontWeight: 700, marginBottom: 8 }}>{op.title}</h3>
+                  <div style={{ fontSize: 12, color: T.muted, marginBottom: 4, fontWeight: 600 }}>🏢 {op.company}</div>
+                  <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>📍 {op.location} · 📅 {op.duration}</div>
+                  <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>{op.description}</p>
+                </div>
+                <a href={`https://www.google.com/search?q=${encodeURIComponent(op.title + " " + op.company + " South Africa")}`}
+                   target="_blank" rel="noreferrer" className="apply-button" style={{
+                     display: "block", textAlign: "center", background: T.teal,
+                     color: dark ? T.navy : "#fff", borderRadius: 6, padding: "8px 12px",
+                     fontSize: 12, fontWeight: 700, textDecoration: "none", marginTop: "auto"
+                   }}>
+                  Apply or View Details ↗
+                </a>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
