@@ -554,7 +554,7 @@ function ThemeToggle({ dark, setDark }) {
 }
 
 function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
-  const links = ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends"];
+  const links = ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends", "Certificates"];
   return (
     <>
       <div className={`sidebar-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
@@ -1110,6 +1110,401 @@ function TrendsPage({ T }) {
         <div style={{ fontSize: 11, color: T.muted, lineHeight: 1.7 }}>
           📊 Data sourced from Stats SA, LinkedIn Labour Insights, and DHET reports. Demand scores reflect active vacancies vs qualified applicant ratios in the SA market. Growth projections are 2025–2030 forecasts.
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── CERTIFICATES DATA ────────────────────────────────────────────────────────
+const CERTIFICATE_CATEGORIES = [
+  "All",
+  "ICT",
+  "Electrical Engineering",
+  "Hospitality",
+  "Tourism",
+  "Marketing",
+  "Additional Certificates"
+];
+
+const CERTIFICATES_DATA = [
+  {
+    id: 1,
+    title: "Microsoft Learn",
+    category: "ICT",
+    description: "Microsoft's official, free online training platform that helps people learn technical skills and get ready for certifications. It provides structured learning paths without requiring a paid subscription or product license.",
+    url: "https://learn.microsoft.com/training/",
+    isFree: true,
+    provider: "Microsoft"
+  },
+  {
+    id: 2,
+    title: "IBM SkillsBuild",
+    category: "ICT",
+    description: "A free educational platform that helps high school and college students develop in-demand technical and workplace skills.",
+    url: "https://skillsbuild.org/",
+    isFree: true,
+    provider: "IBM"
+  },
+  {
+    id: 3,
+    title: "freeCodeCamp",
+    category: "ICT",
+    description: "A popular, completely free, and non-profit educational platform that teaches computer programming and software development.",
+    url: "https://www.freecodecamp.org/",
+    isFree: true,
+    provider: "freeCodeCamp Foundation"
+  },
+  {
+    id: 4,
+    title: "Oracle Learning Explorer",
+    category: "ICT",
+    description: "A free entry-level training and accreditation program offered by Oracle University. It provides bite-sized digital courses, interactive content, and foundational training.",
+    url: "https://education.oracle.com/oracle-learning-explorer",
+    isFree: true,
+    provider: "Oracle"
+  },
+  {
+    id: 5,
+    title: "Cisco Networking Academy",
+    category: "ICT",
+    description: "A global IT and cybersecurity education program. It provides free and low-cost courses, hands-on labs (via Cisco Packet Tracer), and career resources to help students build digital skills. The program bridges the gap between education and employment in the tech industry.",
+    url: "https://www.netacad.com/",
+    isFree: true,
+    provider: "Cisco"
+  },
+  {
+    id: 6,
+    title: "Schneider Electric University",
+    category: "Electrical Engineering",
+    description: "A free, online learning platform offering over 300 vendor-neutral courses on energy efficiency, sustainability, and data center management.",
+    url: "https://university.se.com/",
+    isFree: true,
+    provider: "Schneider Electric"
+  },
+  {
+    id: 7,
+    title: "Siemens Learning",
+    category: "Electrical Engineering",
+    description: "Siemens Learning typically refers to the educational and professional development resources offered by Siemens for industrial technology, engineering, and corporate upskilling.",
+    url: "https://www.siemens.com/global/en/company/sustainability/education.html",
+    isFree: true,
+    provider: "Siemens"
+  },
+  {
+    id: 8,
+    title: "ABB University",
+    category: "Electrical Engineering",
+    description: "A global training network by the technology and automation corporation, ABB that offers technical, engineering, and managerial education focused on ABB products, robotics, and control systems.",
+    url: "https://new.abb.com/service/abb-university",
+    isFree: true,
+    provider: "ABB"
+  },
+  {
+    id: 9,
+    title: "Alison Electrical Engineering",
+    category: "Electrical Engineering",
+    description: "A free online electrical engineering courses will teach you everything you need to familiarise yourself with electrical engineering. Electrical engineering is divided into a range of fields including computer engineering, telecommunications, and instrumentation.",
+    url: "https://alison.com/tag/electrical-engineering",
+    isFree: true,
+    provider: "Alison"
+  },
+  {
+    id: 10,
+    title: "Alison Hospitality",
+    category: "Hospitality",
+    description: "Self-paced courses cover core operational, management, and health standards in the hospitality industry.",
+    url: "https://alison.com/tag/hospitality",
+    isFree: true,
+    provider: "Alison"
+  },
+  {
+    id: 11,
+    title: "Coursera Hospitality",
+    category: "Hospitality",
+    description: "Hospitality courses teach the business, operational, and practical skills required to run hotels, restaurants, and event venues. Core subjects usually include Food & Beverage Management, Rooms Division (Front Desk & Housekeeping), Culinary Arts, and Hospitality Business Management.",
+    url: "https://www.coursera.org/",
+    isFree: true,
+    provider: "Coursera"
+  },
+  {
+    id: 12,
+    title: "Great Learning",
+    category: "Hospitality",
+    description: "Beginner Friendly courses that offer extensive information about hospitality management.",
+    url: "https://www.mygreatlearning.com/",
+    isFree: true,
+    provider: "Great Learning"
+  },
+  {
+    id: 13,
+    title: "South Africa Specialist Programme",
+    category: "Tourism",
+    description: "A free, interactive online training course created by South African Tourism. It equips travel agents and tourism professionals with the knowledge to market South Africa as a holiday destination, granting graduates official certification and placement on the South African Tourism database.",
+    url: "https://www.southafrica.net/gl/en/trade/page/south-africa-specialist",
+    isFree: true,
+    provider: "South African Tourism"
+  },
+  {
+    id: 14,
+    title: "Alison Tourism",
+    category: "Tourism",
+    description: "Online Self-paced program that teaches you the insides of the tourism sector and provides you with a necessary certificate at the end of the program.",
+    url: "https://alison.com/tag/tourism",
+    isFree: true,
+    provider: "Alison"
+  },
+  {
+    id: 15,
+    title: "Coursera Tourism",
+    category: "Tourism",
+    description: "Online free tourism courses that teach everything you need to know about the tourism sector and its standards.",
+    url: "https://www.coursera.org/",
+    isFree: true,
+    provider: "Coursera"
+  },
+  {
+    id: 16,
+    title: "FutureLearn Tourism",
+    category: "Tourism",
+    description: "Flexible online courses from global universities and experts. They equip learners with skills in digital travel, revenue management, and sustainability.",
+    url: "https://www.futurelearn.com/",
+    isFree: true,
+    provider: "FutureLearn"
+  },
+  {
+    id: 17,
+    title: "Google Skillshop",
+    category: "Marketing",
+    description: "Google's official, free online training platform designed for marketers, advertisers, and business owners. It provides on-demand courses and official certifications on how to use Google’s suite of digital advertising and analytics tools to grow businesses and advance marketing careers.",
+    url: "https://skillshop.withgoogle.com/",
+    isFree: true,
+    provider: "Google"
+  },
+  {
+    id: 18,
+    title: "HubSpot Academy",
+    category: "Marketing",
+    description: "A 100% free, self-paced, beginner-level program. It takes about 4–5 hours to complete and teaches you the fundamentals of digital marketing, including search engine optimization (SEO), social media strategy, non-paid growth, and paid advertising.",
+    url: "https://academy.hubspot.com/",
+    isFree: true,
+    provider: "HubSpot"
+  },
+  {
+    id: 19,
+    title: "Meta Blueprint",
+    category: "Marketing",
+    description: "A globally recognized credential that validates an individual's advanced proficiency in using Meta's advertising technologies (Facebook, Instagram, Messenger, and WhatsApp) to plan, execute, and measure digital marketing campaigns.",
+    url: "https://www.facebook.com/business/learn",
+    isFree: true,
+    provider: "Meta"
+  },
+  {
+    id: 20,
+    title: "Alison Business Course",
+    category: "Additional Certificates",
+    description: "A global free online learning platform offering thousands of business-related courses. They provide short-term certificates and in-depth diplomas in fields like management, administration, and entrepreneurship.",
+    url: "https://alison.com/tag/business-management?utm_source=google&utm_medium=cpc&utm_campaign=Demand-Gen_South-Africa&gad_source=1&gad_campaignid=21491903447&gbraid=0AAAAADt7cD3lh7wEYjHQYzn590metQ8xm&gclid=Cj0KCQjw39zSBhDhARIsANammDuiuGc9kOGEvVHmlq6JcHqe8ePdAidNreYixa78z7ymI3CngJfXomkaAoCdEALw_wcB",
+    isFree: true,
+    provider: "Alison"
+  },
+  {
+    id: 21,
+    title: "EduCourse",
+    category: "Additional Certificates",
+    description: "A 100% online, self-paced training program designed specifically for job seekers looking to enter the corporate or public sector. It focuses heavily on South African workplace expectations, business etiquette, and relevant local compliance laws.",
+    url: "https://www.educourse.co.za/courses/free-administrative-assistant-course-with-certificate-in-south-africa/",
+    isFree: true,
+    provider: "EduCourse SA"
+  },
+  {
+    id: 22,
+    title: "Alison Free Courses",
+    category: "Additional Certificates",
+    description: "A global free online learning platform offering over 6,000 certificate and diploma courses. It aims to provide accessible, self-paced education and workplace upskilling in subjects ranging from IT and business to health and languages. All learning content, modules, and assessments are completely free to complete.",
+    url: "https://alison.com/",
+    isFree: true,
+    provider: "Alison"
+  },
+  {
+    id: 23,
+    title: "Coursera HR Courses",
+    category: "Additional Certificates",
+    description: "HR courses that help you learn recruitment strategies, employee engagement techniques, performance management, and compliance regulations. You can build skills in conflict resolution, talent development, and workforce planning. Many courses introduce tools like HRIS software, applicant tracking systems, and performance evaluation platforms, showing how these skills are applied in managing employee relations and optimizing organizational effectiveness.",
+    url: "https://www.coursera.org/courses?query=hr&irclickid=QgjRwsU0VxyZTYhW-R2LOUivUkuVYqxlKydMVE0&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=4777498&utm_content=b2c&utm_campaignid=viaggiowithme&utm_term=14726_CR_1164545_&gad_source=1",
+    isFree: true,
+    provider: "Coursera"
+  }
+];
+
+function CertificatesPage({ T, dark }) {
+  const [category, setCategory] = useState("All");
+  const [search, setSearch] = useState("");
+  const [highlightedId, setHighlightedId] = useState(null);
+
+  const filtered = CERTIFICATES_DATA.filter(c => {
+    const matchesCategory = category === "All" || c.category === category;
+    const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) ||
+      c.provider.toLowerCase().includes(search.toLowerCase()) ||
+      c.description.toLowerCase().includes(search.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  return (
+    <div style={{ maxWidth: 940, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
+      <div style={{ marginBottom: 22 }}>
+        <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>Booster Certificates</h2>
+        <p style={{ color: T.muted, fontSize: 13 }}>Click a certificate card to highlight it, and use the link to visit the platform and start learning.</p>
+      </div>
+
+      {/* Search Input */}
+      <div style={{ maxWidth: 420, margin: "0 0 22px 0" }}>
+        <input 
+          type="text" 
+          placeholder="Search certificates, topics, providers..." 
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{
+            width: "100%", background: T.inputBg, border: `1px solid ${T.border}`,
+            borderRadius: 8, padding: "10px 16px", fontSize: 14,
+            color: T.chalk, outline: "none", boxSizing: "border-box",
+          }}
+        />
+      </div>
+
+      {/* Categories Filters */}
+      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
+        {CERTIFICATE_CATEGORIES.map(f => (
+          <button 
+            key={f} 
+            onClick={() => setCategory(f)} 
+            style={{
+              background: category === f ? T.teal : T.slate,
+              color: category === f ? (dark ? T.navy : "#fff") : T.muted,
+              border: "none", borderRadius: 6, padding: "5px 12px",
+              fontSize: 11, fontWeight: 600, cursor: "pointer",
+              transition: "all 0.2s ease"
+            }}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
+      <div className="mobile-filters">
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          {CERTIFICATE_CATEGORIES.map(f => (
+            <option key={f} value={f}>{f}</option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
+        Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> certificates
+      </div>
+
+      {/* Certificate Grid */}
+      <div className="career-grid">
+        {filtered.map(c => {
+          const isHighlighted = highlightedId === c.id;
+          const cardBg = isHighlighted 
+            ? (dark ? "rgba(0, 194, 168, 0.12)" : "rgba(0, 122, 107, 0.08)")
+            : T.navyCard;
+          
+          return (
+            <div 
+              key={c.id}
+              onClick={() => setHighlightedId(isHighlighted ? null : c.id)}
+              style={{
+                background: cardBg,
+                border: `1px solid ${isHighlighted ? T.teal : T.border}`,
+                borderRadius: 12,
+                padding: 20,
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                transform: isHighlighted ? "scale(1.02)" : "scale(1)",
+                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                boxShadow: isHighlighted ? `0 8px 24px ${T.teal}24` : "none",
+                position: "relative"
+              }}
+            >
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 10 }}>
+                  <span style={{ fontSize: 10, color: T.teal, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>
+                    {c.category}
+                  </span>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {isHighlighted && (
+                      <span style={{
+                        background: `${T.teal}20`,
+                        border: `1px solid ${T.teal}40`,
+                        borderRadius: 6,
+                        padding: "2px 6px",
+                        fontSize: 9,
+                        color: T.teal,
+                        fontWeight: 700
+                      }}>
+                        ★ SELECTED
+                      </span>
+                    )}
+                    <span style={{
+                      background: `${T.amber}18`,
+                      border: `1px solid ${T.amber}30`,
+                      borderRadius: 6,
+                      padding: "2px 6px",
+                      fontSize: 9,
+                      color: T.amber,
+                      fontWeight: 700
+                    }}>
+                      100% FREE
+                    </span>
+                  </div>
+                </div>
+
+                <h3 style={{ fontSize: 16, color: T.chalk, fontWeight: 700, margin: "0 0 4px 0" }}>
+                  {c.title}
+                </h3>
+                <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>
+                  Provider: {c.provider}
+                </div>
+                <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>
+                  {c.description}
+                </p>
+              </div>
+
+              <a 
+                href={c.url} 
+                target="_blank" 
+                rel="noreferrer" 
+                onClick={(e) => e.stopPropagation()} 
+                style={{
+                  display: "inline-block",
+                  padding: "8px 16px",
+                  background: T.teal,
+                  color: dark ? T.navy : "#ffffff",
+                  textDecoration: "none",
+                  borderRadius: 8,
+                  fontWeight: 600,
+                  fontSize: 12,
+                  transition: "all 0.15s ease",
+                  textAlign: "center",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.filter = "brightness(1.1)";
+                  e.target.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.filter = "none";
+                  e.target.style.transform = "none";
+                }}
+              >
+                Visit Website ↗
+              </a>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -1996,7 +2391,7 @@ function ApsCalculatorPage({ T, dark }) {
 export default function App() {
   const [page, setPage] = useState(() => {
     const saved = localStorage.getItem("pathway_page");
-    return saved && ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends"].includes(saved) ? saved : "Home";
+    return saved && ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends", "Certificates"].includes(saved) ? saved : "Home";
   });
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("pathway_dark");
@@ -2051,6 +2446,7 @@ export default function App() {
           {page === "Institutions"&& <>{pageHeader("Institution Validator", "Verify if a university or college is registered (Public vs Private).")}<InstitutionsPage T={T} dark={dark} /></>}
           {page === "APS Calculator"&& <>{pageHeader("APS Calculator & Course Matcher", "Input your subjects and marks to see which courses you qualify for.")}<ApsCalculatorPage T={T} dark={dark} /></>}
           {page === "Trends"   && <>{pageHeader("SA Career Trends", "What South Africa needs most — right now and in 2030.")}<TrendsPage T={T} /></>}
+          {page === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
         </div>
       </div>
     </div>
