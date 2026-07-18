@@ -3,23 +3,23 @@ import { supabase } from "./src/supabaseClient.js";
 
 // ── THEME TOKENS ─────────────────────────────────────────────────────────────
 const DARK = {
-  navy:    "#0A0F1E", navyMid: "#111827", navyCard: "#161D2F",
-  slate:   "#1E2A40", teal: "#00C2A8",   tealDim: "#00967F",
-  amber:   "#F59E0B", chalk: "#F0F4FF",  muted: "#7A8BA8",
-  border:  "#1E2D45", white: "#FFFFFF",
-  heroGrad:"radial-gradient(ellipse at 60% 40%, #0d1f3c 0%, #0A0F1E 70%)",
-  pageHead:"linear-gradient(180deg, #0d1a30 0%, #0A0F1E 100%)",
-  inputBg: "#1E2A40",
+  navy:    "#09090B", navyMid: "#18181B", navyCard: "#121214",
+  slate:   "#27272A", teal: "#6366F1",   tealDim: "#4F46E5",
+  amber:   "#F59E0B", chalk: "#FAFAFA",  muted: "#A1A1AA",
+  border:  "#27272A", white: "#FFFFFF",
+  heroGrad:"radial-gradient(ellipse at 60% 40%, #1e1b4b 0%, #09090b 70%)",
+  pageHead:"linear-gradient(180deg, #18181b 0%, #09090b 100%)",
+  inputBg: "#18181B",
 };
 
 const LIGHT = {
-  navy:    "#F0F4FF", navyMid: "#E4EAF8", navyCard: "#FFFFFF",
-  slate:   "#DDE4F0", teal: "#007A6B",   tealDim: "#005C51",
-  amber:   "#C47D0A", chalk: "#0A0F1E",  muted: "#4A5568",
-  border:  "#C8D4E8", white: "#0A0F1E",
-  heroGrad:"radial-gradient(ellipse at 60% 40%, #C8DCF8 0%, #F0F4FF 70%)",
-  pageHead:"linear-gradient(180deg, #DCE8F8 0%, #F0F4FF 100%)",
-  inputBg: "#DDE4F0",
+  navy:    "#F8FAFC", navyMid: "#FFFFFF", navyCard: "#FFFFFF",
+  slate:   "#E2E8F0", teal: "#4F46E5",   tealDim: "#4338CA",
+  amber:   "#EA580C", chalk: "#0F172A",  muted: "#64748B",
+  border:  "#CBD5E1", white: "#0F172A",
+  heroGrad:"radial-gradient(ellipse at 60% 40%, #e0e7ff 0%, #f8fafc 70%)",
+  pageHead:"linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%)",
+  inputBg: "#F1F5F9",
 };
 
 // ── CAREERS DATA ──────────────────────────────────────────────────────────────
@@ -99,7 +99,7 @@ const CAREERS = [
   {
     id: 7, title: "Teacher / Educator", demand: 86, salary: "R18 000 – R42 000/mo",
     field: "Education", growth: "+12% by 2030", grade: "8 & 9",
-    subjects: ["English Home Language", "Mathematics (Grade 8 & 9)", "Life Orientation (Grade 8 & 9)", "Social Sciences — History (Grade 8 & 9)", "Social Sciences — Geography (Grade 8 & 9)"],
+    subjects: ["English Home Language", "Mathematics (Beginner)", "Life Orientation", "History (Beginner)", "Geography (Beginner)"],
     paths: [
       { type: "university", label: "BEd (Bachelor of Education)", duration: "4 years", institution: "UNISA / UJ / Wits / NWU" },
       { type: "college",    label: "PGCE (Postgraduate Certificate)", duration: "1 year", institution: "Any accredited university" },
@@ -111,7 +111,7 @@ const CAREERS = [
   {
     id: 8, title: "Environmental Scientist", demand: 74, salary: "R20 000 – R52 000/mo",
     field: "Science & Environment", growth: "+16% by 2030", grade: "8 & 9",
-    subjects: ["Natural Sciences (Grade 8 & 9)", "Social Sciences — Geography (Grade 8 & 9)", "Mathematics (Grade 8 & 9)"],
+    subjects: ["Natural Sciences (Beginner)", "Geography (Beginner)", "Mathematics (Beginner)"],
     paths: [
       { type: "university", label: "BSc Environmental Science", duration: "3 years", institution: "UCT / Wits / UKZN" },
       { type: "university", label: "BSc Geography & Environmental Management", duration: "3 years", institution: "UP / SU / Rhodes" },
@@ -123,7 +123,7 @@ const CAREERS = [
   {
     id: 9, title: "Entrepreneur / Business Owner", demand: 80, salary: "R15 000 – R100 000+/mo",
     field: "Business & Finance", growth: "+20% by 2030", grade: "8 & 9",
-    subjects: ["Economic & Management Sciences (Grade 8 & 9)", "Mathematics (Grade 8 & 9)", "Technology (Grade 8 & 9)"],
+    subjects: ["Economic & Management Sciences (Beginner)", "Mathematics (Beginner)", "Technology (Beginner)"],
     paths: [
       { type: "university", label: "BCom Entrepreneurship", duration: "3 years", institution: "UCT GSB / Wits Business School" },
       { type: "college",    label: "Diploma in Business Management", duration: "2 years", institution: "Damelin / Regent / Boston" },
@@ -135,7 +135,7 @@ const CAREERS = [
   {
     id: 10, title: "Social Worker", demand: 83, salary: "R14 000 – R35 000/mo",
     field: "Social Sciences", growth: "+13% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation (Grade 8 & 9)", "Social Sciences — History (Grade 8 & 9)", "English Home Language"],
+    subjects: ["Life Orientation", "History (Beginner)", "English Home Language"],
     paths: [
       { type: "university", label: "BA Social Work", duration: "4 years", institution: "UNISA / UWC / NWU" },
       { type: "college",    label: "Diploma in Child & Youth Care", duration: "3 years", institution: "TVET / Isibindi College" },
@@ -147,7 +147,7 @@ const CAREERS = [
   {
     id: 11, title: "IT Technician / Network Engineer", demand: 89, salary: "R18 000 – R55 000/mo",
     field: "Technology", growth: "+24% by 2030", grade: "8 & 9",
-    subjects: ["Technology (Grade 8 & 9)", "Natural Sciences (Grade 8 & 9)", "Mathematics (Grade 8 & 9)"],
+    subjects: ["Technology (Beginner)", "Natural Sciences (Beginner)", "Mathematics (Beginner)"],
     paths: [
       { type: "college",    label: "N+ / A+ / CCNA Certification", duration: "6–12 months", institution: "Cisco Networking Academy / CompTIA" },
       { type: "college",    label: "Diploma in IT Support", duration: "2 years", institution: "Richfield / CTU Training Solutions" },
@@ -159,7 +159,7 @@ const CAREERS = [
   {
     id: 12, title: "Journalist / Media Producer", demand: 68, salary: "R12 000 – R38 000/mo",
     field: "Creative Arts", growth: "+8% by 2030", grade: "8 & 9",
-    subjects: ["English Home Language", "Social Sciences — History (Grade 8 & 9)", "Arts & Culture — Drama (Grade 8 & 9)"],
+    subjects: ["English Home Language", "History (Beginner)", "Drama (Beginner)"],
     paths: [
       { type: "university", label: "BA Journalism & Media Studies", duration: "3 years", institution: "Rhodes / Wits / CPUT" },
       { type: "college",    label: "Diploma in Journalism", duration: "2 years", institution: "Damelin / Boston Media House" },
@@ -171,7 +171,7 @@ const CAREERS = [
   {
     id: 13, title: "Chef / Culinary Professional", demand: 72, salary: "R10 000 – R45 000/mo",
     field: "Hospitality", growth: "+10% by 2030", grade: "8 & 9",
-    subjects: ["Economic & Management Sciences (Grade 8 & 9)", "Natural Sciences (Grade 8 & 9)", "Life Orientation (Grade 8 & 9)"],
+    subjects: ["Economic & Management Sciences (Beginner)", "Natural Sciences (Beginner)", "Life Orientation"],
     paths: [
       { type: "college",    label: "Diploma in Professional Cookery", duration: "1–2 years", institution: "HTA / Capsicum Culinary Studio" },
       { type: "college",    label: "N4–N6 Hospitality Management", duration: "18 months", institution: "TVET College" },
@@ -183,7 +183,7 @@ const CAREERS = [
   {
     id: 14, title: "Architect", demand: 77, salary: "R25 000 – R70 000/mo",
     field: "Engineering", growth: "+11% by 2030", grade: "8 & 9",
-    subjects: ["Technology (Grade 8 & 9)", "Arts & Culture — Visual Art (Grade 8 & 9)", "Mathematics (Grade 8 & 9)", "Natural Sciences (Grade 8 & 9)"],
+    subjects: ["Technology (Beginner)", "Visual Arts (Beginner)", "Mathematics (Beginner)", "Natural Sciences (Beginner)"],
     paths: [
       { type: "university", label: "BArch (Bachelor of Architecture)", duration: "5 years", institution: "UCT / Wits / TUT / UKZN" },
       { type: "college",    label: "Diploma in Architectural Technology", duration: "3 years", institution: "CPUT / DUT / Ekurhuleni West College" },
@@ -195,7 +195,7 @@ const CAREERS = [
   {
     id: 15, title: "Agricultural Scientist / Farmer", demand: 79, salary: "R14 000 – R50 000/mo",
     field: "Agriculture", growth: "+17% by 2030", grade: "8 & 9",
-    subjects: ["Natural Sciences (Grade 8 & 9)", "Social Sciences — Geography (Grade 8 & 9)", "Economic & Management Sciences (Grade 8 & 9)"],
+    subjects: ["Natural Sciences (Beginner)", "Geography (Beginner)", "Economic & Management Sciences (Beginner)"],
     paths: [
       { type: "university", label: "BSc Agriculture", duration: "4 years", institution: "UP / SU / UKZN / UFS" },
       { type: "college",    label: "Diploma in Agriculture", duration: "3 years", institution: "Grootfontein / Lowveld College" },
@@ -207,7 +207,7 @@ const CAREERS = [
   {
     id: 16, title: "Musician / Music Producer", demand: 62, salary: "R8 000 – R60 000+/mo",
     field: "Creative Arts", growth: "+9% by 2030", grade: "8 & 9",
-    subjects: ["Arts & Culture — Music (Grade 8 & 9)", "Mathematics (Grade 8 & 9)", "English Home Language"],
+    subjects: ["Music (Beginner)", "Mathematics (Beginner)", "English Home Language"],
     paths: [
       { type: "university", label: "BMus (Bachelor of Music)", duration: "4 years", institution: "UNISA / Wits / UCT / NMMU" },
       { type: "college",    label: "Diploma in Music Production", duration: "2 years", institution: "AFDA / Academy of Sound Engineering" },
@@ -219,7 +219,7 @@ const CAREERS = [
   {
     id: 17, title: "Sports Coach / Exercise Scientist", demand: 71, salary: "R10 000 – R40 000/mo",
     field: "Sport & Recreation", growth: "+14% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation (Grade 8 & 9)", "Natural Sciences (Grade 8 & 9)", "Mathematics (Grade 8 & 9)"],
+    subjects: ["Life Orientation", "Natural Sciences (Beginner)", "Mathematics (Beginner)"],
     paths: [
       { type: "university", label: "BSc Sport Science", duration: "3 years", institution: "UP / UJ / Stellenbosch / UKZN" },
       { type: "college",    label: "Diploma in Sport Management", duration: "2 years", institution: "Boston / Regent / Vaal University of Tech" },
@@ -231,7 +231,7 @@ const CAREERS = [
   {
     id: 18, title: "Plumber / Water Technician", demand: 84, salary: "R18 000 – R55 000/mo",
     field: "Trades", growth: "+16% by 2030", grade: "8 & 9",
-    subjects: ["Technology (Grade 8 & 9)", "Natural Sciences (Grade 8 & 9)", "Mathematics (Grade 8 & 9)"],
+    subjects: ["Technology (Beginner)", "Natural Sciences (Beginner)", "Mathematics (Beginner)"],
     paths: [
       { type: "apprenticeship", label: "Plumbing Apprenticeship", duration: "3–4 years", institution: "CETA / MICT SETA" },
       { type: "college",        label: "N3–N6 Civil & Water Engineering", duration: "2 years", institution: "TVET College" },
@@ -242,7 +242,7 @@ const CAREERS = [
   {
     id: 19, title: "Psychologist / Counsellor", demand: 78, salary: "R22 000 – R65 000/mo",
     field: "Social Sciences", growth: "+18% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation (Grade 8 & 9)", "Social Sciences — History (Grade 8 & 9)", "English Home Language", "Natural Sciences (Grade 8 & 9)"],
+    subjects: ["Life Orientation", "History (Beginner)", "English Home Language", "Natural Sciences (Beginner)"],
     paths: [
       { type: "university", label: "BA Psychology → MA Clinical Psychology", duration: "6 years", institution: "UNISA / UJ / Wits / SU" },
       { type: "university", label: "BCom Industrial Psychology", duration: "3 years", institution: "UFS / NWU / UP" },
@@ -254,7 +254,7 @@ const CAREERS = [
   {
     id: 20, title: "Data Analyst", demand: 90, salary: "R22 000 – R60 000/mo",
     field: "Technology", growth: "+28% by 2030", grade: "8 & 9",
-    subjects: ["Mathematics (Grade 8 & 9)", "Economic & Management Sciences (Grade 8 & 9)", "Natural Sciences (Grade 8 & 9)"],
+    subjects: ["Mathematics (Beginner)", "Economic & Management Sciences (Beginner)", "Natural Sciences (Beginner)"],
     paths: [
       { type: "university", label: "BSc Statistics / Data Science", duration: "3 years", institution: "UCT / Wits / SU" },
       { type: "college",    label: "Diploma in Data Analytics", duration: "2 years", institution: "Richfield / Boston / Regenesys" },
@@ -263,30 +263,75 @@ const CAREERS = [
     bursaries: ["Standard Bank Bursary", "Discovery Bursary", "FNB Foundation Bursary"],
     internships: ["Discovery Graduate Programme", "Standard Bank Internship", "Stats SA Graduate Internship"],
   },
+  {
+    id: 21, title: "Data Scientist", demand: 95, salary: "R40 000 – R100 000+/mo",
+    field: "Technology", growth: "+35% by 2030", grade: null,
+    subjects: ["Mathematics", "Information Technology", "Physical Sciences"],
+    paths: [
+      { type: "university", label: "BSc Computer Science / Data Science", duration: "3-4 years", institution: "UCT / Wits / UP / SU" },
+      { type: "online",     label: "Data Science Bootcamp", duration: "6 months", institution: "ExploreAI / HyperionDev" }
+    ],
+    bursaries: ["Standard Bank Bursary", "FNB Data Engineering Bursary", "CSIR Bursary"],
+    internships: ["Absa Data Science Graduate Programme", "ExploreAI Academy", "Standard Bank Quant Grad"]
+  },
+  {
+    id: 22, title: "Renewable Energy Engineer", demand: 92, salary: "R30 000 – R85 000/mo",
+    field: "Engineering", growth: "+40% by 2030", grade: null,
+    subjects: ["Mathematics", "Physical Sciences", "Information Technology"],
+    paths: [
+      { type: "university", label: "BEng Electrical / Mechanical Engineering", duration: "4 years", institution: "UP / SU / UCT" },
+      { type: "college",    label: "National Diploma in Engineering", duration: "3 years", institution: "TUT / CPUT" }
+    ],
+    bursaries: ["Eskom Bursary", "CSIR Bursary", "SANEDI Bursary"],
+    internships: ["Eskom Graduate Programme", "Scatec Solar Internship", "Enel Green Power"]
+  },
+  {
+    id: 23, title: "Digital Marketing Specialist", demand: 86, salary: "R15 000 – R55 000/mo",
+    field: "Business & Finance", growth: "+25% by 2030", grade: null,
+    subjects: ["English Home Language", "Business Studies", "Computer Applications Technology"],
+    paths: [
+      { type: "university", label: "BCom Marketing", duration: "3 years", institution: "UJ / UP / Varsity College" },
+      { type: "college",    label: "Diploma in Digital Marketing", duration: "2-3 years", institution: "Red & Yellow / AAA School of Advertising" },
+      { type: "online",     label: "Google Digital Skills / Hubspot", duration: "3 months", institution: "Google / Hubspot" }
+    ],
+    bursaries: ["Ogilvy Bursary", "WPP Scholarship", "Red & Yellow Bursary"],
+    internships: ["Ogilvy Graduate Programme", "VMLY&R Internship", "Takealot Marketing Intern"]
+  },
+  {
+    id: 24, title: "Pharmacist", demand: 89, salary: "R35 000 – R70 000/mo",
+    field: "Healthcare", growth: "+12% by 2030", grade: null,
+    subjects: ["Mathematics", "Physical Sciences", "Life Sciences"],
+    paths: [
+      { type: "university", label: "Bachelor of Pharmacy (BPharm)", duration: "4 years", institution: "NWU / Wits / UKZN / UWC" }
+    ],
+    bursaries: ["Department of Health Bursary", "Clicks Pharmacy Bursary", "Dis-Chem Foundation"],
+    internships: ["Public Hospital Pharmacy Internship", "Clicks Graduate Programme", "Dis-Chem Internship"]
+  },
+  {
+    id: 25, title: "Mechatronics Engineer", demand: 90, salary: "R32 000 – R90 000/mo",
+    field: "Engineering", growth: "+28% by 2030", grade: null,
+    subjects: ["Mathematics", "Physical Sciences", "Information Technology"],
+    paths: [
+      { type: "university", label: "BEng Mechatronics", duration: "4 years", institution: "SU / UCT / NMMU" },
+      { type: "college",    label: "Diploma in Mechatronics", duration: "3 years", institution: "TUT / CPUT" }
+    ],
+    bursaries: ["Toyota Bursary", "BMW Group Bursary", "Armscor Bursary"],
+    internships: ["BMW Graduate Programme", "Toyota Graduate Trainee", "VWSA Internship"]
+  }
 ];
 
 // ── SUBJECTS ──────────────────────────────────────────────────────────────────
 const SUBJECT_GROUPS = {
-  "Grade 7 (Primary School)": [
-    "English (Home Language)","Afrikaans (First Additional Language)",
-    "IsiZulu (Home Language)","IsiXhosa (Home Language)",
-    "Sesotho (Home Language)","Setswana (Home Language)",
-    "Mathematics (Grade 7)","Natural Sciences (Grade 7)",
-    "Social Sciences — History (Grade 7)","Social Sciences — Geography (Grade 7)",
-    "Technology (Grade 7)","Economic & Management Sciences (Grade 7)",
-    "Life Orientation (Grade 7)","Arts & Culture — Visual Art (Grade 7)",
-    "Arts & Culture — Music (Grade 7)","Arts & Culture — Drama (Grade 7)",
-    "Arts & Culture — Dance (Grade 7)",
-  ],
-  "Grade 8 & 9 (High School — Junior)": [
-    "English Home Language","Afrikaans First Additional Language",
-    "IsiZulu (Grade 8 & 9)","IsiXhosa (Grade 8 & 9)",
-    "Mathematics (Grade 8 & 9)","Natural Sciences (Grade 8 & 9)",
-    "Social Sciences — History (Grade 8 & 9)","Social Sciences — Geography (Grade 8 & 9)",
-    "Technology (Grade 8 & 9)","Economic & Management Sciences (Grade 8 & 9)",
-    "Life Orientation (Grade 8 & 9)","Arts & Culture — Visual Art (Grade 8 & 9)",
-    "Arts & Culture — Music (Grade 8 & 9)","Arts & Culture — Drama (Grade 8 & 9)",
-    "Arts & Culture — Dance (Grade 8 & 9)","Creative Arts (Grade 8 & 9)",
+"Beginner Subjects": [
+    "English (Home Language)", "Afrikaans (First Additional Language)",
+    "IsiZulu (Beginner)", "IsiXhosa (Beginner)",
+    "Sesotho (Beginner)", "Setswana (Beginner)",
+    "Mathematics (Beginner)", "Natural Sciences (Beginner)",
+    "History (Beginner)", "Geography (Beginner)",
+    "Technology (Beginner)", "Economic & Management Sciences (Beginner)",
+    "Visual Arts (Beginner)",
+    "Music (Beginner)", "Drama (Beginner)", "Dance (Beginner)",
+    "Creative Arts (Beginner)"
   ],
   "Languages": [
     "English Home Language","English First Additional Language",
@@ -310,7 +355,7 @@ const SUBJECT_GROUPS = {
     "Hospitality Studies","Tourism",
   ],
   "Humanities & Social Sciences": [
-    "History","Geography","Religion Studies","Philosophy",
+    "Life Orientation","History","Geography","Religion Studies","Philosophy",
     "Sociology","Psychology","Political Studies","Development Studies",
   ],
   "Creative & Performing Arts": [
@@ -329,11 +374,11 @@ const ALL_SUBJECTS = Object.values(SUBJECT_GROUPS).flat();
 
 const FIELDS = ["All", "Technology", "Trades", "Healthcare", "Creative Arts", "Business & Finance",
   "Engineering", "Education", "Science & Environment", "Social Sciences",
-  "Hospitality", "Agriculture", "Sport & Recreation", "Grade 8 & 9 Careers"];
+  "Hospitality", "Agriculture", "Sport & Recreation"];
 
 // ── PATH COLORS (theme-aware via props) ───────────────────────────────────────
 const PATH_META = {
-  university:    { accent: "#00C2A8", label: "University" },
+  university:    { accent: "#6366F1", label: "University" },
   college:       { accent: "#F59E0B", label: "College / TVET" },
   apprenticeship:{ accent: "#A78BFA", label: "Apprenticeship" },
   online:        { accent: "#34D399", label: "Online / Bootcamp" },
@@ -390,6 +435,56 @@ const OPPORTUNITIES = [
     location: "Gauteng",
     duration: "12 Months",
     description: "Earn a Wealth Management NQF level 5 certification while working in retail branch operations and advisor support. Matric with Maths/MathLit required."
+  },
+  {
+    id: 6,
+    title: "SA Youth Network (SAYouth.mobi)",
+    type: "Platform",
+    company: "National Youth Development Agency",
+    stipend: "N/A",
+    location: "Online / Nationwide",
+    duration: "Ongoing",
+    description: "A data-free national network for young people to access learning and earning opportunities. Great for learnerships, YES programmes, and entry-level jobs."
+  },
+  {
+    id: 7,
+    title: "Artisan Training Institute (ATI) Portal",
+    type: "Platform",
+    company: "ATI South Africa",
+    stipend: "N/A",
+    location: "Online",
+    duration: "Ongoing",
+    description: "Apply directly for artisan apprenticeships (fitting, turning, electrical, welding) and check for sponsored training programs and trade test dates."
+  },
+  {
+    id: 8,
+    title: "Pnet & Careers24",
+    type: "Platform",
+    company: "Online Job Boards",
+    stipend: "N/A",
+    location: "Online",
+    duration: "Ongoing",
+    description: "The largest online job portals in South Africa. Highly recommended for finding corporate learnerships, bursary listings, and entry-level graduate programmes."
+  },
+  {
+    id: 9,
+    title: "ZABursaries Portal",
+    type: "Platform",
+    company: "ZABursaries",
+    stipend: "N/A",
+    location: "Online",
+    duration: "Ongoing",
+    description: "A centralized, constantly updated database of all active bursaries and scholarships available to South African students across all fields of study."
+  },
+  {
+    id: 10,
+    title: "Lulaway Entry-Level Placements",
+    type: "Platform",
+    company: "Lulaway",
+    stipend: "N/A",
+    location: "Online / Nationwide",
+    duration: "Ongoing",
+    description: "Specializes in entry-level placements, artisan roles, and learnerships. They partner with government and large corporates to place youth in structured jobs."
   }
 ];
 
@@ -525,7 +620,7 @@ function ThemeToggle({ dark, setDark }) {
         width: 44,
         height: 24,
         borderRadius: 12,
-        background: dark ? "#00C2A8" : "#94A3B8",
+        background: dark ? "#6366F1" : "#94A3B8",
         position: "relative",
         cursor: "pointer",
         transition: "background 0.3s ease",
@@ -558,8 +653,8 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
   return (
     <>
       <div className={`sidebar-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
-      <aside className={`sidebar ${open ? "open" : ""}`}>
-        <div className="sidebar-header">
+      <aside className={`sidebar ${open ? "open" : ""}`} style={{ backgroundColor: T.navyMid, color: T.chalk, borderRight: `1px solid ${T.border}` }}>
+        <div className="sidebar-header" style={{ borderBottom: `1px solid ${T.border}` }}>
           <svg width="28" height="28" viewBox="0 0 32 32">
             <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" fill="none" stroke={T.teal} strokeWidth="2"/>
             <polygon points="16,8 24,13 24,19 16,24 8,19 8,13" fill={T.teal} opacity="0.15"/>
@@ -568,15 +663,21 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
           <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: 1 }}>PathwayZA</span>
         </div>
         <div className="sidebar-links">
-          {links.map(l => (
-            <button key={l} onClick={() => { setActive(l); setOpen(false); }} className={`sidebar-link ${active === l ? 'active' : ''}`}>
-              {l}
-            </button>
-          ))}
+          {links.map(l => {
+            const isActive = active === l;
+            return (
+              <button key={l} onClick={() => { setActive(l); setOpen(false); }} 
+                className={`sidebar-link ${isActive ? 'active' : ''}`}
+                style={isActive ? { background: `${T.teal}20`, color: T.teal } : {}}
+              >
+                {l}
+              </button>
+            );
+          })}
         </div>
-        <div className="sidebar-footer">
+        <div className="sidebar-footer" style={{ borderTop: `1px solid ${T.border}` }}>
           <ThemeToggle dark={dark} setDark={setDark} />
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>
+          <span style={{ fontSize: 11, color: T.muted }}>
             <span style={{ color: T.teal }}>ValambyaT3ch</span>
           </span>
         </div>
@@ -641,7 +742,7 @@ function CareerCard({ career, onClick, T, dark }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 10 }}>
         <div>
           <div style={{ fontSize: 10, color: T.teal, fontWeight: 600, marginBottom: 4, textTransform: "uppercase", letterSpacing: 1 }}>
-            {career.field}{career.grade ? ` · Grade ${career.grade}` : ""}
+            {career.field}
           </div>
           <div style={{ fontSize: 16, color: T.chalk, fontWeight: 700 }}>{career.title}</div>
         </div>
@@ -682,7 +783,7 @@ function CareerModal({ career, onClose, T, dark }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 16 }}>
           <div>
             <div style={{ fontSize: 10, color: T.teal, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-              {career.field}{career.grade ? ` · Grade ${career.grade} Career` : ""}
+              {career.field}
             </div>
             <h2 style={{ color: T.chalk, fontSize: 21, fontWeight: 800, margin: 0 }}>{career.title}</h2>
           </div>
@@ -913,8 +1014,6 @@ function CareersPage({ T, dark }) {
 
   const filtered = field === "All"
     ? CAREERS
-    : field === "Grade 8 & 9 Careers"
-    ? CAREERS.filter(c => c.grade === "8 & 9")
     : CAREERS.filter(c => c.field === field);
 
   return (
@@ -956,7 +1055,7 @@ function CareersPage({ T, dark }) {
         </div>
         <div className="career-grid">
           {OPPORTUNITIES.map(op => {
-            const badgeColor = op.type === "Apprenticeship" ? "#A78BFA" : op.type === "Learnership" ? "#F59E0B" : "#00C2A8";
+            const badgeColor = op.type === "Apprenticeship" ? "#8B5CF6" : op.type === "Learnership" ? "#F59E0B" : T.teal;
             return (
               <div key={op.id} className="opportunity-card" style={{
                 background: T.navyCard, border: `1px solid ${T.border}`,
@@ -1011,7 +1110,7 @@ function BursariesPage({ T, dark }) {
 
   const typeColors = {
     Government: T.teal, Corporate: T.amber,
-    SETA: "#A78BFA", Foundation: "#34D399", "Professional Body": "#F87171",
+    SETA: "#8B5CF6", Foundation: "#06B6D4", "Professional Body": "#F43F5E",
   };
 
   return (
@@ -1051,21 +1150,23 @@ function BursariesPage({ T, dark }) {
 }
 
 function TrendsPage({ T }) {
+  const [expandedId, setExpandedId] = useState(null);
+
   const trends = [
-    { rank: 1, title: "AI & Machine Learning Engineer", demand: 97, delta: "+31%", tag: "RISING" },
-    { rank: 2, title: "Cybersecurity Analyst", demand: 93, delta: "+27%", tag: "RISING" },
-    { rank: 3, title: "Data Analyst", demand: 90, delta: "+28%", tag: "RISING" },
-    { rank: 4, title: "Master Electrician", demand: 88, delta: "+18%", tag: null },
-    { rank: 5, title: "Registered Nurse", demand: 87, delta: "+15%", tag: null },
-    { rank: 6, title: "Civil Engineer", demand: 85, delta: "+14%", tag: null },
-    { rank: 7, title: "Social Worker", demand: 83, delta: "+13%", tag: null },
-    { rank: 8, title: "Plumber / Water Technician", demand: 82, delta: "+16%", tag: null },
-    { rank: 9, title: "Chartered Accountant", demand: 80, delta: "+9%", tag: null },
-    { rank: 10, title: "Entrepreneur / Business Owner", demand: 80, delta: "+20%", tag: "RISING" },
-    { rank: 11, title: "Environmental Scientist", demand: 74, delta: "+16%", tag: "RISING" },
-    { rank: 12, title: "UX / Product Designer", demand: 73, delta: "+19%", tag: "RISING" },
-    { rank: 13, title: "Agricultural Scientist", demand: 72, delta: "+17%", tag: null },
-    { rank: 14, title: "IT Technician / Network Engineer", demand: 89, delta: "+24%", tag: "RISING" },
+    { rank: 1, title: "AI & Machine Learning Engineer", demand: 97, delta: "+31%", tag: "RISING", qualification: "BSc Computer Science / BEng Data Engineering", where: "UCT, Wits, UP, Stellenbosch" },
+    { rank: 2, title: "Cybersecurity Analyst", demand: 93, delta: "+27%", tag: "RISING", qualification: "BSc IT / Advanced Certificate in Information Security", where: "UNISA, UJ, Richfield, CTU Training" },
+    { rank: 3, title: "Data Analyst", demand: 90, delta: "+28%", tag: "RISING", qualification: "Diploma in Data Analytics / BSc Statistics", where: "Boston City Campus, Eduvos, UWC, Rosebank College" },
+    { rank: 4, title: "Master Electrician", demand: 88, delta: "+18%", tag: null, qualification: "NTC 3 to NTC 6 / Trade Test Certificate", where: "Northlink TVET, Ekurhuleni East TVET, College of Cape Town" },
+    { rank: 5, title: "Registered Nurse", demand: 87, delta: "+15%", tag: null, qualification: "Bachelor of Nursing / Diploma in Nursing", where: "Netcare Education, UFS, UKZN, Sefako Makgatho Health Sciences" },
+    { rank: 6, title: "Civil Engineer", demand: 85, delta: "+14%", tag: null, qualification: "BEng Civil Engineering / National Diploma in Engineering", where: "CPUT, TUT, UJ, Stellenbosch University" },
+    { rank: 7, title: "Social Worker", demand: 83, delta: "+13%", tag: null, qualification: "Bachelor of Social Work (BSW)", where: "UWC, Fort Hare, UP, NWU" },
+    { rank: 8, title: "Plumber / Water Technician", demand: 82, delta: "+16%", tag: null, qualification: "NQF Level 4 Trade Certificate (Plumbing)", where: "Tshwane South TVET, False Bay TVET, Majuba TVET" },
+    { rank: 9, title: "Chartered Accountant", demand: 80, delta: "+9%", tag: null, qualification: "BCom Accounting + CTA + SAICA Board Exams", where: "UCT, UP, UJ, Nelson Mandela University" },
+    { rank: 10, title: "Entrepreneur / Business Owner", demand: 80, delta: "+20%", tag: "RISING", qualification: "Business Management Diploma / Self-Taught", where: "Regenesys, MANCOSA, Varsity College, ALX" },
+    { rank: 11, title: "Environmental Scientist", demand: 74, delta: "+16%", tag: "RISING", qualification: "BSc Environmental Sciences", where: "Rhodes University, UKZN, UWC, Stellenbosch" },
+    { rank: 12, title: "UX / Product Designer", demand: 73, delta: "+19%", tag: "RISING", qualification: "BA Graphic Design / Interaction Design Bootcamp", where: "Vega School, Red & Yellow, UJ, HyperionDev" },
+    { rank: 13, title: "Agricultural Scientist", demand: 72, delta: "+17%", tag: null, qualification: "BSc Agriculture / Diploma in Agriculture", where: "Elsenburg Agricultural Training Institute, UFS, Fort Hare" },
+    { rank: 14, title: "IT Technician / Network Engineer", demand: 89, delta: "+24%", tag: "RISING", qualification: "CompTIA A+/N+ / Higher Certificate in IT", where: "Damelin, CTU Training Solutions, UNISA, Boston" },
   ].sort((a, b) => b.demand - a.demand).map((t, i) => ({ ...t, rank: i + 1 }));
 
   return (
@@ -1075,33 +1176,64 @@ function TrendsPage({ T }) {
         <p style={{ color: T.muted, fontSize: 13 }}>Most in-demand careers in South Africa — projected to 2030.</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {trends.map(t => (
+        {trends.map(t => {
+          const isExpanded = expandedId === t.rank;
+          return (
           <div key={t.rank} style={{
-            background: T.navyCard, border: `1px solid ${T.border}`,
-            borderRadius: 10, padding: "12px 16px",
-            display: "flex", alignItems: "center", gap: 14,
-          }}>
+            background: T.navyCard, border: `1px solid ${isExpanded ? T.teal : T.border}`,
+            borderRadius: 10, overflow: "hidden",
+            cursor: "pointer", transition: "all 0.2s ease",
+            boxShadow: isExpanded ? `0 4px 12px ${T.teal}15` : "none"
+          }} onClick={() => setExpandedId(isExpanded ? null : t.rank)}>
             <div style={{
-              fontSize: 18, fontWeight: 800,
-              color: t.rank <= 3 ? T.teal : T.muted,
-              minWidth: 28, textAlign: "center",
-            }}>#{t.rank}</div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
-                <span style={{ fontSize: 14, color: T.chalk, fontWeight: 600 }}>{t.title}</span>
-                {t.tag && (
-                  <span style={{
-                    fontSize: 9, background: "#7C3AED20", color: "#A78BFA",
-                    border: "1px solid #7C3AED40", borderRadius: 4,
-                    padding: "1px 5px", fontWeight: 700,
-                  }}>{t.tag}</span>
-                )}
+              padding: "12px 16px",
+              display: "flex", alignItems: "center", gap: 14,
+            }}>
+              <div style={{
+                fontSize: 18, fontWeight: 800,
+                color: t.rank <= 3 ? T.teal : T.muted,
+                minWidth: 28, textAlign: "center",
+              }}>#{t.rank}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
+                  <span style={{ fontSize: 14, color: T.chalk, fontWeight: 600 }}>{t.title}</span>
+                  {t.tag && (
+                    <span style={{
+                      fontSize: 9, background: "#F472B620", color: "#F472B6",
+                      border: "1px solid #F472B640", borderRadius: 4,
+                      padding: "1px 5px", fontWeight: 700,
+                    }}>{t.tag}</span>
+                  )}
+                </div>
+                <DemandBar value={t.demand} T={T} />
               </div>
-              <DemandBar value={t.demand} T={T} />
+              <div style={{ fontSize: 13, color: T.amber, fontWeight: 700, minWidth: 46, textAlign: "right" }}>{t.delta}</div>
             </div>
-            <div style={{ fontSize: 13, color: T.amber, fontWeight: 700, minWidth: 46, textAlign: "right" }}>{t.delta}</div>
+            
+            {isExpanded && (
+              <div style={{
+                padding: "16px", borderTop: `1px solid ${T.border}`,
+                background: `${T.teal}0A`
+              }}>
+                <div style={{ marginBottom: 12, display: "flex", alignItems: "flex-start", gap: 10 }}>
+                  <span style={{ fontSize: 16 }}>🎓</span>
+                  <div>
+                    <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 3 }}>Required Qualification</div>
+                    <div style={{ fontSize: 13, color: T.chalk, fontWeight: 500, lineHeight: 1.4 }}>{t.qualification}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                  <span style={{ fontSize: 16 }}>🏫</span>
+                  <div>
+                    <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 3 }}>Where to get it</div>
+                    <div style={{ fontSize: 13, color: T.chalk, fontWeight: 500, lineHeight: 1.4 }}>{t.where}</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        ))}
+          );
+        })}
       </div>
       <div style={{
         marginTop: 24, background: T.navyCard, border: `1px solid ${T.border}`,
@@ -2902,15 +3034,15 @@ export default function App() {
       <Sidebar active={page} setActive={setPage} dark={dark} setDark={setDark} T={T} open={sidebarOpen} setOpen={setSidebarOpen} />
       
       <div className="main-content">
-        <div className="mobile-header">
+        <div className="mobile-header" style={{ backgroundColor: T.navyMid, borderBottom: `1px solid ${T.border}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <svg width="24" height="24" viewBox="0 0 32 32">
               <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" fill="none" stroke={T.teal} strokeWidth="2"/>
               <text x="16" y="21" textAnchor="middle" fill={T.teal} fontSize="12" fontWeight="bold" fontFamily="monospace">P</text>
             </svg>
-            <span style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>PathwayZA</span>
+            <span style={{ color: T.chalk, fontWeight: 700, fontSize: 16 }}>PathwayZA</span>
           </div>
-          <button className="hamburger-btn" onClick={() => setSidebarOpen(true)}>☰</button>
+          <button className="hamburger-btn" style={{ color: T.chalk }} onClick={() => setSidebarOpen(true)}>☰</button>
         </div>
 
         <div>
