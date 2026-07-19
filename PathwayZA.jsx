@@ -99,7 +99,7 @@ const CAREERS = [
   {
     id: 7, title: "Teacher / Educator", demand: 86, salary: "R18 000 – R42 000/mo",
     field: "Education", growth: "+12% by 2030", grade: "8 & 9",
-    subjects: ["English Home Language", "Mathematics (Beginner)", "Life Orientation", "History (Beginner)", "Geography (Beginner)"],
+    subjects: ["English Home Language", "Mathematics (Beginner)", "Life Orientation", "History (Beginner)", "Geography (Beginner)", "Education Degree"],
     paths: [
       { type: "university", label: "BEd (Bachelor of Education)", duration: "4 years", institution: "UNISA / UJ / Wits / NWU" },
       { type: "college",    label: "PGCE (Postgraduate Certificate)", duration: "1 year", institution: "Any accredited university" },
@@ -266,7 +266,7 @@ const CAREERS = [
   {
     id: 21, title: "Data Scientist", demand: 95, salary: "R40 000 – R100 000+/mo",
     field: "Technology", growth: "+35% by 2030", grade: null,
-    subjects: ["Mathematics", "Information Technology", "Physical Sciences"],
+    subjects: ["Mathematics", "Information Technology", "Physical Sciences", "IT / Tech Degree", "Science & Maths Degree", "Master's Degree", "Honours / Postgraduate Diploma"],
     paths: [
       { type: "university", label: "BSc Computer Science / Data Science", duration: "3-4 years", institution: "UCT / Wits / UP / SU" },
       { type: "online",     label: "Data Science Bootcamp", duration: "6 months", institution: "ExploreAI / HyperionDev" }
@@ -317,6 +317,57 @@ const CAREERS = [
     ],
     bursaries: ["Toyota Bursary", "BMW Group Bursary", "Armscor Bursary"],
     internships: ["BMW Graduate Programme", "Toyota Graduate Trainee", "VWSA Internship"]
+  },
+  {
+    id: 26, title: "University Lecturer / Professor", demand: 85, salary: "R40 000 – R90 000/mo",
+    field: "Education", growth: "+10% by 2030", grade: null,
+    subjects: ["Master's Degree", "Doctorate / PhD", "Education Degree", "Science & Maths Degree", "Humanities Degree"],
+    paths: [
+      { type: "university", label: "Master's -> PhD", duration: "4-6 years postgrad", institution: "All Major Universities" }
+    ],
+    bursaries: ["NRF Postgraduate Funding", "Mellon Foundation", "University Staff Doctoral Programme"],
+    internships: ["Academic Tutoring", "Research Assistantship", "Postdoctoral Fellowship"],
+  },
+  {
+    id: 27, title: "Specialist Medical Doctor / Surgeon", demand: 98, salary: "R80 000 – R200 000+/mo",
+    field: "Healthcare", growth: "+14% by 2030", grade: null,
+    subjects: ["Health Sciences Degree", "Medical Specialisation", "Master's Degree"],
+    paths: [
+      { type: "university", label: "MMed (Master of Medicine)", duration: "4-5 years post-MBChB", institution: "UCT / Wits / UP / UKZN" },
+      { type: "college",    label: "Fellowship of the Colleges of Medicine (FCSA)", duration: "Exams", institution: "CMSA" }
+    ],
+    bursaries: ["Department of Health Registrar Posts", "Discovery Foundation"],
+    internships: ["Registrar Training in Public Hospitals", "Clinical Fellowship"],
+  },
+  {
+    id: 28, title: "Senior Data Scientist / AI Researcher", demand: 95, salary: "R70 000 – R150 000/mo",
+    field: "Technology", growth: "+35% by 2030", grade: null,
+    subjects: ["Science & Maths Degree", "IT / Tech Degree", "Master's Degree", "Doctorate / PhD"],
+    paths: [
+      { type: "university", label: "MSc / PhD in Data Science or AI", duration: "2-4 years postgrad", institution: "SU / Wits / UCT" }
+    ],
+    bursaries: ["CSIR Bursary", "DeepMind Scholarship", "NRF Funding"],
+    internships: ["AI Research Lab Internship", "Tech Corporate Graduate Programme"],
+  },
+  {
+    id: 29, title: "Executive Business Manager / CEO", demand: 88, salary: "R100 000 – R300 000+/mo",
+    field: "Business & Finance", growth: "+12% by 2030", grade: null,
+    subjects: ["Commerce & Business Degree", "MBA / Executive Education"],
+    paths: [
+      { type: "university", label: "Master of Business Administration (MBA)", duration: "1-2 years", institution: "GIBS / UCT GSB / Wits Business School / Henley" }
+    ],
+    bursaries: ["Corporate Sponsorship", "MBA Scholarships"],
+    internships: ["Management Consulting", "Executive Shadowing", "Leadership Programmes"],
+  },
+  {
+    id: 30, title: "Principal Engineer", demand: 92, salary: "R80 000 – R160 000/mo",
+    field: "Engineering", growth: "+18% by 2030", grade: null,
+    subjects: ["Engineering Degree", "Master's Degree", "Honours / Postgraduate Diploma", "Doctorate / PhD"],
+    paths: [
+      { type: "university", label: "MEng / MTech", duration: "1-2 years", institution: "UP / SU / UCT / TUT" }
+    ],
+    bursaries: ["Engineering Firm Sponsorship", "NRF"],
+    internships: ["Senior Engineering Projects", "Professional Registration (ECSA) Mentorship"],
   }
 ];
 
@@ -369,6 +420,18 @@ const SUBJECT_GROUPS = {
     "Carpentry & Roofwork","Plumbing","Welding & Metalwork",
     "Hairdressing","Cosmetology","Early Childhood Development",
   ],
+  "Higher Education Fields": [
+    "Education Degree", "Science & Maths Degree", "Commerce & Business Degree",
+    "Engineering Degree", "Health Sciences Degree", "Humanities Degree", "IT / Tech Degree",
+    "Art & Design Degree"
+  ],
+  "Postgraduate & Advanced Studies": [
+    "Honours / Postgraduate Diploma",
+    "Master's Degree",
+    "Doctorate / PhD",
+    "MBA / Executive Education",
+    "Medical Specialisation"
+  ],
 };
 const ALL_SUBJECTS = Object.values(SUBJECT_GROUPS).flat();
 
@@ -394,7 +457,8 @@ const OPPORTUNITIES = [
     stipend: "R5 500 / month",
     location: "Gauteng (Midrand)",
     duration: "36 Months",
-    description: "Gain hands-on experience under master electricians. Focuses on commercial solar installation, inverter diagnostics, and smart grid automation. Prepares for the Red Seal trade test."
+    description: "Gain hands-on experience under master electricians. Focuses on commercial solar installation, inverter diagnostics, and smart grid automation. Prepares for the Red Seal trade test.",
+    url: "https://rubiconsa.com/pages/careers"
   },
   {
     id: 2,
@@ -404,7 +468,8 @@ const OPPORTUNITIES = [
     stipend: "R4 800 / month",
     location: "Cape Town",
     duration: "12 Months",
-    description: "Combination of theoretical classroom training (NQF 5 Systems Development certificate) and practical application. Covers database schemas, software testing, and core web languages."
+    description: "Combination of theoretical classroom training (NQF 5 Systems Development certificate) and practical application. Covers database schemas, software testing, and core web languages.",
+    url: "https://www.bcx.co.za/about/careers/"
   },
   {
     id: 3,
@@ -414,7 +479,8 @@ const OPPORTUNITIES = [
     stipend: "R12 500 / month",
     location: "Johannesburg",
     duration: "12 Months",
-    description: "Open to recent graduates holding a Diploma or BSc in Computer Science. Work inside active sprint teams building banking solutions. High likelihood of permanent placement."
+    description: "Open to recent graduates holding a Diploma or BSc in Computer Science. Work inside active sprint teams building banking solutions. High likelihood of permanent placement.",
+    url: "https://www.fnb.co.za/careers/"
   },
   {
     id: 4,
@@ -424,7 +490,8 @@ const OPPORTUNITIES = [
     stipend: "R6 200 / month",
     location: "Durban",
     duration: "48 Months",
-    description: "Structured artisan training at Transnet workshops. Focuses on repair and maintenance of massive rail diesel locomotives and heavy machinery. Prepares for red seal trade test."
+    description: "Structured artisan training at Transnet workshops. Focuses on repair and maintenance of massive rail diesel locomotives and heavy machinery. Prepares for red seal trade test.",
+    url: "https://transnetengineering.net/careers/"
   },
   {
     id: 5,
@@ -434,7 +501,8 @@ const OPPORTUNITIES = [
     stipend: "R4 500 / month",
     location: "Gauteng",
     duration: "12 Months",
-    description: "Earn a Wealth Management NQF level 5 certification while working in retail branch operations and advisor support. Matric with Maths/MathLit required."
+    description: "Earn a Wealth Management NQF level 5 certification while working in retail branch operations and advisor support. Matric with Maths/MathLit required.",
+    url: "https://jobs.nedbank.co.za/"
   },
   {
     id: 6,
@@ -444,7 +512,8 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online / Nationwide",
     duration: "Ongoing",
-    description: "A data-free national network for young people to access learning and earning opportunities. Great for learnerships, YES programmes, and entry-level jobs."
+    description: "A data-free national network for young people to access learning and earning opportunities. Great for learnerships, YES programmes, and entry-level jobs.",
+    url: "https://sayouth.mobi/"
   },
   {
     id: 7,
@@ -454,7 +523,8 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online",
     duration: "Ongoing",
-    description: "Apply directly for artisan apprenticeships (fitting, turning, electrical, welding) and check for sponsored training programs and trade test dates."
+    description: "Apply directly for artisan apprenticeships (fitting, turning, electrical, welding) and check for sponsored training programs and trade test dates.",
+    url: "https://www.artisantraining.co.za/"
   },
   {
     id: 8,
@@ -464,17 +534,8 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online",
     duration: "Ongoing",
-    description: "The largest online job portals in South Africa. Highly recommended for finding corporate learnerships, bursary listings, and entry-level graduate programmes."
-  },
-  {
-    id: 9,
-    title: "ZABursaries Portal",
-    type: "Platform",
-    company: "ZABursaries",
-    stipend: "N/A",
-    location: "Online",
-    duration: "Ongoing",
-    description: "A centralized, constantly updated database of all active bursaries and scholarships available to South African students across all fields of study."
+    description: "The largest online job portals in South Africa. Highly recommended for finding corporate learnerships, bursary listings, and entry-level graduate programmes.",
+    url: "https://www.pnet.co.za/"
   },
   {
     id: 10,
@@ -484,7 +545,41 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online / Nationwide",
     duration: "Ongoing",
-    description: "Specializes in entry-level placements, artisan roles, and learnerships. They partner with government and large corporates to place youth in structured jobs."
+    description: "Specializes in entry-level placements, artisan roles, and learnerships. They partner with government and large corporates to place youth in structured jobs.",
+    url: "https://www.lulaway.co.za/"
+  },
+  {
+    id: 11,
+    title: "Gauteng Provincial Government Jobs",
+    type: "Platform",
+    company: "Gauteng Government",
+    stipend: "N/A",
+    location: "Gauteng",
+    duration: "Ongoing",
+    description: "Official portal for jobs and learnerships within the Gauteng Provincial Government departments.",
+    url: "https://jobs.gauteng.gov.za/"
+  },
+  {
+    id: 12,
+    title: "merSETA Learnerships",
+    type: "Platform",
+    company: "merSETA",
+    stipend: "N/A",
+    location: "Nationwide",
+    duration: "Ongoing",
+    description: "Manufacturing, Engineering and Related Services SETA learnership programmes and skills development.",
+    url: "https://www.merseta.org.za/skills-development/curriculum-learning-programmes/learnerships/"
+  },
+  {
+    id: 13,
+    title: "Indeed South Africa",
+    type: "Platform",
+    company: "Indeed",
+    stipend: "N/A",
+    location: "Nationwide",
+    duration: "Ongoing",
+    description: "Aggregated listings of the latest jobs, learnerships, and internship opportunities available across South Africa.",
+    url: "https://za.indeed.com/jobs?q=learnership+OR+internship+OR+jobs&l=South+Africa"
   }
 ];
 
@@ -649,7 +744,7 @@ function ThemeToggle({ dark, setDark }) {
 }
 
 function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
-  const links = ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends", "Certificates"];
+  const links = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"];
   return (
     <>
       <div className={`sidebar-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
@@ -888,13 +983,13 @@ function DiscoverPage({ T, dark }) {
       <CareerModal career={modal} onClose={() => setModal(null)} T={T} dark={dark} />
 
       <div style={{ textAlign: "center", marginBottom: 24 }}>
-        <h2 style={{ fontSize: 26, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>What subjects are you taking?</h2>
-        <p style={{ color: T.muted, fontSize: 14 }}>Select all that apply. We'll rank career matches for you.</p>
+        <h2 style={{ fontSize: 26, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>What are your subjects, interests, or degrees?</h2>
+        <p style={{ color: T.muted, fontSize: 14 }}>Select all that apply. We'll rank career matches and postgraduate paths for you.</p>
       </div>
 
       {/* Search */}
       <div style={{ maxWidth: 420, margin: "0 auto 18px" }}>
-        <input type="text" placeholder="Search subjects…" value={search}
+        <input type="text" placeholder="Search subjects, degrees, or interests…" value={search}
           onChange={e => setSearch(e.target.value)}
           style={{
             width: "100%", background: T.inputBg, border: `1px solid ${T.border}`,
@@ -954,7 +1049,7 @@ function DiscoverPage({ T, dark }) {
         }}>
           <div>
             <span style={{ color: T.chalk, fontWeight: 700, fontSize: 13 }}>
-              {selected.length} subject{selected.length > 1 ? "s" : ""} selected
+              {selected.length} selection{selected.length > 1 ? "s" : ""}
             </span>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 5 }}>
               {selected.map(s => (
@@ -1009,49 +1104,13 @@ function DiscoverPage({ T, dark }) {
 }
 
 function CareersPage({ T, dark }) {
-  const [field, setField] = useState("All");
-  const [modal, setModal] = useState(null);
-
-  const filtered = field === "All"
-    ? CAREERS
-    : CAREERS.filter(c => c.field === field);
-
   return (
     <div style={{ maxWidth: 940, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
-      <CareerModal career={modal} onClose={() => setModal(null)} T={T} dark={dark} />
-      <div style={{ marginBottom: 22 }}>
-        <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>Career Explorer</h2>
-        <p style={{ color: T.muted, fontSize: 13 }}>Browse all careers. Click any card for paths, bursaries, and internships.</p>
-      </div>
-      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
-        {FIELDS.map(f => (
-          <button key={f} onClick={() => setField(f)} style={{
-            background: field === f ? T.teal : T.slate,
-            color: field === f ? (dark ? T.navy : "#fff") : T.muted,
-            border: "none", borderRadius: 6, padding: "5px 12px",
-            fontSize: 11, fontWeight: 600, cursor: "pointer",
-          }}>{f}</button>
-        ))}
-      </div>
-      <div className="mobile-filters">
-        <select value={field} onChange={(e) => setField(e.target.value)}>
-          {FIELDS.map(f => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-      </div>
-      <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
-        Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> careers
-      </div>
-      <div className="career-grid">
-        {filtered.map(c => <CareerCard key={c.id} career={c} onClick={setModal} T={T} dark={dark} />)}
-      </div>
-
       {/* Artisan & Work-Based Opportunities Section */}
-      <div style={{ marginTop: 52, paddingTop: 36, borderTop: `1px solid ${T.border}` }}>
+      <div style={{ paddingTop: 16 }}>
         <div style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 22, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>Artisan & Work-Based Opportunities</h2>
-          <p style={{ color: T.muted, fontSize: 13 }}>Earn a stipend while you learn. Explore apprenticeships, learnerships, and practical work experience.</p>
+          <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>Opportunities & Platforms</h2>
+          <p style={{ color: T.muted, fontSize: 14 }}>Earn a stipend while you learn. Explore apprenticeships, learnerships, and practical work experience through direct links.</p>
         </div>
         <div className="career-grid">
           {OPPORTUNITIES.map(op => {
@@ -1075,7 +1134,7 @@ function CareersPage({ T, dark }) {
                   <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>📍 {op.location} · 📅 {op.duration}</div>
                   <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>{op.description}</p>
                 </div>
-                <a href={`https://www.google.com/search?q=${encodeURIComponent(op.title + " " + op.company + " South Africa")}`}
+                <a href={op.url}
                    target="_blank" rel="noreferrer" className="apply-button" style={{
                      display: "block", textAlign: "center", background: T.teal,
                      color: dark ? T.navy : "#fff", borderRadius: 6, padding: "8px 12px",
@@ -1106,11 +1165,13 @@ function BursariesPage({ T, dark }) {
     { name: "DAFF Bursary", type: "Government", fields: "Agriculture, Forestry", amount: "Full cost of study", apply: "dffe.gov.za", deadline: "October" },
     { name: "SANRAL Bursary", type: "Government", fields: "Civil Engineering", amount: "Full cost + stipend", apply: "sanral.co.za", deadline: "August" },
     { name: "SAICA Bursary", type: "Professional Body", fields: "Accounting, Finance", amount: "Full tuition + articles", apply: "saica.co.za", deadline: "July" },
+    { name: "ZABursaries Portal", type: "Platform", fields: "All fields", amount: "Varies", apply: "www.zabursaries.co.za", deadline: "Ongoing" },
   ];
 
   const typeColors = {
     Government: T.teal, Corporate: T.amber,
     SETA: "#8B5CF6", Foundation: "#06B6D4", "Professional Body": "#F43F5E",
+    Platform: "#A855F7",
   };
 
   return (
@@ -1465,6 +1526,15 @@ const CERTIFICATES_DATA = [
     url: "https://www.coursera.org/courses?query=hr&irclickid=QgjRwsU0VxyZTYhW-R2LOUivUkuVYqxlKydMVE0&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=4777498&utm_content=b2c&utm_campaignid=viaggiowithme&utm_term=14726_CR_1164545_&gad_source=1",
     isFree: true,
     provider: "Coursera"
+  },
+  {
+    id: 24,
+    title: "Internship Hub",
+    category: "Additional Certificates",
+    description: "A platform providing resources, listings, and certifications to help students secure and succeed in internships.",
+    url: "https://www.internshiphub.org/internships",
+    isFree: true,
+    provider: "Internship Hub"
   }
 ];
 
