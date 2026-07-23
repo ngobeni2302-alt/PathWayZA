@@ -49,6 +49,28 @@ The application is powered by a modern **React frontend** built with **Vite** fo
    ```
 4. Open your browser and navigate to the Local or Network URL provided in the terminal (usually `http://localhost:5173`).
 
+### 🌐 Deploying to Vercel
+
+Since PathwayZA is a modern Vite React application with Supabase integration, it can be deployed directly to Vercel:
+
+1. **Push your code to GitHub**:
+   Ensure all your latest changes are pushed to your repository:
+   ```bash
+   git add .
+   git commit -m "Configure Vercel deployment"
+   git push origin CertsArchive
+   ```
+2. **Import to Vercel**:
+   - Log in to your [Vercel Dashboard](https://vercel.com).
+   - Click **Add New...** -> **Project**.
+   - Select your `PathWayZA` GitHub repository.
+3. **Configure Environment Variables**:
+   Under the **Environment Variables** section in the Vercel setup, add the following variables:
+   - `VITE_SUPABASE_URL`: `https://uuogkevymtifhlbadntv.supabase.co`
+   - `VITE_SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1b2drZXZ5bXRpZmhsYmFkbnR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MjY2NjksImV4cCI6MjA5OTIwMjY2OX0.8xgctFdgmzRuTbGCgpCWzt7FtAhZyRYZOwJvfvlM7K0`
+4. **Deploy**:
+   - Click **Deploy**. Vercel will automatically detect the Vite framework, run `npm run build`, and host your application.
+
 ---
 
 ## 🔗 Role in the Ecosystem
