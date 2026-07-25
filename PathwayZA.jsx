@@ -394,6 +394,7 @@ const OPPORTUNITIES = [
     stipend: "R5 500 / month",
     location: "Gauteng (Midrand)",
     duration: "36 Months",
+    url: "https://www.rubiconsa.com",
     description: "Gain hands-on experience under master electricians. Focuses on commercial solar installation, inverter diagnostics, and smart grid automation. Prepares for the Red Seal trade test."
   },
   {
@@ -404,6 +405,7 @@ const OPPORTUNITIES = [
     stipend: "R4 800 / month",
     location: "Cape Town",
     duration: "12 Months",
+    url: "https://www.bcx.co.za",
     description: "Combination of theoretical classroom training (NQF 5 Systems Development certificate) and practical application. Covers database schemas, software testing, and core web languages."
   },
   {
@@ -414,6 +416,7 @@ const OPPORTUNITIES = [
     stipend: "R12 500 / month",
     location: "Johannesburg",
     duration: "12 Months",
+    url: "https://www.fnb.co.za",
     description: "Open to recent graduates holding a Diploma or BSc in Computer Science. Work inside active sprint teams building banking solutions. High likelihood of permanent placement."
   },
   {
@@ -424,6 +427,7 @@ const OPPORTUNITIES = [
     stipend: "R6 200 / month",
     location: "Durban",
     duration: "48 Months",
+    url: "https://www.transnet.net",
     description: "Structured artisan training at Transnet workshops. Focuses on repair and maintenance of massive rail diesel locomotives and heavy machinery. Prepares for red seal trade test."
   },
   {
@@ -434,6 +438,7 @@ const OPPORTUNITIES = [
     stipend: "R4 500 / month",
     location: "Gauteng",
     duration: "12 Months",
+    url: "https://www.nedbank.co.za",
     description: "Earn a Wealth Management NQF level 5 certification while working in retail branch operations and advisor support. Matric with Maths/MathLit required."
   },
   {
@@ -444,6 +449,7 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online / Nationwide",
     duration: "Ongoing",
+    url: "https://www.sayouth.mobi",
     description: "A data-free national network for young people to access learning and earning opportunities. Great for learnerships, YES programmes, and entry-level jobs."
   },
   {
@@ -454,6 +460,7 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online",
     duration: "Ongoing",
+    url: "https://www.artisantraining.co.za",
     description: "Apply directly for artisan apprenticeships (fitting, turning, electrical, welding) and check for sponsored training programs and trade test dates."
   },
   {
@@ -464,17 +471,8 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online",
     duration: "Ongoing",
+    url: "https://www.pnet.co.za",
     description: "The largest online job portals in South Africa. Highly recommended for finding corporate learnerships, bursary listings, and entry-level graduate programmes."
-  },
-  {
-    id: 9,
-    title: "ZABursaries Portal",
-    type: "Platform",
-    company: "ZABursaries",
-    stipend: "N/A",
-    location: "Online",
-    duration: "Ongoing",
-    description: "A centralized, constantly updated database of all active bursaries and scholarships available to South African students across all fields of study."
   },
   {
     id: 10,
@@ -484,6 +482,7 @@ const OPPORTUNITIES = [
     stipend: "N/A",
     location: "Online / Nationwide",
     duration: "Ongoing",
+    url: "https://www.lulaway.co.za",
     description: "Specializes in entry-level placements, artisan roles, and learnerships. They partner with government and large corporates to place youth in structured jobs."
   }
 ];
@@ -555,12 +554,12 @@ function getExternalLink(name) {
     "Community Service Year": "https://www.health.gov.za",
     "Hospital Internship": "https://www.health.gov.za",
     "Mediclinic Graduate Programme": "https://www.mediclinic.co.za",
-    "Agency Internship": "https://www.google.com/search?q=design+agency+internships+south+africa",
+    "Agency Internship": "https://www.ogilvy.co.za",
     "Freelance Portfolio Route": "https://www.upwork.com",
-    "In-House Design Learnerships": "https://www.google.com/search?q=in+house+design+learnerships+south+africa",
-    "Big 4 Audit Firms": "https://www.google.com/search?q=big+4+audit+firms+south+africa+articles",
+    "In-House Design Learnerships": "https://www.redandyellow.co.za",
+    "Big 4 Audit Firms": "https://www2.deloitte.com/za",
     "SAICA Articles": "https://www.saica.co.za",
-    "Corporate Finance Graduate Schemes": "https://www.google.com/search?q=corporate+finance+graduate+schemes+south+africa",
+    "Corporate Finance Graduate Schemes": "https://www.standardbank.co.za",
     "SANRAL Graduate Programme": "https://www.sanral.co.za",
     "SMEC South Africa": "https://www.smec.com",
     "AECOM Graduate Scheme": "https://aecom.com",
@@ -574,39 +573,54 @@ function getExternalLink(name) {
     "Allan Gray Fellowship": "https://www.allangrayorbis.org",
     "Business Incubator Programmes": "https://www.seda.org.za",
     "Department of Social Development Internship": "https://www.dsd.gov.za",
-    "NGO Learnerships": "https://www.google.com/search?q=ngo+learnerships+south+africa",
+    "NGO Learnerships": "https://www.ngopulse.net",
     "SASSA Graduate Programme": "https://www.sassa.gov.za",
     "Cisco CCNA Learnership": "https://www.netacad.com",
     "Telkom Internship": "https://www.telkom.co.za",
-    "IT Helpdesk Learnerships": "https://www.google.com/search?q=it+helpdesk+learnerships+south+africa",
+    "IT Helpdesk Learnerships": "https://www.bcx.co.za",
     "SABC Graduate Programme": "https://www.sabc.co.za",
     "News24 Internship": "https://www.news24.com",
-    "Community Radio Learnerships": "https://www.google.com/search?q=community+radio+learnerships+south+africa",
+    "Community Radio Learnerships": "https://www.icasa.org.za",
     "Tsogo Sun Graduate Programme": "https://www.tsogosun.com",
-    "Hotel Kitchen Internship": "https://www.google.com/search?q=hotel+kitchen+internship+south+africa",
+    "Hotel Kitchen Internship": "https://www.tsogosun.com",
     "Paragon Architects Internship": "https://www.paragon.co.za",
     "Government Public Works Internship": "http://www.publicworks.gov.za",
     "SACAP Community Service": "https://www.sacapspace.co.za",
     "AgriSETA Learnership": "https://www.agriseta.co.za",
     "Tongaat Hulett Graduate Programme": "https://www.tongaat.com",
     "Grain SA Internship": "https://www.grainsa.co.za",
-    "Recording Studio Internship": "https://www.google.com/search?q=recording+studio+internship+south+africa",
+    "Recording Studio Internship": "https://www.sampra.org.za",
     "NAC Artist Development": "https://www.nac.org.za",
     "Community Arts Centre Learnership": "https://www.nac.org.za",
     "SASCOC High Performance Programme": "https://www.sascoc.co.za",
     "Provincial Sport Coaching Internship": "https://www.sascoc.co.za",
-    "Gym & Wellness Learnerships": "https://www.google.com/search?q=gym+and+wellness+learnerships+south+africa",
+    "Gym & Wellness Learnerships": "https://www.virginactive.co.za",
     "Rand Water Learnership": "https://www.randwater.co.za",
     "Johannesburg Water Apprenticeship": "https://www.johannesburgwater.co.za",
     "eThekwini Water Internship": "http://www.durban.gov.za",
     "SANCA Counselling Internship": "https://www.sancagauteng.org",
     "School Psychologist Internship": "https://www.education.gov.za",
-    "EAP Counsellor Learnership": "https://www.google.com/search?q=eap+counsellor+learnership+south+africa",
+    "EAP Counsellor Learnership": "https://www.sacap.edu.za",
     "Discovery Graduate Programme": "https://www.discovery.co.za",
     "Standard Bank Internship": "https://www.standardbank.co.za",
     "Stats SA Graduate Internship": "http://www.statssa.gov.za",
+    "Absa Data Science Graduate Programme": "https://www.absa.co.za",
+    "ExploreAI Academy": "https://www.explore.ai",
+    "Standard Bank Quant Grad": "https://www.standardbank.co.za",
+    "Eskom Graduate Programme": "https://www.eskom.co.za",
+    "Scatec Solar Internship": "https://www.scatec.com",
+    "Enel Green Power": "https://www.enelgreenpower.com",
+    "Ogilvy Graduate Programme": "https://www.ogilvy.co.za",
+    "VMLY&R Internship": "https://www.vmlyr.com",
+    "Takealot Marketing Intern": "https://www.takealot.com",
+    "Public Hospital Pharmacy Internship": "https://www.health.gov.za",
+    "Clicks Graduate Programme": "https://www.clicks.co.za",
+    "Dis-Chem Internship": "https://www.dischem.co.za",
+    "BMW Graduate Programme": "https://www.bmw.co.za",
+    "Toyota Graduate Trainee": "https://www.toyota.co.za",
+    "VWSA Internship": "https://www.vw.co.za",
   };
-  return links[name] || `https://www.google.com/search?q=${encodeURIComponent(name + " South Africa")}`;
+  return links[name] || "https://www.gov.za";
 }
 
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
@@ -649,7 +663,7 @@ function ThemeToggle({ dark, setDark }) {
 }
 
 function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
-  const links = ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends", "Certificates"];
+  const links = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"];
   return (
     <>
       <div className={`sidebar-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
@@ -1075,7 +1089,7 @@ function CareersPage({ T, dark }) {
                   <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>📍 {op.location} · 📅 {op.duration}</div>
                   <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>{op.description}</p>
                 </div>
-                <a href={`https://www.google.com/search?q=${encodeURIComponent(op.title + " " + op.company + " South Africa")}`}
+                <a href={op.url}
                    target="_blank" rel="noreferrer" className="apply-button" style={{
                      display: "block", textAlign: "center", background: T.teal,
                      color: dark ? T.navy : "#fff", borderRadius: 6, padding: "8px 12px",
@@ -1094,23 +1108,24 @@ function CareersPage({ T, dark }) {
 
 function BursariesPage({ T, dark }) {
   const bursaries = [
-    { name: "NSFAS", type: "Government", fields: "All fields", amount: "Up to R105 000/yr", apply: "nsfas.org.za", deadline: "Nov – Jan" },
-    { name: "Funza Lushaka", type: "Government", fields: "Teaching / Education", amount: "Full cost of study", apply: "funzalushaka.gov.za", deadline: "Nov – Jan" },
-    { name: "Sasol Bursary Programme", type: "Corporate", fields: "Engineering, Science, IT", amount: "Full cost of study", apply: "sasol.com/bursaries", deadline: "April" },
-    { name: "Anglo American Bursary", type: "Corporate", fields: "Mining, Engineering", amount: "Full cost + allowance", apply: "angloamerican.com", deadline: "May" },
-    { name: "Nedbank Bursary", type: "Corporate", fields: "Finance, IT, Accounting", amount: "Up to R80 000/yr", apply: "nedbank.co.za", deadline: "June" },
-    { name: "MERSETA Bursary", type: "SETA", fields: "Trades, Manufacturing", amount: "Varies by programme", apply: "merseta.org.za", deadline: "Rolling" },
-    { name: "MTN Foundation", type: "Foundation", fields: "ICT, Engineering", amount: "Partial + mentorship", apply: "mtn.com/foundation", deadline: "August" },
-    { name: "Vodacom Foundation", type: "Foundation", fields: "Technology, STEM", amount: "Full cost of study", apply: "vodacom.co.za", deadline: "July" },
-    { name: "Netcare Education Bursary", type: "Corporate", fields: "Nursing, Healthcare", amount: "Full tuition", apply: "netcare.co.za", deadline: "September" },
-    { name: "DAFF Bursary", type: "Government", fields: "Agriculture, Forestry", amount: "Full cost of study", apply: "dffe.gov.za", deadline: "October" },
-    { name: "SANRAL Bursary", type: "Government", fields: "Civil Engineering", amount: "Full cost + stipend", apply: "sanral.co.za", deadline: "August" },
-    { name: "SAICA Bursary", type: "Professional Body", fields: "Accounting, Finance", amount: "Full tuition + articles", apply: "saica.co.za", deadline: "July" },
+    { name: "NSFAS", type: "Government", fields: "All fields", amount: "Up to R105 000/yr", apply: "nsfas.org.za", url: "https://www.nsfas.org.za", deadline: "Nov - Jan" },
+    { name: "Funza Lushaka", type: "Government", fields: "Teaching / Education", amount: "Full cost of study", apply: "funzalushaka.gov.za", url: "https://www.funzalushaka.gov.za", deadline: "Nov - Jan" },
+    { name: "Sasol Bursary Programme", type: "Corporate", fields: "Engineering, Science, IT", amount: "Full cost of study", apply: "sasolbursaries.com", url: "https://www.sasolbursaries.com", deadline: "April" },
+    { name: "Anglo American Bursary", type: "Corporate", fields: "Mining, Engineering", amount: "Full cost + allowance", apply: "angloamerican.com", url: "https://www.angloamerican.com", deadline: "May" },
+    { name: "Nedbank Bursary", type: "Corporate", fields: "Finance, IT, Accounting", amount: "Up to R80 000/yr", apply: "nedbank.co.za", url: "https://www.nedbank.co.za", deadline: "June" },
+    { name: "MERSETA Bursary", type: "SETA", fields: "Trades, Manufacturing", amount: "Varies by programme", apply: "merseta.org.za", url: "https://www.merseta.org.za", deadline: "Rolling" },
+    { name: "MTN Foundation", type: "Foundation", fields: "ICT, Engineering", amount: "Partial + mentorship", apply: "mtn.co.za", url: "https://www.mtn.co.za", deadline: "August" },
+    { name: "Vodacom Foundation", type: "Foundation", fields: "Technology, STEM", amount: "Full cost of study", apply: "vodacom.co.za", url: "https://www.vodacom.co.za", deadline: "July" },
+    { name: "Netcare Education Bursary", type: "Corporate", fields: "Nursing, Healthcare", amount: "Full tuition", apply: "netcare.co.za", url: "https://www.netcare.co.za", deadline: "September" },
+    { name: "DAFF Bursary", type: "Government", fields: "Agriculture, Forestry", amount: "Full cost of study", apply: "dalrrd.gov.za", url: "https://www.dalrrd.gov.za", deadline: "October" },
+    { name: "SANRAL Bursary", type: "Government", fields: "Civil Engineering", amount: "Full cost + stipend", apply: "sanral.co.za", url: "https://www.sanral.co.za", deadline: "August" },
+    { name: "SAICA Bursary", type: "Professional Body", fields: "Accounting, Finance", amount: "Full tuition + articles", apply: "saica.co.za", url: "https://www.saica.co.za", deadline: "July" },
+    { name: "ZABursaries Portal", type: "Platform", fields: "All bursaries and scholarships", amount: "Varies by bursary", apply: "zabursaries.co.za", url: "https://www.zabursaries.co.za", deadline: "Ongoing" },
   ];
 
   const typeColors = {
     Government: T.teal, Corporate: T.amber,
-    SETA: "#8B5CF6", Foundation: "#06B6D4", "Professional Body": "#F43F5E",
+    SETA: "#8B5CF6", Foundation: "#06B6D4", "Professional Body": "#F43F5E", Platform: "#22C55E",
   };
 
   return (
@@ -1137,7 +1152,7 @@ function BursariesPage({ T, dark }) {
             <div style={{ fontSize: 12, color: T.muted, marginBottom: 3 }}>📚 {b.fields}</div>
             <div style={{ fontSize: 12, color: T.amber, marginBottom: 3, fontWeight: 600 }}>💰 {b.amount}</div>
             <div style={{ fontSize: 12, color: T.muted, marginBottom: 12 }}>📅 Deadline: {b.deadline}</div>
-            <a href={`https://${b.apply}`} target="_blank" rel="noreferrer" style={{
+            <a href={b.url} target="_blank" rel="noreferrer" style={{
               display: "block", textAlign: "center", background: T.slate,
               color: T.teal, borderRadius: 6, padding: "7px",
               fontSize: 12, fontWeight: 600, textDecoration: "none",
@@ -1435,7 +1450,7 @@ const CERTIFICATES_DATA = [
     title: "Alison Business Course",
     category: "Additional Certificates",
     description: "A global free online learning platform offering thousands of business-related courses. They provide short-term certificates and in-depth diplomas in fields like management, administration, and entrepreneurship.",
-    url: "https://alison.com/tag/business-management?utm_source=google&utm_medium=cpc&utm_campaign=Demand-Gen_South-Africa&gad_source=1&gad_campaignid=21491903447&gbraid=0AAAAADt7cD3lh7wEYjHQYzn590metQ8xm&gclid=Cj0KCQjw39zSBhDhARIsANammDuiuGc9kOGEvVHmlq6JcHqe8ePdAidNreYixa78z7ymI3CngJfXomkaAoCdEALw_wcB",
+    url: "https://alison.com/tag/business-management",
     isFree: true,
     provider: "Alison"
   },
@@ -1462,7 +1477,7 @@ const CERTIFICATES_DATA = [
     title: "Coursera HR Courses",
     category: "Additional Certificates",
     description: "HR courses that help you learn recruitment strategies, employee engagement techniques, performance management, and compliance regulations. You can build skills in conflict resolution, talent development, and workforce planning. Many courses introduce tools like HRIS software, applicant tracking systems, and performance evaluation platforms, showing how these skills are applied in managing employee relations and optimizing organizational effectiveness.",
-    url: "https://www.coursera.org/courses?query=hr&irclickid=QgjRwsU0VxyZTYhW-R2LOUivUkuVYqxlKydMVE0&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=4777498&utm_content=b2c&utm_campaignid=viaggiowithme&utm_term=14726_CR_1164545_&gad_source=1",
+    url: "https://www.coursera.org/courses?query=hr",
     isFree: true,
     provider: "Coursera"
   }
@@ -2099,7 +2114,7 @@ function getApplyLink(instName) {
   if (name.includes("college of cape town")) return "https://www.cct.edu.za";
   if (name.includes("false bay")) return "https://www.falsebaycollege.co.za";
 
-  return `https://www.google.com/search?q=How+to+apply+to+${encodeURIComponent(instName)}`;
+  return "https://www.careerhelp.org.za";
 }
 
 const SA_SUBJECTS = [
@@ -2998,7 +3013,7 @@ function ApsCalculatorPage({ T, dark }) {
 export default function App() {
   const [page, setPage] = useState(() => {
     const saved = localStorage.getItem("pathway_page");
-    return saved && ["Home", "Discover", "Careers", "Bursaries", "Institutions", "APS Calculator", "Trends", "Certificates"].includes(saved) ? saved : "Home";
+    return saved && ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"].includes(saved) ? saved : "Home";
   });
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("pathway_dark");
