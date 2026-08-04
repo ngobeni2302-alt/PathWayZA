@@ -2651,9 +2651,19 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, compact = false, 
                 tabIndex={isActive ? 0 : -1}
                 className={`system-tab-item ${isActive ? "active" : ""}`}
                 style={{
-                  color: isActive ? T.teal : T.muted,
-                  padding: compact ? "6px 14px" : "10px 18px",
-                  fontSize: compact ? 12 : 13.5,
+                  color: isActive
+                    ? (compact ? "#ffffff" : T.teal)
+                    : T.muted,
+                  fontWeight: isActive ? 700 : 500,
+                  padding: compact ? "7px 16px" : "10px 18px",
+                  fontSize: compact ? 12.5 : 13.5,
+                  position: "relative",
+                  zIndex: 2,
+                  background: "transparent",
+                  border: "none",
+                  borderRadius: compact ? 8 : 0,
+                  transition: "color 0.2s ease",
+                  cursor: "pointer"
                 }}
                 onClick={() => onTabSelect(tab)}
                 onKeyDown={(e) => handleKeyDown(e, idx)}
@@ -2668,9 +2678,16 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, compact = false, 
             style={{
               transform: `translateX(${indicator.left}px)`,
               width: `${indicator.width}px`,
-              background: `linear-gradient(90deg, ${T.teal}, #06b6d4)`,
-              height: compact ? 2 : 3,
-              bottom: compact ? 2 : 4,
+              background: compact
+                ? "linear-gradient(135deg, #4f46e5, #6366f1)"
+                : `linear-gradient(90deg, ${T.teal}, #06b6d4)`,
+              height: compact ? "calc(100% - 8px)" : 3,
+              top: compact ? 4 : "auto",
+              bottom: compact ? "auto" : 4,
+              borderRadius: compact ? 8 : 0,
+              boxShadow: compact ? "0 4px 14px rgba(79, 70, 229, 0.4)" : "none",
+              zIndex: 1,
+              transition: "transform 320ms cubic-bezier(0.16, 1, 0.3, 1), width 320ms cubic-bezier(0.16, 1, 0.3, 1)"
             }}
           />
         </div>
