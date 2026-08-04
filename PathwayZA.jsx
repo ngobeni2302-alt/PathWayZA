@@ -99,7 +99,7 @@ const CAREERS = [
   {
     id: 7, title: "Teacher / Educator", demand: 86, salary: "R18 000 – R42 000/mo",
     field: "Education", growth: "+12% by 2030", grade: "8 & 9",
-    subjects: ["English Home Language", "Mathematics (GET Subjects)", "Life Orientation", "History (GET Subjects)", "Geography (GET Subjects)"],
+    subjects: ["English Home Language", "Mathematics (GET Subjects)", "Life Orientation", "Social Sciences (GET)"],
     paths: [
       { type: "university", label: "BEd (Bachelor of Education)", duration: "4 years", institution: "UNISA / UJ / Wits / NWU" },
       { type: "college",    label: "PGCE (Postgraduate Certificate)", duration: "1 year", institution: "Any accredited university" },
@@ -111,7 +111,7 @@ const CAREERS = [
   {
     id: 8, title: "Environmental Scientist", demand: 74, salary: "R20 000 – R52 000/mo",
     field: "Science & Environment", growth: "+16% by 2030", grade: "8 & 9",
-    subjects: ["Natural Sciences (GET Subjects)", "Geography (GET Subjects)", "Mathematics (GET Subjects)"],
+    subjects: ["Natural Sciences (GET Subjects)", "Social Sciences (GET)", "Mathematics (GET Subjects)"],
     paths: [
       { type: "university", label: "BSc Environmental Science", duration: "3 years", institution: "UCT / Wits / UKZN" },
       { type: "university", label: "BSc Geography & Environmental Management", duration: "3 years", institution: "UP / SU / Rhodes" },
@@ -135,7 +135,7 @@ const CAREERS = [
   {
     id: 10, title: "Social Worker", demand: 83, salary: "R14 000 – R35 000/mo",
     field: "Social Sciences", growth: "+13% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation", "History (GET Subjects)", "English Home Language"],
+    subjects: ["Life Orientation", "Social Sciences (GET)", "English Home Language"],
     paths: [
       { type: "university", label: "BA Social Work", duration: "4 years", institution: "UNISA / UWC / NWU" },
       { type: "college",    label: "Diploma in Child & Youth Care", duration: "3 years", institution: "TVET / Isibindi College" },
@@ -159,7 +159,7 @@ const CAREERS = [
   {
     id: 12, title: "Journalist / Media Producer", demand: 68, salary: "R12 000 – R38 000/mo",
     field: "Creative Arts", growth: "+8% by 2030", grade: "8 & 9",
-    subjects: ["English Home Language", "History (GET Subjects)", "Drama (GET Subjects)"],
+    subjects: ["English Home Language", "Social Sciences (GET)", "Drama (GET Subjects)"],
     paths: [
       { type: "university", label: "BA Journalism & Media Studies", duration: "3 years", institution: "Rhodes / Wits / CPUT" },
       { type: "college",    label: "Diploma in Journalism", duration: "2 years", institution: "Damelin / Boston Media House" },
@@ -195,7 +195,7 @@ const CAREERS = [
   {
     id: 15, title: "Agricultural Scientist / Farmer", demand: 79, salary: "R14 000 – R50 000/mo",
     field: "Agriculture", growth: "+17% by 2030", grade: "8 & 9",
-    subjects: ["Natural Sciences (GET Subjects)", "Geography (GET Subjects)", "Economic & Management Sciences (GET Subjects)"],
+    subjects: ["Natural Sciences (GET Subjects)", "Social Sciences (GET)", "Economic & Management Sciences (GET Subjects)"],
     paths: [
       { type: "university", label: "BSc Agriculture", duration: "4 years", institution: "UP / SU / UKZN / UFS" },
       { type: "college",    label: "Diploma in Agriculture", duration: "3 years", institution: "Grootfontein / Lowveld College" },
@@ -242,7 +242,7 @@ const CAREERS = [
   {
     id: 19, title: "Psychologist / Counsellor", demand: 78, salary: "R22 000 – R65 000/mo",
     field: "Social Sciences", growth: "+18% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation", "History (GET Subjects)", "English Home Language", "Natural Sciences (GET Subjects)"],
+    subjects: ["Life Orientation", "Social Sciences (GET)", "English Home Language", "Natural Sciences (GET Subjects)"],
     paths: [
       { type: "university", label: "BA Psychology → MA Clinical Psychology", duration: "6 years", institution: "UNISA / UJ / Wits / SU" },
       { type: "university", label: "BCom Industrial Psychology", duration: "3 years", institution: "UFS / NWU / UP" },
@@ -327,7 +327,7 @@ const SUBJECT_GROUPS = {
     "IsiZulu (GET)", "IsiXhosa (GET)",
     "Sesotho (GET)", "Setswana (GET)",
     "Mathematics (GET)", "Natural Sciences (GET)",
-    "History (GET)", "Geography (GET)",
+    "Social Sciences (GET)", "Life Orientation (GET)",
     "Technology (GET)", "Economic & Management Sciences (GET)",
     "Visual Arts (GET)",
     "Music (GET)", "Drama (GET)", "Dance (GET)",
