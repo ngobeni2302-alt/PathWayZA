@@ -1,5 +1,26 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "./src/supabaseClient.js";
+import { FaMoon } from "react-icons/fa6";
+import { CiLight } from "react-icons/ci";
+
+// ── COOKIE HELPERS ────────────────────────────────────────────────────────────
+const setCookie = (name, value, days = 365) => {
+  const d = new Date();
+  d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+  const expires = "expires=" + d.toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/;SameSite=Lax`;
+};
+
+const getCookie = (name) => {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+  }
+  return null;
+};
 
 // ── THEME TOKENS ─────────────────────────────────────────────────────────────
 const DARK = {
@@ -2896,11 +2917,162 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, setDark }) {
               gap: 6
             }}
           >
-            {dark ? "🌙 Dark" : "☀️ Light"}
+            {dark ? (
+              <>
+                <FaMoon size={12} />
+                <span>Dark</span>
+              </>
+            ) : (
+              <>
+                <CiLight size={14} style={{ strokeWidth: 0.5 }} />
+                <span>Light</span>
+              </>
+            )}
           </button>
         </div>
       )}
     </nav>
+  );
+}
+
+// ── COOKIE CONSENT BANNER ─────────────────────────────────────────────────────
+function CookieConsentBanner({ T, dark, onAccept }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
+  
+  const [prefs, setPrefs] = useState({
+    necessary: true,
+    preferences: true,
+    analytics: true
+  });
+
+  useEffect(() => {
+    const consent = getCookie("pathway_cookie_consent");
+    if (!consent) {
+      const timer = setTimeout(() => setIsOpen(true), 1200);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  if (!isOpen) return null;
+
+  const handleAcceptAll = () => {
+    const consentData = {
+      necessary: true,
+      preferences: true,
+      analytics: true
+    };
+    setCookie("pathway_cookie_consent", JSON.stringify(consentData), 365);
+    setIsOpen(false);
+    if (onAccept) onAccept(consentData);
+  };
+
+  const handleDeclineAll = () => {
+    const consentData = {
+      necessary: true,
+      preferences: false,
+      analytics: false
+    };
+    setCookie("pathway_cookie_consent", JSON.stringify(consentData), 365);
+    setIsOpen(false);
+    if (onAccept) onAccept(consentData);
+  };
+
+  const handleSaveChoices = () => {
+    setCookie("pathway_cookie_consent", JSON.stringify(prefs), 365);
+    setIsOpen(false);
+    if (onAccept) onAccept(prefs);
+  };
+
+  return (
+    <div className="cookie-banner-container" style={{
+      backgroundColor: T.navyCard,
+      border: `1px solid ${T.border}`,
+      color: T.chalk,
+    }}>
+      {!showCustomize ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 20 }}>🍪</span>
+            <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>We Value Your Privacy</h3>
+          </div>
+          <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: 0 }}>
+            PathWise uses cookies to enhance your browsing experience, remember your preferences (like dark mode and APS calculator data), and analyze our traffic. Please choose if you accept our cookies.
+          </p>
+          <div className="cookie-banner-actions" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
+            <button className="cookie-btn" onClick={handleAcceptAll} style={{ backgroundColor: T.teal, color: "#FFFFFF" }}>
+              Accept All
+            </button>
+            <button className="cookie-btn" onClick={handleDeclineAll} style={{ backgroundColor: T.inputBg, border: `1px solid ${T.border}`, color: T.chalk }}>
+              Decline All
+            </button>
+            <button className="cookie-btn-link" onClick={() => setShowCustomize(true)} style={{ color: T.teal, padding: 0 }}>
+              Customize Settings
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 20 }}>⚙️</span>
+              <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Customize Preferences</h3>
+            </div>
+            <button className="cookie-btn-link" onClick={() => setShowCustomize(false)} style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", fontSize: 13 }}>
+              ← Back
+            </button>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, margin: "8px 0" }}>
+            {/* Necessary */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, paddingBottom: 10, borderBottom: `1px solid ${T.border}` }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>Necessary Cookies (Required)</div>
+                <div style={{ fontSize: 11, color: T.muted }}>Enable basic core features like site navigation, security, and theme preferences.</div>
+              </div>
+              <input type="checkbox" checked disabled style={{ cursor: "not-allowed", accentColor: T.teal }} />
+            </div>
+
+            {/* Preferences */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, paddingBottom: 10, borderBottom: `1px solid ${T.border}` }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>Functional / Preference Cookies</div>
+                <div style={{ fontSize: 11, color: T.muted }}>Used to remember your selected subjects, APS scores, and specific filter choices.</div>
+              </div>
+              <input 
+                type="checkbox" 
+                checked={prefs.preferences} 
+                onChange={(e) => setPrefs({ ...prefs, preferences: e.target.checked })}
+                style={{ cursor: "pointer", accentColor: T.teal, width: 16, height: 16 }} 
+              />
+            </div>
+
+            {/* Analytics */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>Performance & Analytics Cookies</div>
+                <div style={{ fontSize: 11, color: T.muted }}>Help us understand how visitors interact with the site, letting us refine our career statistics.</div>
+              </div>
+              <input 
+                type="checkbox" 
+                checked={prefs.analytics} 
+                onChange={(e) => setPrefs({ ...prefs, analytics: e.target.checked })}
+                style={{ cursor: "pointer", accentColor: T.teal, width: 16, height: 16 }} 
+              />
+            </div>
+          </div>
+
+          <div className="cookie-banner-actions" style={{ display: "flex", gap: 8, marginTop: 4 }}>
+            <button className="cookie-btn" onClick={handleSaveChoices} style={{ backgroundColor: T.teal, color: "#FFFFFF" }}>
+              Save Choices
+            </button>
+            <button className="cookie-btn" onClick={() => setShowCustomize(false)} style={{ backgroundColor: T.inputBg, border: `1px solid ${T.border}`, color: T.chalk }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -2909,6 +3081,8 @@ export default function App() {
   const ALL_TABS = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"];
 
   const [page, setPage] = useState(() => {
+    const cookieSaved = getCookie("pathway_page");
+    if (cookieSaved && ALL_TABS.includes(cookieSaved)) return cookieSaved;
     const saved = localStorage.getItem("pathway_page");
     return saved && ALL_TABS.includes(saved) ? saved : "Home";
   });
@@ -2917,6 +3091,8 @@ export default function App() {
   const transitionTimerRef = useRef(null);
 
   const [dark, setDark] = useState(() => {
+    const cookieSaved = getCookie("pathway_dark");
+    if (cookieSaved !== null) return cookieSaved === "true";
     const saved = localStorage.getItem("pathway_dark");
     return saved !== null ? saved === "true" : true;
   });
@@ -2924,10 +3100,12 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem("pathway_page", page);
+    setCookie("pathway_page", page, 30);
   }, [page]);
 
   useEffect(() => {
     localStorage.setItem("pathway_dark", dark);
+    setCookie("pathway_dark", dark.toString(), 30);
   }, [dark]);
 
   const T = dark ? DARK : LIGHT;
@@ -2992,6 +3170,7 @@ export default function App() {
           {displayPage === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
         </div>
       </div>
+      <CookieConsentBanner T={T} dark={dark} />
     </div>
   );
 }
