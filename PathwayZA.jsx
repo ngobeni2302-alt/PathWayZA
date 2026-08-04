@@ -2288,723 +2288,248 @@ function ApsCalculatorPage({ T, dark }) {
     }
   };
 
-  const [activeTab, setActiveTab] = useState("aps"); // "aps" or "scanner"
-
-  // Scanner State
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanProgress, setScanProgress] = useState(0);
-  const [scanLogs, setScanLogs] = useState([]);
-  const [scanResults, setScanResults] = useState(null); // { title, category, keywords }
-  const [selectedInterests, setSelectedInterests] = useState([]); // Array of interests
-
-  const handleFileUpload = (file) => {
-    setUploadedFile({
-      name: file.name,
-      size: (file.size / (1024 * 1024)).toFixed(2) + " MB",
-      preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : null
-    });
-    setIsScanning(true);
-    setScanProgress(0);
-    setScanResults(null);
-    
-    const logs = [
-      "Initializing OCR scanner...",
-      "Extracting text boundaries...",
-      "Analyzing image color histogram...",
-      "Detecting fonts & character sets...",
-      "Performing regex pattern matching...",
-      "Validating credentials authenticity...",
-      "Finalizing vocational categorization..."
-    ];
-
-    setScanLogs([`[INFO] Uploaded: ${file.name}`, `[INFO] Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB`, `[SCAN] ${logs[0]}`]);
-
-    // Simulated scan loop
-    let progress = 0;
-    let logIdx = 1;
-    const interval = setInterval(() => {
-      progress += 5;
-      if (progress > 100) progress = 100;
-      setScanProgress(progress);
-
-      // Add logs periodically
-      if (progress % 15 === 0 && logIdx < logs.length) {
-        setScanLogs(prev => [...prev, `[SCAN] ${logs[logIdx]}`]);
-        logIdx++;
-      }
-
-      if (progress === 100) {
-        clearInterval(interval);
-        
-        // Analyze file name for smart keyword extraction
-        const nameLower = file.name.toLowerCase();
-        let title = "Vocational Completion Certificate";
-        let category = "Additional Certificates";
-        let keywords = [];
-
-        if (nameLower.includes("cisco") || nameLower.includes("ccna") || nameLower.includes("network")) {
-          title = "Cisco Networking Foundational Certificate";
-          category = "ICT";
-          keywords = ["cisco", "networking", "routing"];
-        } else if (nameLower.includes("microsoft") || nameLower.includes("azure")) {
-          title = "Microsoft Cloud Fundamentals Certificate";
-          category = "ICT";
-          keywords = ["microsoft", "azure", "cloud"];
-        } else if (nameLower.includes("python") || nameLower.includes("code") || nameLower.includes("programming") || nameLower.includes("java")) {
-          title = "Software Programming Certificate";
-          category = "ICT";
-          keywords = ["programming", "coding", "software"];
-        } else if (nameLower.includes("marketing") || nameLower.includes("seo") || nameLower.includes("hubspot") || nameLower.includes("google")) {
-          title = "Digital Marketing Certificate";
-          category = "Marketing";
-          keywords = ["marketing", "seo", "sales"];
-        } else if (nameLower.includes("electrician") || nameLower.includes("electrical") || nameLower.includes("siemens") || nameLower.includes("wiring")) {
-          title = "Electrical Wiring & Systems Certificate";
-          category = "Electrical Engineering";
-          keywords = ["electrical", "engineering", "circuits"];
-        } else if (nameLower.includes("tourism") || nameLower.includes("travel") || nameLower.includes("agency")) {
-          title = "Tourism Specialist Certificate";
-          category = "Tourism";
-          keywords = ["tourism", "travel", "hospitality"];
-        } else if (nameLower.includes("hospitality") || nameLower.includes("hotel") || nameLower.includes("chef") || nameLower.includes("cooking")) {
-          title = "Hospitality Operational Certificate";
-          category = "Hospitality";
-          keywords = ["hospitality", "hotel", "operations"];
-        } else {
-          // Extract title from filename (remove extension and sanitize)
-          const cleanName = file.name.split('.')[0].replace(/[-_]/g, ' ');
-          title = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-          // Try to guess a category
-          if (nameLower.includes("business") || nameLower.includes("management") || nameLower.includes("hr")) {
-            category = "Additional Certificates";
-            keywords = ["business", "management"];
-          }
-        }
-
-        setScanResults({
-          title,
-          category,
-          keywords
-        });
-        setIsScanning(false);
-        setScanLogs(prev => [...prev, "[SUCCESS] Scan complete! Matches identified successfully."]);
-      }
-    }, 150);
-  };
-
-  const handleResetScanner = () => {
-    setUploadedFile(null);
-    setIsScanning(false);
-    setScanProgress(0);
-    setScanLogs([]);
-    setScanResults(null);
-  };
-
-  const getScannerRecommendations = () => {
-    if (!scanResults) return [];
-
-    // Map interest strings to categories
-    const interestCategories = [];
-    selectedInterests.forEach(interest => {
-      if (interest.includes("ICT")) interestCategories.push("ICT");
-      if (interest.includes("Electrical")) interestCategories.push("Electrical Engineering");
-      if (interest.includes("Hospitality")) interestCategories.push("Hospitality");
-      if (interest.includes("Tourism")) interestCategories.push("Tourism");
-      if (interest.includes("Marketing")) interestCategories.push("Marketing");
-      if (interest.includes("Business")) interestCategories.push("Additional Certificates");
-    });
-
-    const recommendations = [];
-    
-    // 1. Level up recommendations: certificates in the exact category of the detected certificate
-    const sameCategoryCerts = CERTIFICATES_DATA.filter(c => c.category === scanResults.category);
-    sameCategoryCerts.forEach(c => {
-      recommendations.push({
-        ...c,
-        recType: "LEVEL UP"
-      });
-    });
-
-    // 2. Interest matches: certificates in the selected interest categories
-    const interestCerts = CERTIFICATES_DATA.filter(c => interestCategories.includes(c.category));
-    interestCerts.forEach(c => {
-      // Avoid duplicates
-      if (!recommendations.some(r => r.id === c.id)) {
-        recommendations.push({
-          ...c,
-          recType: "INTEREST MATCH"
-        });
-      }
-    });
-
-    // Limit to 4 items max
-    return recommendations.slice(0, 4);
-  };
-
   return (
     <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
-      
-      {/* Sub-navigation Tabs */}
-      <div style={{ 
-        display: "flex", gap: 12, borderBottom: `1px solid ${T.border}`,
-        paddingBottom: 16, marginBottom: 24 
-      }}>
-        <button
-          onClick={() => setActiveTab("aps")}
+      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 28 }} className="calculator-layout">
+        
+        {/* Left Form: Inputs */}
+        <div 
+          className="calculator-card" 
           style={{
-            background: activeTab === "aps" ? T.teal : "transparent",
-            color: activeTab === "aps" ? (dark ? T.navy : "#fff") : T.muted,
-            border: activeTab === "aps" ? "none" : `1px solid ${T.border}`,
-            borderRadius: 8, padding: "10px 20px", fontSize: 13, fontWeight: 700,
-            cursor: "pointer", transition: "all 0.2s ease"
-          }}
-        >
-          🎓 Academic APS Matcher
-        </button>
-        <button
-          onClick={() => setActiveTab("scanner")}
-          style={{
-            background: activeTab === "scanner" ? T.teal : "transparent",
-            color: activeTab === "scanner" ? (dark ? T.navy : "#fff") : T.muted,
-            border: activeTab === "scanner" ? "none" : `1px solid ${T.border}`,
-            borderRadius: 8, padding: "10px 20px", fontSize: 13, fontWeight: 700,
-            cursor: "pointer", transition: "all 0.2s ease"
-          }}
-        >
-          🔍 Certificate Scanner & Recommender
-        </button>
-      </div>
-
-      {activeTab === "aps" ? (
-        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 28 }} className="calculator-layout">
-          
-          {/* Left Form: Inputs */}
-          <div 
-            className="calculator-card" 
-            style={{
-              background: T.navyCard, border: `1px solid ${T.border}`,
-              borderRadius: 16, boxShadow: "0 8px 30px rgba(0,0,0,0.2)"
-            }}
-          >
-            <h3 style={{ fontSize: 18, color: T.chalk, fontWeight: 700, marginBottom: 12 }}>Enter Your Marks</h3>
-            
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ fontSize: 12, color: T.muted, fontWeight: 600, display: "block", marginBottom: 6 }}>SELECT GRADE</label>
-              <select 
-                value={grade} 
-                onChange={e => setGrade(e.target.value)}
-                style={{
-                  width: "100%", padding: "10px 14px", borderRadius: 8,
-                  background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
-                  border: `1px solid ${T.border}`, outline: "none", fontSize: 14
-                }}
-              >
-                <option value="Grade 10">Grade 10</option>
-                <option value="Grade 11">Grade 11</option>
-                <option value="Grade 12 / Matric">Grade 12 / Matric</option>
-              </select>
-            </div>
-
-            {error && (
-              <div style={{ 
-                background: "rgba(239, 68, 68, 0.15)", color: "#EF4444", 
-                padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 16, border: "1px solid rgba(239, 68, 68, 0.3)" 
-              }}>
-                {error}
-              </div>
-            )}
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
-              {subjects.map((sub, idx) => (
-                <div key={idx} className="subject-row">
-                  <select
-                    value={sub.name}
-                    onChange={e => handleSubjectChange(idx, "name", e.target.value)}
-                    className="subject-select"
-                    style={{
-                      padding: "10px 14px", borderRadius: 8,
-                      background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
-                      border: `1px solid ${T.border}`, outline: "none", fontSize: 14
-                    }}
-                  >
-                    <option value="">-- Select Subject --</option>
-                    {SA_SUBJECTS.map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    placeholder="%"
-                    value={sub.mark}
-                    min="0"
-                    max="100"
-                    onChange={e => handleSubjectChange(idx, "mark", e.target.value)}
-                    className="subject-input"
-                    style={{
-                      padding: "10px 10px", borderRadius: 8, textAlign: "center",
-                      background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
-                      border: `1px solid ${T.border}`, outline: "none", fontSize: 14
-                    }}
-                  />
-                  <button
-                    onClick={() => removeSubject(idx)}
-                    style={{
-                      background: "transparent", border: "none", color: "#EF4444",
-                      fontSize: 16, cursor: "pointer", padding: "0 6px"
-                    }}
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                onClick={addSubject}
-                style={{
-                  flex: 1, padding: "10px 14px", borderRadius: 8, background: dark ? `${T.slate}44` : "#f3f4f6",
-                  color: T.chalk, fontWeight: 600, border: `1px solid ${T.border}`,
-                  cursor: "pointer", fontSize: 13
-                }}
-              >
-                + Add Subject
-              </button>
-              <button
-                onClick={handleCalculateAndMatch}
-                disabled={loading}
-                style={{
-                  flex: 1.5, padding: "10px 14px", borderRadius: 8, background: T.teal,
-                  color: dark ? T.navy : "#fff", fontWeight: 700, border: "none",
-                  cursor: loading ? "not-allowed" : "pointer", fontSize: 14,
-                  boxShadow: `0 4px 14px ${T.teal}44`
-                }}
-              >
-                {loading ? "Matching..." : "Calculate & Match"}
-              </button>
-            </div>
-          </div>
-
-          {/* Right Section: Results */}
-          <div>
-            {results ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                
-                {/* APS Summary Card */}
-                <div style={{
-                  background: "linear-gradient(135deg, #1e293b, #0f172a)", border: `1px solid ${T.border}`,
-                  borderRadius: 16, padding: "22px 26px", color: "#fff", boxShadow: "0 6px 20px rgba(0,0,0,0.15)"
-                }}>
-                  <h4 style={{ fontSize: 13, textTransform: "uppercase", color: T.teal, letterSpacing: 1, marginBottom: 12 }}>
-                    YOUR SCORE SUMMARY
-                  </h4>
-                  <div style={{ display: "flex", gap: 24 }}>
-                    <div>
-                      <span style={{ fontSize: 32, fontWeight: 800, color: "#fff" }}>{results.apsExcl}</span>
-                      <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Excl. LO)</span>
-                    </div>
-                    <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 24 }}>
-                      <span style={{ fontSize: 32, fontWeight: 800, color: T.teal }}>{results.apsIncl}</span>
-                      <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Incl. LO)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Matching Courses List */}
-                <div style={{ maxHeight: 500, overflowY: "auto", paddingRight: 4 }}>
-                  <h4 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 12 }}>
-                    Qualifying Programs ({results.matches.reduce((acc, curr) => acc + curr.courses.length, 0)})
-                  </h4>
-
-                  {results.matches.length > 0 ? (
-                    results.matches.map(inst => (
-                      <div key={inst.details.name} style={{
-                        background: T.navyCard, border: `1px solid ${T.border}`,
-                        borderRadius: 12, padding: 18, marginBottom: 16
-                      }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, gap: 10 }}>
-                          <div style={{ flex: 1 }}>
-                            <h5 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 4 }}>{inst.details.name}</h5>
-                            <span style={{ 
-                              background: inst.details.type.includes("Public") ? `${T.teal}22` : "rgba(255, 165, 0, 0.2)",
-                              color: inst.details.type.includes("Public") ? T.teal : "orange",
-                              fontSize: 10, fontWeight: 700, padding: "3px 6px", borderRadius: 4
-                            }}>{inst.details.type}</span>
-                          </div>
-                          <a 
-                            href={getApplyLink(inst.details.name)} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 4,
-                              fontSize: 11,
-                              fontWeight: 700,
-                              color: T.teal,
-                              textDecoration: "none",
-                              padding: "6px 12px",
-                              borderRadius: 6,
-                              border: `1px solid ${T.teal}40`,
-                              background: `${T.teal}11`,
-                              cursor: "pointer",
-                              transition: "all 0.2s ease-in-out",
-                              whiteSpace: "nowrap"
-                            }}
-                            onMouseEnter={e => {
-                              e.target.style.background = `${T.teal}22`;
-                              e.target.style.borderColor = T.teal;
-                            }}
-                            onMouseLeave={e => {
-                              e.target.style.background = `${T.teal}11`;
-                              e.target.style.borderColor = `${T.teal}40`;
-                            }}
-                          >
-                            Apply Direct ↗
-                          </a>
-                        </div>
-                        
-                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                          {inst.courses.map(course => (
-                            <div key={course.name} style={{
-                              background: dark ? "rgba(255,255,255,0.02)" : "#f9fafb",
-                              border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 12px",
-                              display: "flex", justifyContent: "space-between", alignItems: "center"
-                            }}>
-                              <div style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
-                                <span style={{ fontSize: 13, color: T.chalk, fontWeight: 600 }}>{course.name}</span>
-                                <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>
-                                  NQF Level {course.nqf_level} • SAQA ID: {course.saqa_id}
-                                </span>
-                              </div>
-                              <div style={{ textAlign: "right" }}>
-                                <span style={{ fontSize: 12, color: T.teal, fontWeight: 700 }}>Min APS {course.min_aps}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div style={{ 
-                      textAlign: "center", padding: "40px 20px", color: T.muted,
-                      border: `2px dashed ${T.border}`, borderRadius: 12 
-                    }}>
-                      <p style={{ fontSize: 14, marginBottom: 8 }}>No matching courses found.</p>
-                      <p style={{ fontSize: 12 }}>You may need higher marks or more core subjects (like Mathematics and Physical Sciences) to qualify for programs.</p>
-                    </div>
-                  )}
-                </div>
-
-              </div>
-            ) : (
-              <div style={{
-                height: "100%", minHeight: 250, display: "flex", flexDirection: "column",
-                alignItems: "center", justifyContent: "center", border: `2px dashed ${T.border}`,
-                borderRadius: 16, padding: 32, textAlign: "center", color: T.muted
-              }}>
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginBottom: 12, opacity: 0.5 }}>
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <line x1="9" y1="9" x2="15" y2="9"/>
-                  <line x1="9" y1="13" x2="15" y2="13"/>
-                  <line x1="9" y1="17" x2="15" y2="17"/>
-                </svg>
-                <h4 style={{ fontSize: 15, fontWeight: 700, color: T.chalk, marginBottom: 6 }}>Results Dashboard</h4>
-                <p style={{ fontSize: 12, maxWidth: 280 }}>Input your subjects and click calculate to view the courses and institutions you qualify for.</p>
-              </div>
-            )}
-          </div>
-
-        </div>
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28 }} className="calculator-layout">
-          {/* Left Column: Upload & Interests */}
-          <div style={{
             background: T.navyCard, border: `1px solid ${T.border}`,
-            borderRadius: 16, padding: 24, boxShadow: "0 8px 30px rgba(0,0,0,0.2)"
-          }}>
-            <style>{`
-              @keyframes laser-sweep {
-                0% { transform: translateY(0); }
-                50% { transform: translateY(180px); }
-                100% { transform: translateY(0); }
-              }
-            `}</style>
-            
-            <h3 style={{ fontSize: 18, color: T.chalk, fontWeight: 700, marginBottom: 12 }}>Scan Certificate</h3>
-            <p style={{ fontSize: 13, color: T.muted, marginBottom: 20 }}>Upload your completion certificates or transcripts to identify booster paths.</p>
+            borderRadius: 16, boxShadow: "0 8px 30px rgba(0,0,0,0.2)"
+          }}
+        >
+          <h3 style={{ fontSize: 18, color: T.chalk, fontWeight: 700, marginBottom: 12 }}>Enter Your Marks</h3>
+          
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 12, color: T.muted, fontWeight: 600, display: "block", marginBottom: 6 }}>SELECT GRADE</label>
+            <select 
+              value={grade} 
+              onChange={e => setGrade(e.target.value)}
+              style={{
+                width: "100%", padding: "10px 14px", borderRadius: 8,
+                background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
+                border: `1px solid ${T.border}`, outline: "none", fontSize: 14
+              }}
+            >
+              <option value="Grade 10">Grade 10</option>
+              <option value="Grade 11">Grade 11</option>
+              <option value="Grade 12 / Matric">Grade 12 / Matric</option>
+            </select>
+          </div>
 
-            {!uploadedFile ? (
-              <div 
-                style={{
-                  border: `2px dashed ${T.border}`, borderRadius: 12,
-                  padding: "48px 32px", textAlign: "center", cursor: "pointer",
-                  background: dark ? "rgba(255,255,255,0.01)" : "#f9fafb",
-                  transition: "all 0.2s ease",
-                }}
-                onDragOver={e => e.preventDefault()}
-                onDrop={e => {
-                  e.preventDefault();
-                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                    handleFileUpload(e.dataTransfer.files[0]);
-                  }
-                }}
-                onClick={() => document.getElementById("certificate-file-input").click()}
-              >
-                <input 
-                  id="certificate-file-input"
-                  type="file" 
-                  accept=".pdf,.png,.jpg,.jpeg,.docx" 
-                  onChange={e => {
-                    if (e.target.files && e.target.files[0]) {
-                      handleFileUpload(e.target.files[0]);
-                    }
+          {error && (
+            <div style={{ 
+              background: "rgba(239, 68, 68, 0.15)", color: "#EF4444", 
+              padding: 12, borderRadius: 8, fontSize: 13, marginBottom: 16, border: "1px solid rgba(239, 68, 68, 0.3)" 
+            }}>
+              {error}
+            </div>
+          )}
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+            {subjects.map((sub, idx) => (
+              <div key={idx} className="subject-row">
+                <select
+                  value={sub.name}
+                  onChange={e => handleSubjectChange(idx, "name", e.target.value)}
+                  className="subject-select"
+                  style={{
+                    padding: "10px 14px", borderRadius: 8,
+                    background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
+                    border: `1px solid ${T.border}`, outline: "none", fontSize: 14
                   }}
-                  style={{ display: "none" }}
+                >
+                  <option value="">-- Select Subject --</option>
+                  {SA_SUBJECTS.map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+                <input
+                  type="number"
+                  placeholder="%"
+                  value={sub.mark}
+                  min="0"
+                  max="100"
+                  onChange={e => handleSubjectChange(idx, "mark", e.target.value)}
+                  className="subject-input"
+                  style={{
+                    padding: "10px 10px", borderRadius: 8, textAlign: "center",
+                    background: dark ? `${T.slate}88` : "#fff", color: T.chalk,
+                    border: `1px solid ${T.border}`, outline: "none", fontSize: 14
+                  }}
                 />
-                <div style={{ fontSize: 44, marginBottom: 16 }}>📁</div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: T.chalk, marginBottom: 6 }}>
-                  Drag & Drop Certificate Here
-                </div>
-                <div style={{ fontSize: 12, color: T.muted, marginBottom: 12 }}>
-                  or click to browse from files
-                </div>
-                <span style={{ 
-                  fontSize: 10, background: dark ? "rgba(255,255,255,0.05)" : "#e5e7eb", 
-                  color: T.muted, padding: "4px 10px", borderRadius: 6 
-                }}>
-                  Supports PDF, PNG, JPG up to 10MB
-                </span>
+                <button
+                  onClick={() => removeSubject(idx)}
+                  style={{
+                    background: "transparent", border: "none", color: "#EF4444",
+                    fontSize: 16, cursor: "pointer", padding: "0 6px"
+                  }}
+                >
+                  ✕
+                </button>
               </div>
-            ) : (
-              <div>
-                {/* File Preview with Laser */}
-                <div style={{ 
-                  position: "relative", width: "100%", height: 200, 
-                  overflow: "hidden", borderRadius: 12, background: dark ? "#0f172a" : "#e2e8f0", 
-                  display: "flex", alignItems: "center", justifyContent: "center", 
-                  border: `1px solid ${T.border}` 
-                }}>
-                  {uploadedFile.preview ? (
-                    <img src={uploadedFile.preview} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: isScanning ? 0.5 : 0.8 }} />
-                  ) : (
-                    <div style={{ textAlign: "center", color: T.muted }}>
-                      <span style={{ fontSize: 64 }}>📄</span>
-                      <div style={{ fontSize: 13, marginTop: 12, fontWeight: 600, color: T.chalk }}>{uploadedFile.name}</div>
-                      <div style={{ fontSize: 11, color: T.muted, marginTop: 4 }}>{uploadedFile.size}</div>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <button
+              onClick={addSubject}
+              style={{
+                flex: 1, padding: "10px 14px", borderRadius: 8, background: dark ? `${T.slate}44` : "#f3f4f6",
+                color: T.chalk, fontWeight: 600, border: `1px solid ${T.border}`,
+                cursor: "pointer", fontSize: 13
+              }}
+            >
+              + Add Subject
+            </button>
+            <button
+              onClick={handleCalculateAndMatch}
+              disabled={loading}
+              style={{
+                flex: 1.5, padding: "10px 14px", borderRadius: 8, background: T.teal,
+                color: dark ? T.navy : "#fff", fontWeight: 700, border: "none",
+                cursor: loading ? "not-allowed" : "pointer", fontSize: 14,
+                boxShadow: `0 4px 14px ${T.teal}44`
+              }}
+            >
+              {loading ? "Matching..." : "Calculate & Match"}
+            </button>
+          </div>
+        </div>
+
+        {/* Right Section: Results */}
+        <div>
+          {results ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              
+              {/* APS Summary Card */}
+              <div style={{
+                background: "linear-gradient(135deg, #1e293b, #0f172a)", border: `1px solid ${T.border}`,
+                borderRadius: 16, padding: "22px 26px", color: "#fff", boxShadow: "0 6px 20px rgba(0,0,0,0.15)"
+              }}>
+                <h4 style={{ fontSize: 13, textTransform: "uppercase", color: T.teal, letterSpacing: 1, marginBottom: 12 }}>
+                  YOUR SCORE SUMMARY
+                </h4>
+                <div style={{ display: "flex", gap: 24 }}>
+                  <div>
+                    <span style={{ fontSize: 32, fontWeight: 800, color: "#fff" }}>{results.apsExcl}</span>
+                    <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Excl. LO)</span>
+                  </div>
+                  <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 24 }}>
+                    <span style={{ fontSize: 32, fontWeight: 800, color: T.teal }}>{results.apsIncl}</span>
+                    <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Incl. LO)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Matching Courses List */}
+              <div style={{ maxHeight: 500, overflowY: "auto", paddingRight: 4 }}>
+                <h4 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 12 }}>
+                  Qualifying Programs ({results.matches.reduce((acc, curr) => acc + curr.courses.length, 0)})
+                </h4>
+
+                {results.matches.length > 0 ? (
+                  results.matches.map(inst => (
+                    <div key={inst.details.name} style={{
+                      background: T.navyCard, border: `1px solid ${T.border}`,
+                      borderRadius: 12, padding: 18, marginBottom: 16
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, gap: 10 }}>
+                        <div style={{ flex: 1 }}>
+                          <h5 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 4 }}>{inst.details.name}</h5>
+                          <span style={{ 
+                            background: inst.details.type.includes("Public") ? `${T.teal}22` : "rgba(255, 165, 0, 0.2)",
+                            color: inst.details.type.includes("Public") ? T.teal : "orange",
+                            fontSize: 10, fontWeight: 700, padding: "3px 6px", borderRadius: 4
+                          }}>{inst.details.type}</span>
+                        </div>
+                        <a 
+                          href={getApplyLink(inst.details.name)} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: T.teal,
+                            textDecoration: "none",
+                            padding: "6px 12px",
+                            borderRadius: 6,
+                            border: `1px solid ${T.teal}40`,
+                            background: `${T.teal}11`,
+                            cursor: "pointer",
+                            transition: "all 0.2s ease-in-out",
+                            whiteSpace: "nowrap"
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.background = `${T.teal}22`;
+                            e.target.style.borderColor = T.teal;
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.background = `${T.teal}11`;
+                            e.target.style.borderColor = `${T.teal}40`;
+                          }}
+                        >
+                          Apply Direct ↗
+                        </a>
+                      </div>
+                      
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {inst.courses.map(course => (
+                          <div key={course.name} style={{
+                            background: dark ? "rgba(255,255,255,0.02)" : "#f9fafb",
+                            border: `1px solid ${T.border}`, borderRadius: 8, padding: "10px 12px",
+                            display: "flex", justifyContent: "space-between", alignItems: "center"
+                          }}>
+                            <div style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
+                              <span style={{ fontSize: 13, color: T.chalk, fontWeight: 600 }}>{course.name}</span>
+                              <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>
+                                NQF Level {course.nqf_level} • SAQA ID: {course.saqa_id}
+                              </span>
+                            </div>
+                            <div style={{ textAlign: "right" }}>
+                              <span style={{ fontSize: 12, color: T.teal, fontWeight: 700 }}>Min APS {course.min_aps}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  )}
-                  
-                  {isScanning && (
-                    <div style={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      height: 4,
-                      background: T.teal,
-                      boxShadow: `0 0 10px ${T.teal}, 0 0 20px ${T.teal}`,
-                      animation: "laser-sweep 2s infinite linear",
-                      zIndex: 2
-                    }} />
-                  )}
-                </div>
-
-                {/* Progress / Status Logs */}
-                <div style={{ marginTop: 20 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 8, fontWeight: 600 }}>
-                    <span style={{ color: T.muted }}>
-                      {isScanning ? "PROCESSING CREDENTIAL..." : "SCAN COMPLETED"}
-                    </span>
-                    <span style={{ color: T.teal }}>{scanProgress}%</span>
-                  </div>
-                  <div style={{ width: "100%", height: 8, background: dark ? "rgba(255,255,255,0.05)" : "#e2e8f0", borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ width: `${scanProgress}%`, height: "100%", background: T.teal, transition: "width 0.1s linear" }} />
-                  </div>
-                  
-                  {/* Terminal Logs */}
+                  ))
+                ) : (
                   <div style={{ 
-                    background: "#020617", borderRadius: 8, padding: 12, 
-                    marginTop: 16, fontFamily: "monospace", fontSize: 11, color: "#10B981",
-                    maxHeight: 120, overflowY: "auto", border: "1px solid #1e293b"
+                    textAlign: "center", padding: "40px 20px", color: T.muted,
+                    border: `2px dashed ${T.border}`, borderRadius: 12 
                   }}>
-                    {scanLogs.map((log, i) => (
-                      <div key={i} style={{ marginBottom: 4 }}>{log}</div>
-                    ))}
+                    <p style={{ fontSize: 14, marginBottom: 8 }}>No matching courses found.</p>
+                    <p style={{ fontSize: 12 }}>You may need higher marks or more core subjects (like Mathematics and Physical Sciences) to qualify for programs.</p>
                   </div>
-                </div>
-
-                {!isScanning && (
-                  <button
-                    onClick={handleResetScanner}
-                    style={{
-                      marginTop: 16, padding: "8px 16px", borderRadius: 8, 
-                      background: "transparent", color: "#EF4444", border: "1px solid rgba(239, 68, 68, 0.4)",
-                      cursor: "pointer", fontSize: 12, fontWeight: 600, width: "100%"
-                    }}
-                  >
-                    Clear & Scan Another Certificate
-                  </button>
                 )}
               </div>
-            )}
 
-            {/* Interest Checklist */}
-            <div style={{ marginTop: 28, borderTop: `1px solid ${T.border}`, paddingTop: 20 }}>
-              <h4 style={{ fontSize: 14, color: T.chalk, fontWeight: 700, marginBottom: 4 }}>Select Your Interests</h4>
-              <p style={{ fontSize: 12, color: T.muted, marginBottom: 14 }}>Tell us what areas you are passionate about to refine your suggestions.</p>
-              
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {["ICT & Computer Science", "Electrical Engineering", "Hospitality", "Tourism & Travel", "Marketing & Design", "Business & HR"].map(interest => {
-                  const isSelected = selectedInterests.includes(interest);
-                  return (
-                    <button
-                      key={interest}
-                      onClick={() => {
-                        if (isSelected) {
-                          setSelectedInterests(selectedInterests.filter(i => i !== interest));
-                        } else {
-                          setSelectedInterests([...selectedInterests, interest]);
-                        }
-                      }}
-                      style={{
-                        background: isSelected ? T.teal : (dark ? `${T.slate}33` : "#f3f4f6"),
-                        color: isSelected ? (dark ? T.navy : "#fff") : T.muted,
-                        border: `1px solid ${isSelected ? T.teal : T.border}`,
-                        borderRadius: 20, padding: "8px 16px", fontSize: 12, fontWeight: 600,
-                        cursor: "pointer", transition: "all 0.15s ease"
-                      }}
-                    >
-                      {interest} {isSelected ? "✓" : "+"}
-                    </button>
-                  );
-                })}
-              </div>
             </div>
-          </div>
-
-          {/* Right Column: Results & Recommendations */}
-          <div>
-            {scanResults ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                
-                {/* Extracted Certificate Info Card */}
-                <div style={{
-                  background: T.navyCard, border: `1px solid ${T.border}`,
-                  borderRadius: 16, padding: "20px 24px", boxShadow: "0 6px 20px rgba(0,0,0,0.15)"
-                }}>
-                  <h4 style={{ fontSize: 12, textTransform: "uppercase", color: T.teal, letterSpacing: 1, marginBottom: 14, fontWeight: 700 }}>
-                    IDENTIFIED CREDENTIAL
-                  </h4>
-                  <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                    <div style={{ fontSize: 36 }}>🏆</div>
-                    <div>
-                      <h5 style={{ fontSize: 16, fontWeight: 800, color: T.chalk, margin: 0 }}>{scanResults.title}</h5>
-                      <p style={{ fontSize: 12, color: T.muted, margin: "4px 0 0 0" }}>
-                        Recognized Field: <span style={{ color: T.teal, fontWeight: 700 }}>{scanResults.category}</span>
-                      </p>
-                      {scanResults.keywords.length > 0 && (
-                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
-                          {scanResults.keywords.map(kw => (
-                            <span key={kw} style={{ 
-                              background: dark ? `${T.slate}66` : "#e2e8f0", 
-                              color: T.muted, fontSize: 10, padding: "2px 8px", borderRadius: 6, fontWeight: 600 
-                            }}>
-                              #{kw}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Dynamic Recommendations List */}
-                <div>
-                  <h4 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 12 }}>
-                    Recommended Next Steps
-                  </h4>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    {getScannerRecommendations().map(rec => (
-                      <div key={rec.id} style={{
-                        background: T.navyCard, border: `1px solid ${T.border}`,
-                        borderRadius: 12, padding: 18
-                      }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10, gap: 10 }}>
-                          <div style={{ flex: 1 }}>
-                            <span style={{ 
-                              background: rec.recType === "LEVEL UP" ? "rgba(16, 185, 129, 0.15)" : `${T.teal}22`,
-                              color: rec.recType === "LEVEL UP" ? "#10B981" : T.teal,
-                              fontSize: 9, fontWeight: 700, padding: "3px 6px", borderRadius: 4, letterSpacing: 0.5
-                            }}>{rec.recType}</span>
-                            <h5 style={{ fontSize: 15, fontWeight: 700, color: T.chalk, marginTop: 6, marginBottom: 2 }}>{rec.title}</h5>
-                            <span style={{ fontSize: 11, color: T.muted }}>Provider: {rec.provider}</span>
-                          </div>
-                          
-                          <a 
-                            href={rec.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 4,
-                              fontSize: 11,
-                              fontWeight: 700,
-                              color: T.teal,
-                              textDecoration: "none",
-                              padding: "6px 12px",
-                              borderRadius: 6,
-                              border: `1px solid ${T.teal}40`,
-                              background: `${T.teal}11`,
-                              cursor: "pointer",
-                              transition: "all 0.2s ease-in-out",
-                              whiteSpace: "nowrap"
-                            }}
-                            onMouseEnter={e => {
-                              e.target.style.background = `${T.teal}22`;
-                              e.target.style.borderColor = T.teal;
-                            }}
-                            onMouseLeave={e => {
-                              e.target.style.background = `${T.teal}11`;
-                              e.target.style.borderColor = `${T.teal}40`;
-                            }}
-                          >
-                            Start Free ↗
-                          </a>
-                        </div>
-                        <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.4, margin: 0 }}>
-                          {rec.description}
-                        </p>
-                      </div>
-                    ))}
-                    
-                    {getScannerRecommendations().length === 0 && (
-                      <div style={{ 
-                        textAlign: "center", padding: "30px 20px", color: T.muted,
-                        border: `2px dashed ${T.border}`, borderRadius: 12 
-                      }}>
-                        <p style={{ fontSize: 13, margin: 0 }}>Select interests or upload a certificate to see recommendations.</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-              </div>
-            ) : (
-              <div style={{
-                height: "100%", minHeight: 320, display: "flex", flexDirection: "column",
-                alignItems: "center", justifyContent: "center", border: `2px dashed ${T.border}`,
-                borderRadius: 16, padding: 32, textAlign: "center", color: T.muted
-              }}>
-                <span style={{ fontSize: 44, marginBottom: 16 }}>📊</span>
-                <h4 style={{ fontSize: 15, fontWeight: 700, color: T.chalk, marginBottom: 6 }}>Recommendations Dashboard</h4>
-                <p style={{ fontSize: 12, maxWidth: 280, margin: 0 }}>Upload your credentials and select your interests. The recommender system will analyze and map your paths.</p>
-              </div>
-            )}
-          </div>
+          ) : (
+            <div style={{
+              height: "100%", minHeight: 250, display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", border: `2px dashed ${T.border}`,
+              borderRadius: 16, padding: 32, textAlign: "center", color: T.muted
+            }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginBottom: 12, opacity: 0.5 }}>
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="9" x2="15" y2="9"/>
+                <line x1="9" y1="13" x2="15" y2="13"/>
+                <line x1="9" y1="17" x2="15" y2="17"/>
+              </svg>
+              <h4 style={{ fontSize: 15, fontWeight: 700, color: T.chalk, marginBottom: 6 }}>Results Dashboard</h4>
+              <p style={{ fontSize: 12, maxWidth: 280 }}>Input your subjects and click calculate to view the courses and institutions you qualify for.</p>
+            </div>
+          )}
         </div>
-      )}
+
+      </div>
     </div>
   );
 }
