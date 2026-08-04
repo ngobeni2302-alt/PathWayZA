@@ -99,7 +99,7 @@ const CAREERS = [
   {
     id: 7, title: "Teacher / Educator", demand: 86, salary: "R18 000 – R42 000/mo",
     field: "Education", growth: "+12% by 2030", grade: "8 & 9",
-    subjects: ["English Home Language", "Mathematics (Beginner)", "Life Orientation", "History (Beginner)", "Geography (Beginner)"],
+    subjects: ["English Home Language", "Mathematics (GET Subjects)", "Life Orientation", "History (GET Subjects)", "Geography (GET Subjects)"],
     paths: [
       { type: "university", label: "BEd (Bachelor of Education)", duration: "4 years", institution: "UNISA / UJ / Wits / NWU" },
       { type: "college",    label: "PGCE (Postgraduate Certificate)", duration: "1 year", institution: "Any accredited university" },
@@ -111,7 +111,7 @@ const CAREERS = [
   {
     id: 8, title: "Environmental Scientist", demand: 74, salary: "R20 000 – R52 000/mo",
     field: "Science & Environment", growth: "+16% by 2030", grade: "8 & 9",
-    subjects: ["Natural Sciences (Beginner)", "Geography (Beginner)", "Mathematics (Beginner)"],
+    subjects: ["Natural Sciences (GET Subjects)", "Geography (GET Subjects)", "Mathematics (GET Subjects)"],
     paths: [
       { type: "university", label: "BSc Environmental Science", duration: "3 years", institution: "UCT / Wits / UKZN" },
       { type: "university", label: "BSc Geography & Environmental Management", duration: "3 years", institution: "UP / SU / Rhodes" },
@@ -123,7 +123,7 @@ const CAREERS = [
   {
     id: 9, title: "Entrepreneur / Business Owner", demand: 80, salary: "R15 000 – R100 000+/mo",
     field: "Business & Finance", growth: "+20% by 2030", grade: "8 & 9",
-    subjects: ["Economic & Management Sciences (Beginner)", "Mathematics (Beginner)", "Technology (Beginner)"],
+    subjects: ["Economic & Management Sciences (GET Subjects)", "Mathematics (GET Subjects)", "Technology (GET Subjects)"],
     paths: [
       { type: "university", label: "BCom Entrepreneurship", duration: "3 years", institution: "UCT GSB / Wits Business School" },
       { type: "college",    label: "Diploma in Business Management", duration: "2 years", institution: "Damelin / Regent / Boston" },
@@ -135,7 +135,7 @@ const CAREERS = [
   {
     id: 10, title: "Social Worker", demand: 83, salary: "R14 000 – R35 000/mo",
     field: "Social Sciences", growth: "+13% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation", "History (Beginner)", "English Home Language"],
+    subjects: ["Life Orientation", "History (GET Subjects)", "English Home Language"],
     paths: [
       { type: "university", label: "BA Social Work", duration: "4 years", institution: "UNISA / UWC / NWU" },
       { type: "college",    label: "Diploma in Child & Youth Care", duration: "3 years", institution: "TVET / Isibindi College" },
@@ -147,7 +147,7 @@ const CAREERS = [
   {
     id: 11, title: "IT Technician / Network Engineer", demand: 89, salary: "R18 000 – R55 000/mo",
     field: "Technology", growth: "+24% by 2030", grade: "8 & 9",
-    subjects: ["Technology (Beginner)", "Natural Sciences (Beginner)", "Mathematics (Beginner)"],
+    subjects: ["Technology (GET Subjects)", "Natural Sciences (GET Subjects)", "Mathematics (GET Subjects)"],
     paths: [
       { type: "college",    label: "N+ / A+ / CCNA Certification", duration: "6–12 months", institution: "Cisco Networking Academy / CompTIA" },
       { type: "college",    label: "Diploma in IT Support", duration: "2 years", institution: "Richfield / CTU Training Solutions" },
@@ -159,7 +159,7 @@ const CAREERS = [
   {
     id: 12, title: "Journalist / Media Producer", demand: 68, salary: "R12 000 – R38 000/mo",
     field: "Creative Arts", growth: "+8% by 2030", grade: "8 & 9",
-    subjects: ["English Home Language", "History (Beginner)", "Drama (Beginner)"],
+    subjects: ["English Home Language", "History (GET Subjects)", "Drama (GET Subjects)"],
     paths: [
       { type: "university", label: "BA Journalism & Media Studies", duration: "3 years", institution: "Rhodes / Wits / CPUT" },
       { type: "college",    label: "Diploma in Journalism", duration: "2 years", institution: "Damelin / Boston Media House" },
@@ -171,7 +171,7 @@ const CAREERS = [
   {
     id: 13, title: "Chef / Culinary Professional", demand: 72, salary: "R10 000 – R45 000/mo",
     field: "Hospitality", growth: "+10% by 2030", grade: "8 & 9",
-    subjects: ["Economic & Management Sciences (Beginner)", "Natural Sciences (Beginner)", "Life Orientation"],
+    subjects: ["Economic & Management Sciences (GET Subjects)", "Natural Sciences (GET Subjects)", "Life Orientation"],
     paths: [
       { type: "college",    label: "Diploma in Professional Cookery", duration: "1–2 years", institution: "HTA / Capsicum Culinary Studio" },
       { type: "college",    label: "N4–N6 Hospitality Management", duration: "18 months", institution: "TVET College" },
@@ -183,7 +183,7 @@ const CAREERS = [
   {
     id: 14, title: "Architect", demand: 77, salary: "R25 000 – R70 000/mo",
     field: "Engineering", growth: "+11% by 2030", grade: "8 & 9",
-    subjects: ["Technology (Beginner)", "Visual Arts (Beginner)", "Mathematics (Beginner)", "Natural Sciences (Beginner)"],
+    subjects: ["Technology (GET Subjects)", "Visual Arts (GET Subjects)", "Mathematics (GET Subjects)", "Natural Sciences (GET Subjects)"],
     paths: [
       { type: "university", label: "BArch (Bachelor of Architecture)", duration: "5 years", institution: "UCT / Wits / TUT / UKZN" },
       { type: "college",    label: "Diploma in Architectural Technology", duration: "3 years", institution: "CPUT / DUT / Ekurhuleni West College" },
@@ -195,7 +195,7 @@ const CAREERS = [
   {
     id: 15, title: "Agricultural Scientist / Farmer", demand: 79, salary: "R14 000 – R50 000/mo",
     field: "Agriculture", growth: "+17% by 2030", grade: "8 & 9",
-    subjects: ["Natural Sciences (Beginner)", "Geography (Beginner)", "Economic & Management Sciences (Beginner)"],
+    subjects: ["Natural Sciences (GET Subjects)", "Geography (GET Subjects)", "Economic & Management Sciences (GET Subjects)"],
     paths: [
       { type: "university", label: "BSc Agriculture", duration: "4 years", institution: "UP / SU / UKZN / UFS" },
       { type: "college",    label: "Diploma in Agriculture", duration: "3 years", institution: "Grootfontein / Lowveld College" },
@@ -207,7 +207,7 @@ const CAREERS = [
   {
     id: 16, title: "Musician / Music Producer", demand: 62, salary: "R8 000 – R60 000+/mo",
     field: "Creative Arts", growth: "+9% by 2030", grade: "8 & 9",
-    subjects: ["Music (Beginner)", "Mathematics (Beginner)", "English Home Language"],
+    subjects: ["Music (GET Subjects)", "Mathematics (GET Subjects)", "English Home Language"],
     paths: [
       { type: "university", label: "BMus (Bachelor of Music)", duration: "4 years", institution: "UNISA / Wits / UCT / NMMU" },
       { type: "college",    label: "Diploma in Music Production", duration: "2 years", institution: "AFDA / Academy of Sound Engineering" },
@@ -219,7 +219,7 @@ const CAREERS = [
   {
     id: 17, title: "Sports Coach / Exercise Scientist", demand: 71, salary: "R10 000 – R40 000/mo",
     field: "Sport & Recreation", growth: "+14% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation", "Natural Sciences (Beginner)", "Mathematics (Beginner)"],
+    subjects: ["Life Orientation", "Natural Sciences (GET Subjects)", "Mathematics (GET Subjects)"],
     paths: [
       { type: "university", label: "BSc Sport Science", duration: "3 years", institution: "UP / UJ / Stellenbosch / UKZN" },
       { type: "college",    label: "Diploma in Sport Management", duration: "2 years", institution: "Boston / Regent / Vaal University of Tech" },
@@ -231,7 +231,7 @@ const CAREERS = [
   {
     id: 18, title: "Plumber / Water Technician", demand: 84, salary: "R18 000 – R55 000/mo",
     field: "Trades", growth: "+16% by 2030", grade: "8 & 9",
-    subjects: ["Technology (Beginner)", "Natural Sciences (Beginner)", "Mathematics (Beginner)"],
+    subjects: ["Technology (GET Subjects)", "Natural Sciences (GET Subjects)", "Mathematics (GET Subjects)"],
     paths: [
       { type: "apprenticeship", label: "Plumbing Apprenticeship", duration: "3–4 years", institution: "CETA / MICT SETA" },
       { type: "college",        label: "N3–N6 Civil & Water Engineering", duration: "2 years", institution: "TVET College" },
@@ -242,7 +242,7 @@ const CAREERS = [
   {
     id: 19, title: "Psychologist / Counsellor", demand: 78, salary: "R22 000 – R65 000/mo",
     field: "Social Sciences", growth: "+18% by 2030", grade: "8 & 9",
-    subjects: ["Life Orientation", "History (Beginner)", "English Home Language", "Natural Sciences (Beginner)"],
+    subjects: ["Life Orientation", "History (GET Subjects)", "English Home Language", "Natural Sciences (GET Subjects)"],
     paths: [
       { type: "university", label: "BA Psychology → MA Clinical Psychology", duration: "6 years", institution: "UNISA / UJ / Wits / SU" },
       { type: "university", label: "BCom Industrial Psychology", duration: "3 years", institution: "UFS / NWU / UP" },
@@ -254,7 +254,7 @@ const CAREERS = [
   {
     id: 20, title: "Data Analyst", demand: 90, salary: "R22 000 – R60 000/mo",
     field: "Technology", growth: "+28% by 2030", grade: "8 & 9",
-    subjects: ["Mathematics (Beginner)", "Economic & Management Sciences (Beginner)", "Natural Sciences (Beginner)"],
+    subjects: ["Mathematics (GET Subjects)", "Economic & Management Sciences (GET Subjects)", "Natural Sciences (GET Subjects)"],
     paths: [
       { type: "university", label: "BSc Statistics / Data Science", duration: "3 years", institution: "UCT / Wits / SU" },
       { type: "college",    label: "Diploma in Data Analytics", duration: "2 years", institution: "Richfield / Boston / Regenesys" },
@@ -322,52 +322,52 @@ const CAREERS = [
 
 // ── SUBJECTS ──────────────────────────────────────────────────────────────────
 const SUBJECT_GROUPS = {
-"Beginner Subjects": [
-    "English (Home Language)", "Afrikaans (First Additional Language)",
-    "IsiZulu (Beginner)", "IsiXhosa (Beginner)",
-    "Sesotho (Beginner)", "Setswana (Beginner)",
-    "Mathematics (Beginner)", "Natural Sciences (Beginner)",
-    "History (Beginner)", "Geography (Beginner)",
-    "Technology (Beginner)", "Economic & Management Sciences (Beginner)",
-    "Visual Arts (Beginner)",
-    "Music (Beginner)", "Drama (Beginner)", "Dance (Beginner)",
-    "Creative Arts (Beginner)"
+  "GET Subjects": [
+    "English (Home Language) (GET)", "Afrikaans (First Additional Language) (GET)",
+    "IsiZulu (GET)", "IsiXhosa (GET)",
+    "Sesotho (GET)", "Setswana (GET)",
+    "Mathematics (GET)", "Natural Sciences (GET)",
+    "History (GET)", "Geography (GET)",
+    "Technology (GET)", "Economic & Management Sciences (GET)",
+    "Visual Arts (GET)",
+    "Music (GET)", "Drama (GET)", "Dance (GET)",
+    "Creative Arts (GET)"
   ],
   "Languages": [
-    "English Home Language","English First Additional Language",
-    "Afrikaans Home Language","Afrikaans First Additional Language",
-    "IsiZulu","IsiXhosa","IsiNdebele","Sesotho","Setswana",
-    "Sepedi","Xitsonga","Tshivenda","SiSwati","Latin","Sign Language",
+    "English Home Language (FET)", "English First Additional Language (FET)",
+    "Afrikaans Home Language (FET)", "Afrikaans First Additional Language (FET)",
+    "IsiZulu (FET)", "IsiXhosa (FET)", "IsiNdebele (FET)", "Sesotho (FET)", "Setswana (FET)",
+    "Sepedi (FET)", "Xitsonga (FET)", "Tshivenda (FET)", "SiSwati (FET)", "Latin (FET)", "Sign Language (FET)",
   ],
   "Mathematics & Sciences": [
-    "Mathematics","Mathematics Literacy","Technical Mathematics",
-    "Physical Sciences","Life Sciences","Agricultural Sciences",
-    "Marine Sciences","Technical Sciences",
+    "Mathematics (FET)", "Mathematics Literacy (FET)", "Technical Mathematics (FET)",
+    "Physical Sciences (FET)", "Life Sciences (FET)", "Agricultural Sciences (FET)",
+    "Marine Sciences (FET)", "Technical Sciences (FET)",
   ],
   "Technology & Computing": [
-    "Information Technology","Computer Applications Technology",
-    "Technical Drawing","Civil Technology","Electrical Technology",
-    "Mechanical Technology","Engineering Graphics & Design",
+    "Information Technology (FET)", "Computer Applications Technology (FET)",
+    "Technical Drawing (FET)", "Civil Technology (FET)", "Electrical Technology (FET)",
+    "Mechanical Technology (FET)", "Engineering Graphics & Design (FET)",
   ],
   "Business & Commerce": [
-    "Accounting","Business Studies","Economics",
-    "Entrepreneurship & Business Management","Office Administration",
-    "Hospitality Studies","Tourism",
+    "Accounting (FET)", "Business Studies (FET)", "Economics (FET)",
+    "Entrepreneurship & Business Management (FET)", "Office Administration (FET)",
+    "Hospitality Studies (FET)", "Tourism (FET)",
   ],
   "Humanities & Social Sciences": [
-    "Life Orientation","History","Geography","Religion Studies","Philosophy",
-    "Sociology","Psychology","Political Studies","Development Studies",
+    "Life Orientation (FET)", "History (FET)", "Geography (FET)", "Religion Studies (FET)", "Philosophy (FET)",
+    "Sociology (FET)", "Psychology (FET)", "Political Studies (FET)", "Development Studies (FET)",
   ],
   "Creative & Performing Arts": [
-    "Visual Arts","Music","Dramatic Arts","Dance Studies",
-    "Design","Film & Video Technology",
+    "Visual Arts (FET)", "Music (FET)", "Dramatic Arts (FET)", "Dance Studies (FET)",
+    "Design (FET)", "Film & Video Technology (FET)",
   ],
   "Applied & Vocational": [
-    "Agricultural Management Practices","Agricultural Technology",
-    "Consumer Studies","Sport & Exercise Science",
-    "Nautical Science","Public Administration","Safety in Society",
-    "Carpentry & Roofwork","Plumbing","Welding & Metalwork",
-    "Hairdressing","Cosmetology","Early Childhood Development",
+    "Agricultural Management Practices (FET)", "Agricultural Technology (FET)",
+    "Consumer Studies (FET)", "Sport & Exercise Science (FET)",
+    "Nautical Science (FET)", "Public Administration (FET)", "Safety in Society (FET)",
+    "Carpentry & Roofwork (FET)", "Plumbing (FET)", "Welding & Metalwork (FET)",
+    "Hairdressing (FET)", "Cosmetology (FET)", "Early Childhood Development (FET)",
   ],
 };
 const ALL_SUBJECTS = Object.values(SUBJECT_GROUPS).flat();
@@ -882,7 +882,9 @@ function DiscoverPage({ T, dark }) {
   const toggle = (s) => setSelected(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
 
   const score = (career) => {
-    const matches = career.subjects.filter(s => selected.includes(s)).length;
+    const normalize = str => str.replace(/\s*\((GET|FET|GET Subjects|Beginner)\)/gi, '').trim().toLowerCase();
+    const selectedNorms = selected.map(normalize);
+    const matches = career.subjects.filter(s => selectedNorms.includes(normalize(s))).length;
     return Math.round((matches / career.subjects.length) * 100);
   };
 
