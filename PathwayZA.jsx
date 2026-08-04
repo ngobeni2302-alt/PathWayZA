@@ -913,24 +913,16 @@ function DiscoverPage({ T, dark }) {
           }}/>
       </div>
 
-      {/* Category tabs */}
-      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", justifyContent: "center", marginBottom: 22 }}>
-        {groupNames.map(g => (
-          <button key={g} onClick={() => setActiveGroup(g)} style={{
-            background: activeGroup === g ? T.teal : T.slate,
-            color: activeGroup === g ? (dark ? T.navy : "#fff") : T.muted,
-            border: "none", borderRadius: 20, padding: "5px 12px",
-            fontSize: 11, fontWeight: 600, cursor: "pointer",
-          }}>{g}</button>
-        ))}
-      </div>
-      <div className="mobile-filters">
-        <select value={activeGroup} onChange={(e) => setActiveGroup(e.target.value)}>
-          {groupNames.map(g => (
-            <option key={g} value={g}>{g}</option>
-          ))}
-        </select>
-      </div>
+      {/* Subject Group Options */}
+      <SystemTabNav
+        tabs={groupNames}
+        activeTab={activeGroup}
+        onTabSelect={setActiveGroup}
+        T={T}
+        dark={dark}
+        compact={true}
+        ariaLabel="Subject Group Categories"
+      />
 
       {/* Grouped pills */}
       <div style={{ marginBottom: 24 }}>
@@ -1033,23 +1025,15 @@ function CareersPage({ T, dark }) {
         <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>Career Explorer</h2>
         <p style={{ color: T.muted, fontSize: 13 }}>Browse all careers. Click any card for paths, bursaries, and internships.</p>
       </div>
-      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
-        {FIELDS.map(f => (
-          <button key={f} onClick={() => setField(f)} style={{
-            background: field === f ? T.teal : T.slate,
-            color: field === f ? (dark ? T.navy : "#fff") : T.muted,
-            border: "none", borderRadius: 6, padding: "5px 12px",
-            fontSize: 11, fontWeight: 600, cursor: "pointer",
-          }}>{f}</button>
-        ))}
-      </div>
-      <div className="mobile-filters">
-        <select value={field} onChange={(e) => setField(e.target.value)}>
-          {FIELDS.map(f => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-      </div>
+      <SystemTabNav
+        tabs={FIELDS}
+        activeTab={field}
+        onTabSelect={setField}
+        T={T}
+        dark={dark}
+        compact={true}
+        ariaLabel="Career Field Options"
+      />
       <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
         Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> careers
       </div>
@@ -1103,6 +1087,9 @@ function CareersPage({ T, dark }) {
 }
 
 function BursariesPage({ T, dark }) {
+  const [bursaryType, setBursaryType] = useState("All");
+  const BURSARY_TYPES = ["All", "Government", "Corporate", "SETA", "Foundation", "Professional Body", "Platform"];
+
   const bursaries = [
     { name: "NSFAS", type: "Government", fields: "All fields", amount: "Up to R105 000/yr", apply: "nsfas.org.za", url: "https://www.nsfas.org.za", deadline: "Nov - Jan" },
     { name: "Funza Lushaka", type: "Government", fields: "Teaching / Education", amount: "Full cost of study", apply: "funzalushaka.gov.za", url: "https://www.funzalushaka.gov.za", deadline: "Nov - Jan" },
@@ -1119,6 +1106,10 @@ function BursariesPage({ T, dark }) {
     { name: "ZABursaries Portal", type: "Platform", fields: "All bursaries and scholarships", amount: "Varies by bursary", apply: "zabursaries.co.za", url: "https://www.zabursaries.co.za", deadline: "Ongoing" },
   ];
 
+  const filteredBursaries = bursaryType === "All"
+    ? bursaries
+    : bursaries.filter(b => b.type === bursaryType);
+
   const typeColors = {
     Government: T.teal, Corporate: T.amber,
     SETA: "#8B5CF6", Foundation: "#06B6D4", "Professional Body": "#F43F5E", Platform: "#22C55E",
@@ -1130,8 +1121,23 @@ function BursariesPage({ T, dark }) {
         <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>Bursaries & Funding</h2>
         <p style={{ color: T.muted, fontSize: 13 }}>Real South African bursaries — your education should not be held back by money.</p>
       </div>
+
+      <SystemTabNav
+        tabs={BURSARY_TYPES}
+        activeTab={bursaryType}
+        onTabSelect={setBursaryType}
+        T={T}
+        dark={dark}
+        compact={true}
+        ariaLabel="Bursary Type Options"
+      />
+
+      <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
+        Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filteredBursaries.length}</span> bursaries
+      </div>
+
       <div className="career-grid">
-        {bursaries.map(b => (
+        {filteredBursaries.map(b => (
           <div key={b.name} style={{
             background: T.navyCard, border: `1px solid ${T.border}`,
             borderRadius: 12, padding: 18,
@@ -1512,32 +1518,16 @@ function CertificatesPage({ T, dark }) {
         />
       </div>
 
-      {/* Categories Filters */}
-      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
-        {CERTIFICATE_CATEGORIES.map(f => (
-          <button 
-            key={f} 
-            onClick={() => setCategory(f)} 
-            style={{
-              background: category === f ? T.teal : T.slate,
-              color: category === f ? (dark ? T.navy : "#fff") : T.muted,
-              border: "none", borderRadius: 6, padding: "5px 12px",
-              fontSize: 11, fontWeight: 600, cursor: "pointer",
-              transition: "all 0.2s ease"
-            }}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-
-      <div className="mobile-filters">
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          {CERTIFICATE_CATEGORIES.map(f => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-      </div>
+      {/* Certificate Category Options */}
+      <SystemTabNav
+        tabs={CERTIFICATE_CATEGORIES}
+        activeTab={category}
+        onTabSelect={setCategory}
+        T={T}
+        dark={dark}
+        compact={true}
+        ariaLabel="Certificate Category Options"
+      />
 
       <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
         Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> certificates
@@ -2524,7 +2514,7 @@ function ApsCalculatorPage({ T, dark }) {
 }
 
 // ── MASTER TABS SYSTEM ────────────────────────────────────────────────────────
-function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
+function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, compact = false, ariaLabel = "Navigation Tabs" }) {
   const scrollRef = useRef(null);
   const tabRefs = useRef({});
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
@@ -2596,24 +2586,39 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
     }
   };
 
+  const isSegmented = tabs.length <= 5;
+
   return (
-    <>
+    <div style={{ marginBottom: compact ? 18 : 0, width: "100%" }}>
       {/* DESKTOP & LAPTOP TAB BAR SYSTEM */}
       <nav
         className="system-tab-nav"
         style={{
-          background: dark ? "rgba(14, 19, 36, 0.94)" : "rgba(255, 255, 255, 0.94)",
-          backdropFilter: "blur(12px)",
-          borderBottom: `1px solid ${T.border}`,
+          position: compact ? "relative" : "sticky",
+          top: compact ? "auto" : 0,
+          background: compact
+            ? (dark ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.03)")
+            : (dark ? "rgba(14, 19, 36, 0.94)" : "rgba(255, 255, 255, 0.94)"),
+          backdropFilter: compact ? "none" : "blur(12px)",
+          border: compact ? `1px solid ${T.border}` : undefined,
+          borderBottom: compact ? `1px solid ${T.border}` : `1px solid ${T.border}`,
+          borderRadius: compact ? 10 : 0,
+          padding: compact ? "2px 8px" : "0 12px",
+          boxShadow: compact ? "none" : "0 4px 20px rgba(0, 0, 0, 0.25)",
         }}
-        aria-label="Primary Navigation"
+        aria-label={ariaLabel}
       >
         <button
           className="system-tab-chevron"
-          onClick={() => scrollBy(-220)}
+          onClick={() => scrollBy(-200)}
           disabled={!canScrollLeft}
           aria-label="Scroll left"
-          style={{ color: T.chalk }}
+          style={{
+            color: T.chalk,
+            width: compact ? 24 : 30,
+            height: compact ? 24 : 30,
+            fontSize: compact ? 12 : 14,
+          }}
         >
           ‹
         </button>
@@ -2622,6 +2627,7 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
           className="system-tab-fade-left"
           style={{
             opacity: canScrollLeft ? 1 : 0,
+            left: compact ? 32 : 40,
             background: `linear-gradient(to right, ${dark ? "rgba(14, 19, 36, 0.95)" : "rgba(255, 255, 255, 0.95)"}, transparent)`,
           }}
         />
@@ -2632,6 +2638,7 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
           onScroll={handleScroll}
           role="tablist"
           aria-orientation="horizontal"
+          style={{ padding: compact ? "4px 0" : "8px 0" }}
         >
           {tabs.map((tab, idx) => {
             const isActive = activeTab === tab;
@@ -2645,6 +2652,8 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
                 className={`system-tab-item ${isActive ? "active" : ""}`}
                 style={{
                   color: isActive ? T.teal : T.muted,
+                  padding: compact ? "6px 14px" : "10px 18px",
+                  fontSize: compact ? 12 : 13.5,
                 }}
                 onClick={() => onTabSelect(tab)}
                 onKeyDown={(e) => handleKeyDown(e, idx)}
@@ -2660,6 +2669,8 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
               transform: `translateX(${indicator.left}px)`,
               width: `${indicator.width}px`,
               background: `linear-gradient(90deg, ${T.teal}, #06b6d4)`,
+              height: compact ? 2 : 3,
+              bottom: compact ? 2 : 4,
             }}
           />
         </div>
@@ -2668,55 +2679,94 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
           className="system-tab-fade-right"
           style={{
             opacity: canScrollRight ? 1 : 0,
+            right: compact ? 32 : 40,
             background: `linear-gradient(to left, ${dark ? "rgba(14, 19, 36, 0.95)" : "rgba(255, 255, 255, 0.95)"}, transparent)`,
           }}
         />
 
         <button
           className="system-tab-chevron"
-          onClick={() => scrollBy(220)}
+          onClick={() => scrollBy(200)}
           disabled={!canScrollRight}
           aria-label="Scroll right"
-          style={{ color: T.chalk }}
+          style={{
+            color: T.chalk,
+            width: compact ? 24 : 30,
+            height: compact ? 24 : 30,
+            fontSize: compact ? 12 : 14,
+          }}
         >
           ›
         </button>
       </nav>
 
-      {/* MOBILE HEADER & BOTTOM SHEET SYSTEM */}
-      <div
-        className="mobile-system-bar"
-        style={{
-          background: T.navyMid,
-          borderBottom: `1px solid ${T.border}`,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/logo.png" alt="PathWise Logo" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
-          <span style={{ color: T.chalk, fontWeight: 700, fontSize: 16 }}>PathWise</span>
-        </div>
-        <button
-          onClick={() => setBottomSheetOpen(true)}
-          style={{
-            background: `${T.teal}1A`,
-            color: T.teal,
-            border: `1px solid ${T.teal}40`,
-            borderRadius: 8,
-            padding: "6px 14px",
-            fontSize: 13,
-            fontWeight: 700,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          <span>{activeTab}</span>
-          <span style={{ fontSize: 10 }}>▼</span>
-        </button>
+      {/* MOBILE CONTROL BAR (< 768px): Segmented Control (<= 5) or Bottom Sheet Trigger (> 5) */}
+      <div className="mobile-system-bar" style={{ background: compact ? "transparent" : T.navyMid, padding: compact ? "4px 0" : "10px 16px" }}>
+        {isSegmented ? (
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              background: dark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)",
+              border: `1px solid ${T.border}`,
+              borderRadius: 10,
+              padding: 3,
+              gap: 4,
+            }}
+          >
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => onTabSelect(tab)}
+                  style={{
+                    flex: 1,
+                    padding: "8px 6px",
+                    border: "none",
+                    borderRadius: 7,
+                    fontSize: 11,
+                    fontWeight: isActive ? 700 : 500,
+                    background: isActive ? T.teal : "transparent",
+                    color: isActive ? (dark ? T.navy : "#fff") : T.muted,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <button
+            onClick={() => setBottomSheetOpen(true)}
+            style={{
+              background: `${T.teal}1A`,
+              color: T.teal,
+              border: `1px solid ${T.teal}40`,
+              borderRadius: 8,
+              padding: compact ? "8px 12px" : "6px 14px",
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <span>Option: <strong>{activeTab}</strong></span>
+            <span style={{ fontSize: 10 }}>▼</span>
+          </button>
+        )}
       </div>
 
-      {bottomSheetOpen && (
+      {/* MOBILE BOTTOM SHEET FOR > 5 OPTIONS */}
+      {!isSegmented && bottomSheetOpen && (
         <div
           className="mobile-bottom-sheet-backdrop"
           onClick={() => setBottomSheetOpen(false)}
@@ -2728,7 +2778,7 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
           >
             <div className="bottom-sheet-handle" />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: T.chalk }}>Navigation</div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: T.chalk }}>Select Category</div>
               <button
                 onClick={() => setBottomSheetOpen(false)}
                 style={{ background: "none", border: "none", color: T.muted, fontSize: 18, cursor: "pointer" }}
@@ -2759,7 +2809,7 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
