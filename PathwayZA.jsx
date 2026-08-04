@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "./src/supabaseClient.js";
 
 // ── THEME TOKENS ─────────────────────────────────────────────────────────────
@@ -2523,12 +2523,258 @@ function ApsCalculatorPage({ T, dark }) {
   );
 }
 
+// ── MASTER TABS SYSTEM ────────────────────────────────────────────────────────
+function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
+  const scrollRef = useRef(null);
+  const tabRefs = useRef({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+
+  const updateIndicator = useCallback(() => {
+    const el = tabRefs.current[activeTab];
+    const container = scrollRef.current;
+    if (el && container) {
+      const elRect = el.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const left = elRect.left - containerRect.left + container.scrollLeft;
+      const width = elRect.width;
+      setIndicator({ left, width });
+    }
+  }, [activeTab]);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (el) {
+      setCanScrollLeft(el.scrollLeft > 4);
+      setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateIndicator();
+    checkScroll();
+    window.addEventListener("resize", updateIndicator);
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      window.removeEventListener("resize", updateIndicator);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [activeTab, updateIndicator, checkScroll]);
+
+  const handleScroll = () => {
+    checkScroll();
+    updateIndicator();
+  };
+
+  const scrollBy = (offset) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: offset, behavior: "smooth" });
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      const nextIndex = (index + 1) % tabs.length;
+      onTabSelect(tabs[nextIndex]);
+      if (tabRefs.current[tabs[nextIndex]]) tabRefs.current[tabs[nextIndex]].focus();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      const prevIndex = (index - 1 + tabs.length) % tabs.length;
+      onTabSelect(tabs[prevIndex]);
+      if (tabRefs.current[tabs[prevIndex]]) tabRefs.current[tabs[prevIndex]].focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      onTabSelect(tabs[0]);
+      if (tabRefs.current[tabs[0]]) tabRefs.current[tabs[0]].focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      onTabSelect(tabs[tabs.length - 1]);
+      if (tabRefs.current[tabs[tabs.length - 1]]) tabRefs.current[tabs[tabs.length - 1]].focus();
+    }
+  };
+
+  return (
+    <>
+      {/* DESKTOP & LAPTOP TAB BAR SYSTEM */}
+      <nav
+        className="system-tab-nav"
+        style={{
+          background: dark ? "rgba(14, 19, 36, 0.94)" : "rgba(255, 255, 255, 0.94)",
+          backdropFilter: "blur(12px)",
+          borderBottom: `1px solid ${T.border}`,
+        }}
+        aria-label="Primary Navigation"
+      >
+        <button
+          className="system-tab-chevron"
+          onClick={() => scrollBy(-220)}
+          disabled={!canScrollLeft}
+          aria-label="Scroll left"
+          style={{ color: T.chalk }}
+        >
+          ‹
+        </button>
+
+        <div
+          className="system-tab-fade-left"
+          style={{
+            opacity: canScrollLeft ? 1 : 0,
+            background: `linear-gradient(to right, ${dark ? "rgba(14, 19, 36, 0.95)" : "rgba(255, 255, 255, 0.95)"}, transparent)`,
+          }}
+        />
+
+        <div
+          ref={scrollRef}
+          className="system-tab-scroll-container"
+          onScroll={handleScroll}
+          role="tablist"
+          aria-orientation="horizontal"
+        >
+          {tabs.map((tab, idx) => {
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                ref={(el) => (tabRefs.current[tab] = el)}
+                role="tab"
+                aria-selected={isActive}
+                tabIndex={isActive ? 0 : -1}
+                className={`system-tab-item ${isActive ? "active" : ""}`}
+                style={{
+                  color: isActive ? T.teal : T.muted,
+                }}
+                onClick={() => onTabSelect(tab)}
+                onKeyDown={(e) => handleKeyDown(e, idx)}
+              >
+                {tab}
+              </button>
+            );
+          })}
+
+          <div
+            className="system-tab-indicator"
+            style={{
+              transform: `translateX(${indicator.left}px)`,
+              width: `${indicator.width}px`,
+              background: `linear-gradient(90deg, ${T.teal}, #06b6d4)`,
+            }}
+          />
+        </div>
+
+        <div
+          className="system-tab-fade-right"
+          style={{
+            opacity: canScrollRight ? 1 : 0,
+            background: `linear-gradient(to left, ${dark ? "rgba(14, 19, 36, 0.95)" : "rgba(255, 255, 255, 0.95)"}, transparent)`,
+          }}
+        />
+
+        <button
+          className="system-tab-chevron"
+          onClick={() => scrollBy(220)}
+          disabled={!canScrollRight}
+          aria-label="Scroll right"
+          style={{ color: T.chalk }}
+        >
+          ›
+        </button>
+      </nav>
+
+      {/* MOBILE HEADER & BOTTOM SHEET SYSTEM */}
+      <div
+        className="mobile-system-bar"
+        style={{
+          background: T.navyMid,
+          borderBottom: `1px solid ${T.border}`,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img src="/logo.png" alt="PathWise Logo" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
+          <span style={{ color: T.chalk, fontWeight: 700, fontSize: 16 }}>PathWise</span>
+        </div>
+        <button
+          onClick={() => setBottomSheetOpen(true)}
+          style={{
+            background: `${T.teal}1A`,
+            color: T.teal,
+            border: `1px solid ${T.teal}40`,
+            borderRadius: 8,
+            padding: "6px 14px",
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <span>{activeTab}</span>
+          <span style={{ fontSize: 10 }}>▼</span>
+        </button>
+      </div>
+
+      {bottomSheetOpen && (
+        <div
+          className="mobile-bottom-sheet-backdrop"
+          onClick={() => setBottomSheetOpen(false)}
+        >
+          <div
+            className="mobile-bottom-sheet"
+            style={{ background: dark ? "#0e1324" : "#ffffff", color: T.chalk }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bottom-sheet-handle" />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: T.chalk }}>Navigation</div>
+              <button
+                onClick={() => setBottomSheetOpen(false)}
+                style={{ background: "none", border: "none", color: T.muted, fontSize: 18, cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </div>
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  className={`bottom-sheet-option ${isActive ? "active" : ""}`}
+                  style={{
+                    background: isActive ? `${T.teal}20` : dark ? "rgba(255, 255, 255, 0.04)" : "rgba(0, 0, 0, 0.03)",
+                    color: isActive ? T.teal : T.chalk,
+                  }}
+                  onClick={() => {
+                    onTabSelect(tab);
+                    setBottomSheetOpen(false);
+                  }}
+                >
+                  <span>{tab}</span>
+                  {isActive && <span>✓</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 // ── APP ───────────────────────────────────────────────────────────────────────
 export default function App() {
+  const ALL_TABS = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"];
+
   const [page, setPage] = useState(() => {
     const saved = localStorage.getItem("pathway_page");
-    return saved && ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"].includes(saved) ? saved : "Home";
+    return saved && ALL_TABS.includes(saved) ? saved : "Home";
   });
+  const [displayPage, setDisplayPage] = useState(page);
+  const [fadeClass, setFadeClass] = useState("fade-in");
+  const transitionTimerRef = useRef(null);
+
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("pathway_dark");
     return saved !== null ? saved === "true" : true;
@@ -2542,7 +2788,21 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("pathway_dark", dark);
   }, [dark]);
+
   const T = dark ? DARK : LIGHT;
+
+  const handleTabSelect = (newTab) => {
+    if (newTab === displayPage && fadeClass === "fade-in") return;
+    setPage(newTab);
+    setFadeClass("fade-out");
+
+    if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+
+    transitionTimerRef.current = setTimeout(() => {
+      setDisplayPage(newTab);
+      setFadeClass("fade-in");
+    }, 80);
+  };
 
   const pageHeader = (title, sub) => (
     <div className="page-header" style={{
@@ -2560,26 +2820,26 @@ export default function App() {
       background: T.navy, color: T.chalk,
       transition: "background 0.3s, color 0.3s",
     }}>
-      <Sidebar active={page} setActive={setPage} dark={dark} setDark={setDark} T={T} open={sidebarOpen} setOpen={setSidebarOpen} />
+      <Sidebar active={displayPage} setActive={handleTabSelect} dark={dark} setDark={setDark} T={T} open={sidebarOpen} setOpen={setSidebarOpen} />
       
       <div className="main-content">
-        <div className="mobile-header" style={{ backgroundColor: T.navyMid, borderBottom: `1px solid ${T.border}` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img src="/logo.png" alt="PathWise Logo" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
-            <span style={{ color: T.chalk, fontWeight: 700, fontSize: 16 }}>PathWise</span>
-          </div>
-          <button className="hamburger-btn" style={{ color: T.chalk }} onClick={() => setSidebarOpen(true)}>☰</button>
-        </div>
+        <SystemTabNav
+          tabs={ALL_TABS}
+          activeTab={displayPage}
+          onTabSelect={handleTabSelect}
+          T={T}
+          dark={dark}
+        />
 
-        <div>
-          {page === "Home"     && <Hero setPage={setPage} T={T} dark={dark} />}
-          {page === "Discover" && <>{pageHeader("Find Your Career Path", "Select your subjects and see where they lead.")}<DiscoverPage T={T} dark={dark} /></>}
-          {page === "Careers"  && <>{pageHeader("Career Explorer", "Browse every career — with all paths to get there.")}<CareersPage T={T} dark={dark} /></>}
-          {page === "Bursaries"&& <>{pageHeader("Bursaries & Funding", "Find money for your studies before you need it.")}<BursariesPage T={T} dark={dark} /></>}
-          {page === "Institutions"&& <>{pageHeader("Institution Validator", "Verify if a university or college is registered (Public vs Private).")}<InstitutionsPage T={T} dark={dark} /></>}
-          {page === "APS Calculator"&& <>{pageHeader("APS Calculator & Course Matcher", "Input your subjects and marks to see which courses you qualify for.")}<ApsCalculatorPage T={T} dark={dark} /></>}
-          {page === "Trends"   && <>{pageHeader("SA Career Trends", "What South Africa needs most — right now and in 2030.")}<TrendsPage T={T} /></>}
-          {page === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
+        <div className={`tab-content-container ${fadeClass}`}>
+          {displayPage === "Home"     && <Hero setPage={handleTabSelect} T={T} dark={dark} />}
+          {displayPage === "Discover" && <>{pageHeader("Find Your Career Path", "Select your subjects and see where they lead.")}<DiscoverPage T={T} dark={dark} /></>}
+          {displayPage === "Careers"  && <>{pageHeader("Career Explorer", "Browse every career — with all paths to get there.")}<CareersPage T={T} dark={dark} /></>}
+          {displayPage === "Bursaries"&& <>{pageHeader("Bursaries & Funding", "Find money for your studies before you need it.")}<BursariesPage T={T} dark={dark} /></>}
+          {displayPage === "Institutions"&& <>{pageHeader("Institution Validator", "Verify if a university or college is registered (Public vs Private).")}<InstitutionsPage T={T} dark={dark} /></>}
+          {displayPage === "APS Calculator"&& <>{pageHeader("APS Calculator & Course Matcher", "Input your subjects and marks to see which courses you qualify for.")}<ApsCalculatorPage T={T} dark={dark} /></>}
+          {displayPage === "Trends"   && <>{pageHeader("SA Career Trends", "What South Africa needs most — right now and in 2030.")}<TrendsPage T={T} /></>}
+          {displayPage === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
         </div>
       </div>
     </div>

@@ -309,8 +309,230 @@ body {
   background-color: #4F46E5 !important; /* Indigo */
 }
 
+
 .apply-button:active {
   transform: scale(0.98);
 }
+
+/* ── SYSTEM TABS NAVIGATION (DESKTOP & LAPTOP) ── */
+.system-tab-nav {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 12px;
+  z-index: 850;
+  user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.system-tab-scroll-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: relative;
+  width: 100%;
+  padding: 8px 0;
+}
+
+.system-tab-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.system-tab-item {
+  position: relative;
+  background: transparent;
+  border: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  outline: none;
+}
+
+.system-tab-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.system-tab-item.active {
+  font-weight: 700;
+}
+
+/* Keyboard Focus ring and Active state NEVER share a color */
+.system-tab-item:focus-visible {
+  outline: 2px solid #f59e0b !important; /* Amber Focus Ring */
+  outline-offset: 3px !important;
+}
+
+/* Sliding underline indicator - spring config matches content fade */
+.system-tab-indicator {
+  position: absolute;
+  bottom: 4px;
+  height: 3px;
+  background: linear-gradient(90deg, #14b8a6, #06b6d4);
+  border-radius: 3px;
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.6);
+  pointer-events: none;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), width 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Edge Fade Gradients */
+.system-tab-fade-left,
+.system-tab-fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.25s ease;
+}
+
+.system-tab-fade-left {
+  left: 40px;
+}
+
+.system-tab-fade-right {
+  right: 40px;
+}
+
+/* Desktop Chevron Buttons */
+.system-tab-chevron {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  z-index: 20;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.system-tab-chevron:hover:not(:disabled) {
+  background: rgba(20, 184, 166, 0.2);
+  color: #14b8a6 !important;
+  border-color: rgba(20, 184, 166, 0.4);
+}
+
+.system-tab-chevron:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+/* Content Fade Transition Wrapper (80ms pause, slow in fast out) */
+.tab-content-container {
+  min-height: 75vh;
+  transition: opacity 120ms ease-out, transform 120ms ease-out;
+}
+
+.tab-content-container.fade-out {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.tab-content-container.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mobile Responsive System (< 768px) */
+.mobile-system-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 860;
+}
+
+@media (max-width: 768px) {
+  .system-tab-nav {
+    display: none !important;
+  }
+  .mobile-system-bar {
+    display: flex !important;
+  }
+}
+
+.mobile-bottom-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 1200;
+  animation: fadeIn 0.2s ease;
+}
+
+.mobile-bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 20px 20px 32px;
+  z-index: 1210;
+  box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.bottom-sheet-handle {
+  width: 44px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.bottom-sheet-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bottom-sheet-option.active {
+  background: rgba(20, 184, 166, 0.15);
+  border-color: #14b8a6;
+  color: #14b8a6 !important;
+}
+
 
 
