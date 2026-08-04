@@ -668,12 +668,8 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
     <>
       <div className={`sidebar-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
       <aside className={`sidebar ${open ? "open" : ""}`} style={{ backgroundColor: T.navyMid, color: T.chalk, borderRight: `1px solid ${T.border}` }}>
-        <div className="sidebar-header" style={{ borderBottom: `1px solid ${T.border}` }}>
-          <svg width="28" height="28" viewBox="0 0 32 32">
-            <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" fill="none" stroke={T.teal} strokeWidth="2"/>
-            <polygon points="16,8 24,13 24,19 16,24 8,19 8,13" fill={T.teal} opacity="0.15"/>
-            <text x="16" y="21" textAnchor="middle" fill={T.teal} fontSize="12" fontWeight="bold" fontFamily="monospace">P</text>
-          </svg>
+        <div className="sidebar-header" style={{ borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10 }}>
+          <img src="/logo.png" alt="PathwayZA Logo" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} />
           <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: 1 }}>PathwayZA</span>
         </div>
         <div className="sidebar-links">
@@ -2576,10 +2572,7 @@ export default function App() {
       <div className="main-content">
         <div className="mobile-header" style={{ backgroundColor: T.navyMid, borderBottom: `1px solid ${T.border}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <svg width="24" height="24" viewBox="0 0 32 32">
-              <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" fill="none" stroke={T.teal} strokeWidth="2"/>
-              <text x="16" y="21" textAnchor="middle" fill={T.teal} fontSize="12" fontWeight="bold" fontFamily="monospace">P</text>
-            </svg>
+            <img src="/logo.png" alt="PathwayZA Logo" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
             <span style={{ color: T.chalk, fontWeight: 700, fontSize: 16 }}>PathwayZA</span>
           </div>
           <button className="hamburger-btn" style={{ color: T.chalk }} onClick={() => setSidebarOpen(true)}>☰</button>
