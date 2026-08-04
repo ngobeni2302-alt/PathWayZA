@@ -22,6 +22,60 @@ const getCookie = (name) => {
   return null;
 };
 
+// ── PROFILE HELPERS ───────────────────────────────────────────────────────────
+const fetchUserProfile = async (userId) => {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.warn("Supabase profiles table fetch error, falling back to localStorage:", error.message);
+      const cached = localStorage.getItem(`pathway_profile_${userId}`);
+      return cached ? JSON.parse(cached) : null;
+    }
+    
+    if (data) {
+      localStorage.setItem(`pathway_profile_${userId}`, JSON.stringify(data));
+      return data;
+    }
+  } catch (err) {
+    console.warn("Failed to fetch user profile, falling back:", err);
+    const cached = localStorage.getItem(`pathway_profile_${userId}`);
+    return cached ? JSON.parse(cached) : null;
+  }
+  return null;
+};
+
+const saveUserProfile = async (userId, profileData) => {
+  const payload = {
+    id: userId,
+    name: profileData.name || "",
+    level: profileData.level || "",
+    province: profileData.province || "",
+    updated_at: new Date().toISOString()
+  };
+
+  localStorage.setItem(`pathway_profile_${userId}`, JSON.stringify(payload));
+
+  try {
+    const { error } = await supabase
+      .from("profiles")
+      .upsert(payload);
+
+    if (error) {
+      console.warn("Supabase profiles table upsert error:", error.message);
+      return { success: false, fallback: true, error: error.message };
+    }
+    return { success: true };
+  } catch (err) {
+    console.warn("Failed to save user profile to Supabase:", err);
+    return { success: false, fallback: true, error: err.message };
+  }
+};
+
 // ── THEME TOKENS ─────────────────────────────────────────────────────────────
 const DARK = {
   navy:    "#09090B", navyMid: "#18181B", navyCard: "#121214",
@@ -683,8 +737,8 @@ function ThemeToggle({ dark, setDark }) {
   );
 }
 
-function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
-  const links = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"];
+function Sidebar({ active, setActive, dark, setDark, T, open, setOpen, user, setAuthModalOpen, setProfileModalOpen }) {
+  const links = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends", "Review"];
   return (
     <>
       <div className={`sidebar-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
@@ -706,11 +760,84 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
             );
           })}
         </div>
-        <div className="sidebar-footer" style={{ borderTop: `1px solid ${T.border}` }}>
-          <ThemeToggle dark={dark} setDark={setDark} />
-          <span style={{ fontSize: 11, color: T.muted }}>
-            <span style={{ color: T.teal }}>ValambyaT3ch</span>
-          </span>
+        <div className="sidebar-footer" style={{ borderTop: `1px solid ${T.border}`, display: "flex", flexDirection: "column", gap: 12 }}>
+          {/* User Auth Section */}
+          {!user ? (
+            <button
+              onClick={() => {
+                setAuthModalOpen(true);
+                setOpen(false);
+              }}
+              style={{
+                background: T.teal,
+                border: "none",
+                borderRadius: 8,
+                padding: "8px 12px",
+                fontSize: 12.5,
+                fontWeight: 600,
+                color: "#FFFFFF",
+                cursor: "pointer",
+                width: "100%",
+                textAlign: "center"
+              }}
+            >
+              Sign In
+            </button>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%", textAlign: "left" }}>
+              <div style={{ fontSize: 11, color: T.muted, textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
+                Signed in as:<br/>
+                <strong style={{ color: T.chalk }}>{user.email}</strong>
+              </div>
+              <button
+                onClick={() => {
+                  setProfileModalOpen(true);
+                  setOpen(false);
+                }}
+                style={{
+                  background: T.teal,
+                  border: "none",
+                  borderRadius: 8,
+                  padding: "6px 12px",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "#FFFFFF",
+                  cursor: "pointer",
+                  width: "100%",
+                  textAlign: "center"
+                }}
+              >
+                My Profile
+              </button>
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  setOpen(false);
+                }}
+                style={{
+                  background: "none",
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 8,
+                  padding: "6px 12px",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "#EF4444",
+                  cursor: "pointer",
+                  width: "100%",
+                  textAlign: "center"
+                }}
+              >
+                Log Out
+              </button>
+            </div>
+          )}
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+            <ThemeToggle dark={dark} setDark={setDark} />
+            <span style={{ fontSize: 10, color: T.muted }}>
+              <span style={{ color: T.teal }}>ValambyaT3ch</span>
+            </span>
+          </div>
         </div>
       </aside>
     </>
@@ -2735,12 +2862,24 @@ function CategorySystemTabs({ tabs, activeTab, onTabSelect, T, dark }) {
 }
 
 // ── MASTER TABS SYSTEM (DESKTOP & LAPTOP) ──────────────────────────────────────
-function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, setDark }) {
+function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, setDark, user, setAuthModalOpen, setProfileModalOpen }) {
   const scrollRef = useRef(null);
   const tabRefs = useRef({});
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const updateIndicator = useCallback(() => {
     const el = tabRefs.current[activeTab];
@@ -2897,9 +3036,9 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, setDark }) {
         ›
       </button>
 
-      {/* Theme Toggle */}
-      {setDark && (
-        <div className="desktop-brand-header" style={{ marginLeft: 16, flexShrink: 0 }}>
+      {/* Theme Toggle & User Auth */}
+      <div className="desktop-brand-header" style={{ marginLeft: 16, flexShrink: 0, display: "flex", alignItems: "center", gap: 10 }}>
+        {setDark && (
           <button
             onClick={() => setDark(!dark)}
             aria-label="Toggle dark mode"
@@ -2929,8 +3068,132 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, setDark }) {
               </>
             )}
           </button>
-        </div>
-      )}
+        )}
+
+        {/* User Account Controls */}
+        {!user ? (
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            style={{
+              background: T.teal,
+              border: `1px solid ${T.teal}`,
+              borderRadius: 20,
+              padding: "5px 14px",
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#FFFFFF",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              boxShadow: "0 2px 8px rgba(99, 102, 241, 0.25)"
+            }}
+          >
+            Sign In
+          </button>
+        ) : (
+          <div style={{ position: "relative" }} ref={dropdownRef}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              style={{
+                background: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+                border: `1px solid ${T.border}`,
+                borderRadius: 20,
+                padding: "5px 12px",
+                fontSize: 12,
+                fontWeight: 600,
+                color: T.chalk,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 8
+              }}
+            >
+              <div style={{
+                width: 16,
+                height: 16,
+                borderRadius: "50%",
+                backgroundColor: T.teal,
+                color: "#FFFFFF",
+                fontSize: 9,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700
+              }}>
+                {user.email.substring(0, 2).toUpperCase()}
+              </div>
+              <span style={{ maxWidth: 100, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {user.email.split("@")[0]}
+              </span>
+            </button>
+            {dropdownOpen && (
+              <div 
+                className="user-dropdown-menu" 
+                style={{
+                  position: "absolute",
+                  top: "115%",
+                  right: 0,
+                  backgroundColor: T.navyCard,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 8,
+                  padding: "6px 0",
+                  minWidth: 160,
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+                  zIndex: 1000,
+                  textAlign: "left"
+                }}
+              >
+                <div style={{ padding: "8px 14px", fontSize: 11, color: T.muted, borderBottom: `1px solid ${T.border}` }}>
+                  Logged in as:<br/>
+                  <strong style={{ color: T.chalk, wordBreak: "break-all" }}>{user.email}</strong>
+                </div>
+                <button
+                  onClick={() => {
+                    setProfileModalOpen(true);
+                    setDropdownOpen(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    padding: "8px 14px",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    color: T.chalk,
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    borderBottom: `1px solid ${T.border}`
+                  }}
+                >
+                  My Profile
+                </button>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    setDropdownOpen(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    padding: "8px 14px",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    color: "#EF4444",
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    cursor: "pointer"
+                  }}
+                >
+                  Log Out
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </nav>
   );
 }
@@ -3076,9 +3339,907 @@ function CookieConsentBanner({ T, dark, onAccept }) {
   );
 }
 
+// ── AUTH MODAL ────────────────────────────────────────────────────────────────
+function AuthModal({ T, isOpen, onClose }) {
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [profileSetup, setProfileSetup] = useState(false);
+  const [userId, setUserId] = useState(null);
+  
+  const [profileName, setProfileName] = useState("");
+  const [profileLevel, setProfileLevel] = useState("Grade 12");
+  const [profileProvince, setProfileProvince] = useState("Gauteng");
+
+  const [error, setError] = useState(null);
+  const [info, setInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setEmail("");
+      setPassword("");
+      setProfileSetup(false);
+      setUserId(null);
+      setProfileName("");
+      setProfileLevel("Grade 12");
+      setProfileProvince("Gauteng");
+      setError(null);
+      setInfo(null);
+    }
+  }, [isOpen, isSignUp]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+    setLoading(true);
+
+    if (!email || !password) {
+      setError("Please fill in all fields.");
+      setLoading(false);
+      return;
+    }
+
+    if (isSignUp) {
+      const minLength = 8;
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+      if (password.length < minLength || !hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecial) {
+        setError("Password must be at least 8 characters long and contain at least one uppercase letter (A-Z), one lowercase letter (a-z), one number (0-9), and one special character (e.g. !, @, #, $, %).");
+        setLoading(false);
+        return;
+      }
+    } else {
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    try {
+      if (isSignUp) {
+        const { data, error: signUpErr } = await supabase.auth.signUp({
+          email,
+          password
+        });
+
+        if (signUpErr) throw signUpErr;
+
+        if (data?.user) {
+          setUserId(data.user.id);
+          setProfileSetup(true);
+          setInfo("Account created! Now, let's set up your profile.");
+        }
+      } else {
+        const { data, error: signInErr } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (signInErr) throw signInErr;
+
+        if (data?.user) {
+          setInfo("Logged in successfully!");
+          setTimeout(() => onClose(), 1200);
+        }
+      }
+    } catch (err) {
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+    setLoading(true);
+
+    if (!profileName) {
+      setError("Please enter your name.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await saveUserProfile(userId, {
+        name: profileName,
+        level: profileLevel,
+        province: profileProvince
+      });
+
+      setInfo("Profile saved! Logging you in...");
+
+      // Automatically sign in the user using the email and password they just registered with
+      const { data, error: signInErr } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInErr) {
+        console.warn("Auto sign-in error (likely needs verification):", signInErr.message);
+        setInfo("Profile saved! Please check your email inbox to verify your account, then you can log in.");
+        setTimeout(() => onClose(), 3500);
+      } else {
+        setInfo("Logged in successfully! Welcome to PathWise.");
+        setTimeout(() => onClose(), 1500);
+      }
+    } catch (err) {
+      setError("Failed to save profile details. You can update them later from your profile dashboard.");
+      setTimeout(() => onClose(), 2000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="auth-modal-overlay" onClick={onClose}>
+      <div 
+        className="auth-modal-container" 
+        style={{ backgroundColor: T.navyCard, border: `1px solid ${T.border}`, color: T.chalk }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>
+            {profileSetup ? "Set Up Your Profile" : isSignUp ? "Create an Account" : "Welcome Back"}
+          </h3>
+          <button 
+            onClick={onClose} 
+            style={{ background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 20, padding: 0 }}
+          >
+            &times;
+          </button>
+        </div>
+
+        {error && (
+          <div style={{ backgroundColor: "rgba(239, 68, 68, 0.15)", border: "1px solid #EF4444", color: "#FCA5A5", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        {info && (
+          <div style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", border: "1px solid #10B981", color: "#A7F3D0", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
+            ✓ {info}
+          </div>
+        )}
+
+        {!profileSetup ? (
+          <>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Email Address</label>
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  disabled={loading}
+                  required
+                  style={{
+                    backgroundColor: T.inputBg,
+                    border: `1px solid ${T.border}`,
+                    color: T.chalk,
+                    borderRadius: 8,
+                    padding: "10px 12px",
+                    fontSize: 14,
+                    outline: "none"
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Password</label>
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  disabled={loading}
+                  required
+                  style={{
+                    backgroundColor: T.inputBg,
+                    border: `1px solid ${T.border}`,
+                    color: T.chalk,
+                    borderRadius: 8,
+                    padding: "10px 12px",
+                    fontSize: 14,
+                    outline: "none"
+                  }}
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="cookie-btn" 
+                style={{ 
+                  backgroundColor: T.teal, 
+                  color: "#FFFFFF", 
+                  width: "100%", 
+                  padding: "12px", 
+                  fontSize: 14, 
+                  marginTop: 6,
+                  cursor: loading ? "not-allowed" : "pointer",
+                  opacity: loading ? 0.7 : 1
+                }}
+              >
+                {loading ? "Please wait..." : isSignUp ? "Sign Up" : "Log In"}
+              </button>
+            </form>
+
+            <div style={{ marginTop: 20, textAlign: "center", fontSize: 13, color: T.muted }}>
+              {isSignUp ? "Already have an account? " : "Don't have an account? "}
+              <button 
+                onClick={() => setIsSignUp(!isSignUp)}
+                style={{ background: "none", border: "none", color: T.teal, cursor: "pointer", fontWeight: 600, padding: 0, textDecoration: "underline" }}
+              >
+                {isSignUp ? "Log In" : "Sign Up"}
+              </button>
+            </div>
+          </>
+        ) : (
+          <form onSubmit={handleProfileSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Full Name</label>
+              <input 
+                type="text" 
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+                placeholder="John Doe"
+                disabled={loading}
+                required
+                style={{
+                  backgroundColor: T.inputBg,
+                  border: `1px solid ${T.border}`,
+                  color: T.chalk,
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  outline: "none"
+                }}
+              />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Grade / Study Level</label>
+              <select
+                value={profileLevel}
+                onChange={(e) => setProfileLevel(e.target.value)}
+                disabled={loading}
+                style={{
+                  backgroundColor: T.inputBg,
+                  border: `1px solid ${T.border}`,
+                  color: T.chalk,
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  outline: "none",
+                  cursor: "pointer"
+                }}
+              >
+                {["Grade 9", "Grade 10", "Grade 11", "Grade 12", "TVET College", "Completed School"].map(lvl => (
+                  <option key={lvl} value={lvl}>{lvl}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Province</label>
+              <select
+                value={profileProvince}
+                onChange={(e) => setProfileProvince(e.target.value)}
+                disabled={loading}
+                style={{
+                  backgroundColor: T.inputBg,
+                  border: `1px solid ${T.border}`,
+                  color: T.chalk,
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  outline: "none",
+                  cursor: "pointer"
+                }}
+              >
+                {["Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape", "Free State", "Limpopo", "Mpumalanga", "North West", "Northern Cape"].map(prov => (
+                  <option key={prov} value={prov}>{prov}</option>
+                ))}
+              </select>
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="cookie-btn" 
+              style={{ 
+                backgroundColor: T.teal, 
+                color: "#FFFFFF", 
+                width: "100%", 
+                padding: "12px", 
+                fontSize: 14, 
+                marginTop: 6,
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.7 : 1
+              }}
+            >
+              {loading ? "Saving Profile..." : "Save Profile & Finish"}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── PROFILE MODAL ─────────────────────────────────────────────────────────────
+function ProfileModal({ T, isOpen, onClose, user }) {
+  const [name, setName] = useState("");
+  const [level, setLevel] = useState("Grade 12");
+  const [province, setProvince] = useState("Gauteng");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [info, setInfo] = useState(null);
+
+  useEffect(() => {
+    if (isOpen && user) {
+      setError(null);
+      setInfo(null);
+      setLoading(true);
+      fetchUserProfile(user.id).then(profile => {
+        if (profile) {
+          setName(profile.name || "");
+          setLevel(profile.level || "Grade 12");
+          setProvince(profile.province || "Gauteng");
+        }
+        setLoading(false);
+      }).catch(() => setLoading(false));
+    }
+  }, [isOpen, user]);
+
+  if (!isOpen || !user) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+    setLoading(true);
+
+    if (!name) {
+      setError("Please enter your name.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await saveUserProfile(user.id, { name, level, province });
+      if (res.success) {
+        setInfo("Profile updated successfully!");
+        setTimeout(() => onClose(), 1200);
+      } else {
+        throw new Error(res.error || "Failed to update profile.");
+      }
+    } catch (err) {
+      setError(err.message || "An error occurred while saving your profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="auth-modal-overlay" onClick={onClose}>
+      <div 
+        className="auth-modal-container" 
+        style={{ backgroundColor: T.navyCard, border: `1px solid ${T.border}`, color: T.chalk }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>My Profile</h3>
+          <button 
+            onClick={onClose} 
+            style={{ background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 20, padding: 0 }}
+          >
+            &times;
+          </button>
+        </div>
+
+        {error && (
+          <div style={{ backgroundColor: "rgba(239, 68, 68, 0.15)", border: "1px solid #EF4444", color: "#FCA5A5", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        {info && (
+          <div style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", border: "1px solid #10B981", color: "#A7F3D0", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
+            ✓ {info}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Email Address</label>
+            <input 
+              type="text" 
+              value={user.email} 
+              disabled 
+              style={{
+                backgroundColor: T.inputBg,
+                border: `1px solid ${T.border}`,
+                color: T.muted,
+                borderRadius: 8,
+                padding: "10px 12px",
+                fontSize: 14,
+                outline: "none",
+                cursor: "not-allowed"
+              }}
+            />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Full Name</label>
+            <input 
+              type="text" 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="John Doe"
+              disabled={loading}
+              required
+              style={{
+                backgroundColor: T.inputBg,
+                border: `1px solid ${T.border}`,
+                color: T.chalk,
+                borderRadius: 8,
+                padding: "10px 12px",
+                fontSize: 14,
+                outline: "none"
+              }}
+            />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Grade / Study Level</label>
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              disabled={loading}
+              style={{
+                backgroundColor: T.inputBg,
+                border: `1px solid ${T.border}`,
+                color: T.chalk,
+                borderRadius: 8,
+                padding: "10px 12px",
+                fontSize: 14,
+                outline: "none",
+                cursor: "pointer"
+              }}
+            >
+              {["Grade 9", "Grade 10", "Grade 11", "Grade 12", "TVET College", "Completed School"].map(lvl => (
+                <option key={lvl} value={lvl}>{lvl}</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Province</label>
+            <select
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              disabled={loading}
+              style={{
+                backgroundColor: T.inputBg,
+                border: `1px solid ${T.border}`,
+                color: T.chalk,
+                borderRadius: 8,
+                padding: "10px 12px",
+                fontSize: 14,
+                outline: "none",
+                cursor: "pointer"
+              }}
+            >
+              {["Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape", "Free State", "Limpopo", "Mpumalanga", "North West", "Northern Cape"].map(prov => (
+                <option key={prov} value={prov}>{prov}</option>
+              ))}
+            </select>
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="cookie-btn" 
+            style={{ 
+              backgroundColor: T.teal, 
+              color: "#FFFFFF", 
+              width: "100%", 
+              padding: "12px", 
+              fontSize: 14, 
+              marginTop: 6,
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1
+            }}
+          >
+            {loading ? "Saving..." : "Save Changes"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── REVIEW PAGE ──────────────────────────────────────────────────────────────
+function ReviewPage({ T }) {
+  const [formData, setFormData] = useState({
+    hearAbout: "",
+    hearAboutOther: "",
+    browser: "",
+    browserOther: "",
+    frequency: "",
+    frequencyOther: "",
+    device: "",
+    deviceOther: "",
+    techIssues: "",
+    techIssuesOther: "",
+    satisfaction: "",
+    recommend: "",
+    featuresToAdd: "",
+    likedMost: "",
+    improvements: "",
+    comments: ""
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleChange = (field, val) => {
+    setFormData(prev => ({ ...prev, [field]: val }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    // Prepare payload for FormSubmit
+    const payload = {
+      "How did you hear about this website?": formData.hearAbout === "Other" ? formData.hearAboutOther : formData.hearAbout,
+      "What browser do you use?": formData.browser === "Other" ? formData.browserOther : formData.browser,
+      "How often do you visit this website?": formData.frequency === "Other" ? formData.frequencyOther : formData.frequency,
+      "What device did you use to access the website?": formData.device === "Other" ? formData.deviceOther : formData.device,
+      "Did you experience any technical issues?": formData.techIssues === "Other" ? formData.techIssuesOther : formData.techIssues,
+      "Overall Satisfaction (1-5)": formData.satisfaction || "Not answered",
+      "Likelihood to Recommend (1-5)": formData.recommend || "Not answered",
+      "What features would you like to see added?": formData.featuresToAdd || "None",
+      "What did you like most about the website?": formData.likedMost || "None",
+      "What improvements would you suggest?": formData.improvements || "None",
+      "Any additional comments?": formData.comments || "None",
+      "_subject": "New PathWise Website Review",
+      "_honey": "" // Honeypot field for spam prevention
+    };
+
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/oratiledineo75@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const resData = await response.json();
+
+      if (response.ok && resData.success) {
+        setSubmitted(true);
+      } else {
+        throw new Error(resData.message || "Failed to submit feedback. Please try again.");
+      }
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please check your network connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "400px", textAlign: "center", padding: "2rem" }}>
+        <div style={{ fontSize: "64px", marginBottom: "20px" }}>🎉</div>
+        <h3 style={{ fontSize: "22px", fontWeight: 700, color: T.chalk, marginBottom: "10px" }}>Thank You for Your Feedback!</h3>
+        <p style={{ color: T.muted, fontSize: "14px", maxWidth: "450px", lineHeight: 1.6 }}>
+          Your review has been successfully submitted and sent directly to the site administrator. We appreciate your time in helping us improve PathWise.
+        </p>
+        <button 
+          onClick={() => {
+            setFormData({
+              hearAbout: "", hearAboutOther: "",
+              browser: "", browserOther: "",
+              frequency: "", frequencyOther: "",
+              device: "", deviceOther: "",
+              techIssues: "", techIssuesOther: "",
+              satisfaction: "", recommend: "",
+              featuresToAdd: "", likedMost: "",
+              improvements: "", comments: ""
+            });
+            setSubmitted(false);
+          }}
+          className="cookie-btn" 
+          style={{ backgroundColor: T.teal, color: "#FFFFFF", marginTop: "24px" }}
+        >
+          Submit Another Review
+        </button>
+      </div>
+    );
+  }
+
+  // Helper styles
+  const cardStyle = {
+    backgroundColor: T.navyCard,
+    border: `1px solid ${T.border}`,
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 20,
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    textAlign: "left"
+  };
+
+  const questionTitleStyle = {
+    fontSize: 15,
+    fontWeight: 600,
+    color: T.chalk,
+    marginBottom: 16,
+    display: "block"
+  };
+
+  const radioContainerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12
+  };
+
+  const radioOptionStyle = (selected) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    cursor: "pointer",
+    padding: "8px 12px",
+    borderRadius: 8,
+    backgroundColor: selected ? `${T.teal}10` : "transparent",
+    border: `1px solid ${selected ? T.teal : "transparent"}`,
+    transition: "all 0.15s ease"
+  });
+
+  const textInputStyle = {
+    backgroundColor: T.inputBg,
+    border: `1px solid ${T.border}`,
+    color: T.chalk,
+    borderRadius: 8,
+    padding: "10px 14px",
+    fontSize: 14,
+    width: "100%",
+    boxSizing: "border-box",
+    outline: "none"
+  };
+
+  const textAreaStyle = {
+    ...textInputStyle,
+    minHeight: 100,
+    resize: "vertical",
+    fontFamily: "inherit"
+  };
+
+  const renderRadioOptions = (field, options, otherField = null) => {
+    const currentValue = formData[field];
+    return (
+      <div style={radioContainerStyle}>
+        {options.map(opt => {
+          const isSelected = currentValue === opt;
+          return (
+            <label key={opt} style={radioOptionStyle(isSelected)}>
+              <input 
+                type="radio" 
+                name={field} 
+                checked={isSelected}
+                onChange={() => handleChange(field, opt)}
+                style={{ accentColor: T.teal, cursor: "pointer", width: 16, height: 16 }}
+              />
+              <span style={{ fontSize: 13.5, color: isSelected ? T.teal : T.chalk }}>{opt}</span>
+            </label>
+          );
+        })}
+        {otherField && (
+          <label style={radioOptionStyle(currentValue === "Other")}>
+            <input 
+              type="radio" 
+              name={field} 
+              checked={currentValue === "Other"}
+              onChange={() => handleChange(field, "Other")}
+              style={{ accentColor: T.teal, cursor: "pointer", width: 16, height: 16 }}
+            />
+            <span style={{ fontSize: 13.5, color: currentValue === "Other" ? T.teal : T.chalk }}>Other:</span>
+            {currentValue === "Other" && (
+              <input 
+                type="text" 
+                value={formData[otherField]}
+                onChange={(e) => handleChange(otherField, e.target.value)}
+                placeholder="Please specify"
+                style={{ ...textInputStyle, padding: "4px 8px", fontSize: 13, marginLeft: 8, flex: 1 }}
+              />
+            )}
+          </label>
+        )}
+      </div>
+    );
+  };
+
+  const renderScale = (field) => {
+    const currentValue = formData[field];
+    return (
+      <div style={{ display: "flex", justifyContent: "space-between", maxWidth: 400, margin: "12px 0", gap: 10 }}>
+        {[1, 2, 3, 4, 5].map(val => {
+          const isSelected = currentValue === val;
+          return (
+            <button
+              key={val}
+              type="button"
+              onClick={() => handleChange(field, val)}
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                border: `1px solid ${isSelected ? T.teal : T.border}`,
+                backgroundColor: isSelected ? T.teal : T.inputBg,
+                color: isSelected ? "#FFFFFF" : T.chalk,
+                fontWeight: 600,
+                fontSize: 14,
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              {val}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: "0 1rem 4rem" }}>
+      {error && (
+        <div style={{ backgroundColor: "#FCA5A5", border: "1px solid #EF4444", color: "#7F1D1D", borderRadius: 8, padding: 14, marginBottom: 20, fontSize: 14 }}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      {/* Q1 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>How did you hear about this website?</span>
+        {renderRadioOptions("hearAbout", ["Social Media", "Advertising", "Search Engine", "Friend"], "hearAboutOther")}
+      </div>
+
+      {/* Q2 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>What browser do you use?</span>
+        {renderRadioOptions("browser", ["Google Chrome", "Firefox", "Mozilla Firefox", "Opera"], "browserOther")}
+      </div>
+
+      {/* Q3 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>How often do you visit this website?</span>
+        {renderRadioOptions("frequency", ["First time", "Daily", "Weekly", "Monthly", "Rarely"], "frequencyOther")}
+      </div>
+
+      {/* Q4 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>What device did you use to access the website?</span>
+        {renderRadioOptions("device", ["Desktop/Laptop", "Tablet", "Mobile Phone"], "deviceOther")}
+      </div>
+
+      {/* Q5 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>Did you experience any technical issues?</span>
+        {renderRadioOptions("techIssues", ["No", "Yes"], "techIssuesOther")}
+      </div>
+
+      {/* Q6 */}
+      <div style={cardStyle}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+          <span style={questionTitleStyle}>How satisfied are you with your overall experience?</span>
+          <span style={{ fontSize: 11, color: T.muted }}>(1 = Unsatisfied, 5 = Highly Satisfied)</span>
+        </div>
+        {renderScale("satisfaction")}
+      </div>
+
+      {/* Q7 */}
+      <div style={cardStyle}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+          <span style={questionTitleStyle}>How likely are you to recommend this website to others?</span>
+          <span style={{ fontSize: 11, color: T.muted }}>(1 = Not Likely, 5 = Extremely Likely)</span>
+        </div>
+        {renderScale("recommend")}
+      </div>
+
+      {/* Q8 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>What features would you like to see added?</span>
+        <textarea 
+          value={formData.featuresToAdd}
+          onChange={(e) => handleChange("featuresToAdd", e.target.value)}
+          placeholder="Type your suggestions here..."
+          style={textAreaStyle}
+        />
+      </div>
+
+      {/* Q9 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>What did you like most about the website?</span>
+        <textarea 
+          value={formData.likedMost}
+          onChange={(e) => handleChange("likedMost", e.target.value)}
+          placeholder="Let us know what worked well..."
+          style={textAreaStyle}
+        />
+      </div>
+
+      {/* Q10 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>What improvements would you suggest?</span>
+        <textarea 
+          value={formData.improvements}
+          onChange={(e) => handleChange("improvements", e.target.value)}
+          placeholder="Any areas of friction or issues you noticed..."
+          style={textAreaStyle}
+        />
+      </div>
+
+      {/* Q11 */}
+      <div style={cardStyle}>
+        <span style={questionTitleStyle}>Any additional comments?</span>
+        <textarea 
+          value={formData.comments}
+          onChange={(e) => handleChange("comments", e.target.value)}
+          placeholder="Anything else you'd like to share..."
+          style={textAreaStyle}
+        />
+      </div>
+
+      {/* Actions */}
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="cookie-btn" 
+          style={{ 
+            backgroundColor: T.teal, 
+            color: "#FFFFFF", 
+            padding: "12px 28px", 
+            fontSize: 14, 
+            display: "flex", 
+            alignItems: "center", 
+            gap: 8,
+            cursor: loading ? "not-allowed" : "pointer",
+            opacity: loading ? 0.7 : 1
+          }}
+        >
+          {loading ? "Submitting Review..." : "Submit Review"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 // ── APP ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  const ALL_TABS = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends"];
+  const ALL_TABS = ["Home", "Discover", "APS Calculator", "Bursaries", "Careers", "Certificates", "Institutions", "Trends", "Review"];
 
   const [page, setPage] = useState(() => {
     const cookieSaved = getCookie("pathway_page");
@@ -3097,6 +4258,22 @@ export default function App() {
     return saved !== null ? saved === "true" : true;
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [user, setUser] = useState(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("pathway_page", page);
@@ -3139,7 +4316,7 @@ export default function App() {
       background: T.navy, color: T.chalk,
       transition: "background 0.3s, color 0.3s",
     }}>
-      <Sidebar active={displayPage} setActive={handleTabSelect} dark={dark} setDark={setDark} T={T} open={sidebarOpen} setOpen={setSidebarOpen} />
+      <Sidebar active={displayPage} setActive={handleTabSelect} dark={dark} setDark={setDark} T={T} open={sidebarOpen} setOpen={setSidebarOpen} user={user} setAuthModalOpen={setAuthModalOpen} setProfileModalOpen={setProfileModalOpen} />
       
       <div className="main-content">
         <div className="mobile-header" style={{ backgroundColor: T.navyMid, borderBottom: `1px solid ${T.border}` }}>
@@ -3157,6 +4334,9 @@ export default function App() {
           T={T}
           dark={dark}
           setDark={setDark}
+          user={user}
+          setAuthModalOpen={setAuthModalOpen}
+          setProfileModalOpen={setProfileModalOpen}
         />
 
         <div className={`tab-content-container ${fadeClass}`}>
@@ -3168,9 +4348,12 @@ export default function App() {
           {displayPage === "APS Calculator"&& <>{pageHeader("APS Calculator & Course Matcher", "Input your subjects and marks to see which courses you qualify for.")}<ApsCalculatorPage T={T} dark={dark} /></>}
           {displayPage === "Trends"   && <>{pageHeader("SA Career Trends", "What South Africa needs most — right now and in 2030.")}<TrendsPage T={T} /></>}
           {displayPage === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
+          {displayPage === "Review" && <>{pageHeader("Share Your Feedback", "Help us improve PathWise by submitting a review.")}<ReviewPage T={T} /></>}
         </div>
       </div>
       <CookieConsentBanner T={T} dark={dark} />
+      <AuthModal T={T} isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <ProfileModal T={T} isOpen={profileModalOpen} onClose={() => setProfileModalOpen(false)} user={user} />
     </div>
   );
 }
