@@ -705,31 +705,36 @@ function ThemeToggle({ dark, setDark }) {
     <button 
       onClick={() => setDark(d => !d)} 
       title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"} 
+      aria-label="Toggle theme mode"
       style={{
-        width: 44,
-        height: 24,
-        borderRadius: 12,
-        background: dark ? "#6366F1" : "#94A3B8",
+        width: 52,
+        height: 26,
+        borderRadius: 13,
+        background: dark ? "rgba(99, 102, 241, 0.35)" : "rgba(203, 213, 225, 0.8)",
+        border: dark ? "1px solid #6366F1" : "1px solid #94A3B8",
         position: "relative",
         cursor: "pointer",
-        transition: "background 0.3s ease",
-        border: "none",
-        padding: 0,
+        transition: "all 0.3s ease",
+        padding: "0 5px",
         outline: "none",
         display: "flex",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "space-between",
+        boxShadow: dark ? "0 0 10px rgba(99,102,241,0.2)" : "none"
       }}
     >
+      <CiLight size={14} style={{ color: dark ? "#94A3B8" : "#EA580C" }} />
+      <FaMoon size={11} style={{ color: dark ? "#818CF8" : "#94A3B8" }} />
       <div 
         style={{
-          width: 18,
-          height: 18,
+          width: 20,
+          height: 20,
           borderRadius: "50%",
-          background: "#FFFFFF",
+          background: dark ? "#6366F1" : "#FFFFFF",
           position: "absolute",
-          top: 3,
-          left: dark ? 23 : 3,
-          transition: "left 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+          top: 2,
+          left: dark ? 28 : 2,
+          transition: "left 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease",
           boxShadow: "0 1px 4px rgba(0,0,0,0.3)"
         }}
       />
@@ -3039,35 +3044,7 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, setDark, user, se
       {/* Theme Toggle & User Auth */}
       <div className="desktop-brand-header" style={{ marginLeft: 16, flexShrink: 0, display: "flex", alignItems: "center", gap: 10 }}>
         {setDark && (
-          <button
-            onClick={() => setDark(!dark)}
-            aria-label="Toggle dark mode"
-            style={{
-              background: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
-              border: `1px solid ${T.border}`,
-              borderRadius: 20,
-              padding: "5px 12px",
-              fontSize: 12,
-              fontWeight: 600,
-              color: T.chalk,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6
-            }}
-          >
-            {dark ? (
-              <>
-                <FaMoon size={12} />
-                <span>Dark</span>
-              </>
-            ) : (
-              <>
-                <CiLight size={14} style={{ strokeWidth: 0.5 }} />
-                <span>Light</span>
-              </>
-            )}
-          </button>
+          <ThemeToggle dark={dark} setDark={setDark} />
         )}
 
         {/* User Account Controls */}
@@ -3256,7 +3233,6 @@ function CookieConsentBanner({ T, dark, onAccept }) {
       {!showCustomize ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 20 }}>🍪</span>
             <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>We Value Your Privacy</h3>
           </div>
           <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: 0 }}>
@@ -3278,7 +3254,6 @@ function CookieConsentBanner({ T, dark, onAccept }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 20 }}>⚙️</span>
               <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Customize Preferences</h3>
             </div>
             <button className="cookie-btn-link" onClick={() => setShowCustomize(false)} style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", fontSize: 13 }}>
@@ -3339,11 +3314,36 @@ function CookieConsentBanner({ T, dark, onAccept }) {
   );
 }
 
+// ── AUTH ERROR HELPER ────────────────────────────────────────────────────────
+const formatAuthError = (err) => {
+  if (!err) return "An unexpected error occurred.";
+  const msg = typeof err === "string" ? err : err.message || "";
+  const lower = msg.toLowerCase();
+
+  if (lower.includes("rate limit") || lower.includes("over_email_send_rate_limit") || lower.includes("email rate limit")) {
+    return "Email send limit reached. Please wait a few minutes before trying again, or log in if you already registered.";
+  }
+  if (lower.includes("invalid login credentials") || lower.includes("invalid_credentials")) {
+    return "Invalid email address or password. Please check your details and try again.";
+  }
+  if (lower.includes("user already registered") || lower.includes("already registered") || lower.includes("user_already_exists")) {
+    return "An account with this email address already exists. Please log in instead.";
+  }
+  if (lower.includes("email not confirmed") || lower.includes("email_not_confirmed")) {
+    return "Your email address has not been verified yet. Please check your inbox for the verification email.";
+  }
+  if (lower.includes("password should be at least")) {
+    return "Password does not meet length requirements.";
+  }
+  return msg;
+};
+
 // ── AUTH MODAL ────────────────────────────────────────────────────────────────
 function AuthModal({ T, isOpen, onClose }) {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [mode, setMode] = useState("signin"); // "signin" | "signup" | "forgot"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [profileSetup, setProfileSetup] = useState(false);
   const [userId, setUserId] = useState(null);
   
@@ -3359,6 +3359,7 @@ function AuthModal({ T, isOpen, onClose }) {
     if (isOpen) {
       setEmail("");
       setPassword("");
+      setShowPassword(false);
       setProfileSetup(false);
       setUserId(null);
       setProfileName("");
@@ -3366,10 +3367,33 @@ function AuthModal({ T, isOpen, onClose }) {
       setProfileProvince("Gauteng");
       setError(null);
       setInfo(null);
+      setMode("signin");
     }
-  }, [isOpen, isSignUp]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+    if (!email) {
+      setError("Please enter your email address.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error: resetErr } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin
+      });
+      if (resetErr) throw resetErr;
+      setInfo("Password reset link sent! Check your email inbox.");
+    } catch (err) {
+      setError(formatAuthError(err));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -3377,13 +3401,13 @@ function AuthModal({ T, isOpen, onClose }) {
     setInfo(null);
     setLoading(true);
 
-    if (!email || !password) {
-      setError("Please fill in all fields.");
+    if (!email || (!password && mode !== "forgot")) {
+      setError("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
-    if (isSignUp) {
+    if (mode === "signup") {
       const minLength = 8;
       const hasUpperCase = /[A-Z]/.test(password);
       const hasLowerCase = /[a-z]/.test(password);
@@ -3391,26 +3415,27 @@ function AuthModal({ T, isOpen, onClose }) {
       const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
       if (password.length < minLength || !hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecial) {
-        setError("Password must be at least 8 characters long and contain at least one uppercase letter (A-Z), one lowercase letter (a-z), one number (0-9), and one special character (e.g. !, @, #, $, %).");
-        setLoading(false);
-        return;
-      }
-    } else {
-      if (password.length < 6) {
-        setError("Password must be at least 6 characters.");
+        setError("Password must be at least 8 characters long and contain uppercase, lowercase, a number, and a special character.");
         setLoading(false);
         return;
       }
     }
 
     try {
-      if (isSignUp) {
+      if (mode === "signup") {
         const { data, error: signUpErr } = await supabase.auth.signUp({
           email,
           password
         });
 
         if (signUpErr) throw signUpErr;
+
+        // Check if user already exists (Supabase returns data.user with empty identities array when email obfuscation is on)
+        if (data?.user?.identities && data.user.identities.length === 0) {
+          setError("An account with this email address already exists. Please log in instead.");
+          setLoading(false);
+          return;
+        }
 
         if (data?.user) {
           setUserId(data.user.id);
@@ -3431,7 +3456,7 @@ function AuthModal({ T, isOpen, onClose }) {
         }
       }
     } catch (err) {
-      setError(err.message || "An unexpected error occurred.");
+      setError(formatAuthError(err));
     } finally {
       setLoading(false);
     }
@@ -3456,17 +3481,23 @@ function AuthModal({ T, isOpen, onClose }) {
         province: profileProvince
       });
 
-      setInfo("Profile saved! Logging you in...");
+      // Check if session is already active
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData?.session) {
+        setInfo("Profile saved! Welcome to PathWise.");
+        setTimeout(() => onClose(), 1500);
+        return;
+      }
 
-      // Automatically sign in the user using the email and password they just registered with
+      // Automatically sign in the user if session wasn't auto-established
       const { data, error: signInErr } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (signInErr) {
-        console.warn("Auto sign-in error (likely needs verification):", signInErr.message);
-        setInfo("Profile saved! Please check your email inbox to verify your account, then you can log in.");
+        console.warn("Auto sign-in notice:", signInErr.message);
+        setInfo("Profile saved! Please check your email inbox to verify your account, then log in.");
         setTimeout(() => onClose(), 3500);
       } else {
         setInfo("Logged in successfully! Welcome to PathWise.");
@@ -3489,7 +3520,7 @@ function AuthModal({ T, isOpen, onClose }) {
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <h3 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>
-            {profileSetup ? "Set Up Your Profile" : isSignUp ? "Create an Account" : "Welcome Back"}
+            {profileSetup ? "Set Up Your Profile" : mode === "forgot" ? "Reset Password" : mode === "signup" ? "Create an Account" : "Welcome Back"}
           </h3>
           <button 
             onClick={onClose} 
@@ -3500,18 +3531,69 @@ function AuthModal({ T, isOpen, onClose }) {
         </div>
 
         {error && (
-          <div style={{ backgroundColor: "rgba(239, 68, 68, 0.15)", border: "1px solid #EF4444", color: "#FCA5A5", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
-            ⚠️ {error}
+          <div style={{ backgroundColor: "rgba(239, 68, 68, 0.15)", border: "1px solid #EF4444", color: "#FCA5A5", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13, wordBreak: "break-word" }}>
+            {error}
           </div>
         )}
 
         {info && (
-          <div style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", border: "1px solid #10B981", color: "#A7F3D0", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
-            ✓ {info}
+          <div style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", border: "1px solid #10B981", color: "#A7F3D0", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13, wordBreak: "break-word" }}>
+            {info}
           </div>
         )}
 
-        {!profileSetup ? (
+        {mode === "forgot" ? (
+          <form onSubmit={handleForgotPassword} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Email Address</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                disabled={loading}
+                required
+                style={{
+                  backgroundColor: T.inputBg,
+                  border: `1px solid ${T.border}`,
+                  color: T.chalk,
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  outline: "none"
+                }}
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="cookie-btn" 
+              style={{ 
+                backgroundColor: T.teal, 
+                color: "#FFFFFF", 
+                width: "100%", 
+                padding: "12px", 
+                fontSize: 14, 
+                marginTop: 6,
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.7 : 1
+              }}
+            >
+              {loading ? "Sending..." : "Send Reset Link"}
+            </button>
+
+            <div style={{ marginTop: 12, textAlign: "center", fontSize: 13, color: T.muted }}>
+              <button 
+                type="button"
+                onClick={() => { setMode("signin"); setError(null); setInfo(null); }}
+                style={{ background: "none", border: "none", color: T.teal, cursor: "pointer", fontWeight: 600, padding: 0 }}
+              >
+                ← Back to Log In
+              </button>
+            </div>
+          </form>
+        ) : !profileSetup ? (
           <>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -3536,24 +3618,60 @@ function AuthModal({ T, isOpen, onClose }) {
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Password</label>
-                <input 
-                  type="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  disabled={loading}
-                  required
-                  style={{
-                    backgroundColor: T.inputBg,
-                    border: `1px solid ${T.border}`,
-                    color: T.chalk,
-                    borderRadius: 8,
-                    padding: "10px 12px",
-                    fontSize: 14,
-                    outline: "none"
-                  }}
-                />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <label style={{ fontSize: 12.5, fontWeight: 500, color: T.muted }}>Password</label>
+                  {mode === "signin" && (
+                    <button
+                      type="button"
+                      onClick={() => { setMode("forgot"); setError(null); setInfo(null); }}
+                      style={{ background: "none", border: "none", color: T.teal, fontSize: 12, cursor: "pointer", padding: 0 }}
+                    >
+                      Forgot password?
+                    </button>
+                  )}
+                </div>
+                <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    disabled={loading}
+                    required
+                    style={{
+                      backgroundColor: T.inputBg,
+                      border: `1px solid ${T.border}`,
+                      color: T.chalk,
+                      borderRadius: 8,
+                      padding: "10px 42px 10px 12px",
+                      fontSize: 14,
+                      outline: "none",
+                      width: "100%"
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute",
+                      right: 10,
+                      background: "none",
+                      border: "none",
+                      color: T.muted,
+                      cursor: "pointer",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      padding: "4px 6px"
+                    }}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+                {mode === "signup" && (
+                  <div style={{ fontSize: 11, color: T.muted, marginTop: 2 }}>
+                    Must be 8+ characters with uppercase, lowercase, number & symbol.
+                  </div>
+                )}
               </div>
 
               <button 
@@ -3571,17 +3689,22 @@ function AuthModal({ T, isOpen, onClose }) {
                   opacity: loading ? 0.7 : 1
                 }}
               >
-                {loading ? "Please wait..." : isSignUp ? "Sign Up" : "Log In"}
+                {loading ? "Please wait..." : mode === "signup" ? "Sign Up" : "Log In"}
               </button>
             </form>
 
             <div style={{ marginTop: 20, textAlign: "center", fontSize: 13, color: T.muted }}>
-              {isSignUp ? "Already have an account? " : "Don't have an account? "}
+              {mode === "signup" ? "Already have an account? " : "Don't have an account? "}
               <button 
-                onClick={() => setIsSignUp(!isSignUp)}
+                type="button"
+                onClick={() => {
+                  setMode(mode === "signup" ? "signin" : "signup");
+                  setError(null);
+                  setInfo(null);
+                }}
                 style={{ background: "none", border: "none", color: T.teal, cursor: "pointer", fontWeight: 600, padding: 0, textDecoration: "underline" }}
               >
-                {isSignUp ? "Log In" : "Sign Up"}
+                {mode === "signup" ? "Log In" : "Sign Up"}
               </button>
             </div>
           </>
@@ -3751,13 +3874,13 @@ function ProfileModal({ T, isOpen, onClose, user }) {
 
         {error && (
           <div style={{ backgroundColor: "rgba(239, 68, 68, 0.15)", border: "1px solid #EF4444", color: "#FCA5A5", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
-            ⚠️ {error}
+            {error}
           </div>
         )}
 
         {info && (
           <div style={{ backgroundColor: "rgba(16, 185, 129, 0.15)", border: "1px solid #10B981", color: "#A7F3D0", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 13 }}>
-            ✓ {info}
+            {info}
           </div>
         )}
 
@@ -3949,7 +4072,6 @@ function ReviewPage({ T }) {
   if (submitted) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "400px", textAlign: "center", padding: "2rem" }}>
-        <div style={{ fontSize: "64px", marginBottom: "20px" }}>🎉</div>
         <h3 style={{ fontSize: "22px", fontWeight: 700, color: T.chalk, marginBottom: "10px" }}>Thank You for Your Feedback!</h3>
         <p style={{ color: T.muted, fontSize: "14px", maxWidth: "450px", lineHeight: 1.6 }}>
           Your review has been successfully submitted and sent directly to the site administrator. We appreciate your time in helping us improve PathWise.
@@ -4116,7 +4238,7 @@ function ReviewPage({ T }) {
     <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: "0 1rem 4rem" }}>
       {error && (
         <div style={{ backgroundColor: "#FCA5A5", border: "1px solid #EF4444", color: "#7F1D1D", borderRadius: 8, padding: 14, marginBottom: 20, fontSize: 14 }}>
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
