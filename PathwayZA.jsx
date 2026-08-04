@@ -827,7 +827,7 @@ function CareerModal({ career, onClose, T, dark }) {
             <h3 style={{ color: T.chalk, fontSize: 13, marginBottom: 8, fontWeight: 700 }}>Bursaries & Funding</h3>
             {career.bursaries.map(b => (
               <div key={b} style={{ fontSize: 12, padding: "6px 0", borderBottom: `1px solid ${T.border}` }}>
-                💰 <a href={getExternalLink(b)} target="_blank" rel="noreferrer" className="modal-link" style={{ color: T.teal, textDecoration: "none", fontWeight: 500 }}>{b} ↗</a>
+                <a href={getExternalLink(b)} target="_blank" rel="noreferrer" className="modal-link" style={{ color: T.teal, textDecoration: "none", fontWeight: 500 }}>{b} ↗</a>
               </div>
             ))}
           </div>
@@ -835,7 +835,7 @@ function CareerModal({ career, onClose, T, dark }) {
             <h3 style={{ color: T.chalk, fontSize: 13, marginBottom: 8, fontWeight: 700 }}>Internships & Experience</h3>
             {career.internships.map(i => (
               <div key={i} style={{ fontSize: 12, padding: "6px 0", borderBottom: `1px solid ${T.border}` }}>
-                🔗 <a href={getExternalLink(i)} target="_blank" rel="noreferrer" className="modal-link" style={{ color: T.teal, textDecoration: "none", fontWeight: 500 }}>{i} ↗</a>
+                <a href={getExternalLink(i)} target="_blank" rel="noreferrer" className="modal-link" style={{ color: T.teal, textDecoration: "none", fontWeight: 500 }}>{i} ↗</a>
               </div>
             ))}
           </div>
@@ -1078,11 +1078,11 @@ function CareersPage({ T, dark }) {
                       border: `1px solid ${badgeColor}30`, borderRadius: 6, padding: "3px 8px", fontWeight: 700,
                       textTransform: "uppercase", letterSpacing: 1
                     }}>{op.type}</span>
-                    <span style={{ fontSize: 12, color: T.amber, fontWeight: 600 }}>💰 {op.stipend}</span>
+                    <span style={{ fontSize: 12, color: T.amber, fontWeight: 600 }}>{op.stipend}</span>
                   </div>
                   <h3 style={{ fontSize: 16, color: T.chalk, fontWeight: 700, marginBottom: 8 }}>{op.title}</h3>
-                  <div style={{ fontSize: 12, color: T.muted, marginBottom: 4, fontWeight: 600 }}>🏢 {op.company}</div>
-                  <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>📍 {op.location} · 📅 {op.duration}</div>
+                  <div style={{ fontSize: 12, color: T.muted, marginBottom: 4, fontWeight: 600 }}>{op.company}</div>
+                  <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>{op.location} · {op.duration}</div>
                   <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>{op.description}</p>
                 </div>
                 <a href={op.url}
@@ -1145,9 +1145,9 @@ function BursariesPage({ T, dark }) {
                 borderRadius: 4, padding: "2px 7px", fontWeight: 700, whiteSpace: "nowrap", marginLeft: 8,
               }}>{b.type}</span>
             </div>
-            <div style={{ fontSize: 12, color: T.muted, marginBottom: 3 }}>📚 {b.fields}</div>
-            <div style={{ fontSize: 12, color: T.amber, marginBottom: 3, fontWeight: 600 }}>💰 {b.amount}</div>
-            <div style={{ fontSize: 12, color: T.muted, marginBottom: 12 }}>📅 Deadline: {b.deadline}</div>
+            <div style={{ fontSize: 12, color: T.muted, marginBottom: 3 }}>{b.fields}</div>
+            <div style={{ fontSize: 12, color: T.amber, marginBottom: 3, fontWeight: 600 }}>{b.amount}</div>
+            <div style={{ fontSize: 12, color: T.muted, marginBottom: 12 }}>Deadline: {b.deadline}</div>
             <a href={b.url} target="_blank" rel="noreferrer" style={{
               display: "block", textAlign: "center", background: T.slate,
               color: T.teal, borderRadius: 6, padding: "7px",
@@ -1227,14 +1227,12 @@ function TrendsPage({ T }) {
                 background: `${T.teal}0A`
               }}>
                 <div style={{ marginBottom: 12, display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <span style={{ fontSize: 16 }}>🎓</span>
                   <div>
                     <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 3 }}>Required Qualification</div>
                     <div style={{ fontSize: 13, color: T.chalk, fontWeight: 500, lineHeight: 1.4 }}>{t.qualification}</div>
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <span style={{ fontSize: 16 }}>🏫</span>
                   <div>
                     <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 3 }}>Where to get it</div>
                     <div style={{ fontSize: 13, color: T.chalk, fontWeight: 500, lineHeight: 1.4 }}>{t.where}</div>
@@ -1251,7 +1249,7 @@ function TrendsPage({ T }) {
         borderRadius: 10, padding: 16,
       }}>
         <div style={{ fontSize: 11, color: T.muted, lineHeight: 1.7 }}>
-          📊 Data sourced from Stats SA, LinkedIn Labour Insights, and DHET reports. Demand scores reflect active vacancies vs qualified applicant ratios in the SA market. Growth projections are 2025–2030 forecasts.
+          Data sourced from Stats SA, LinkedIn Labour Insights, and DHET reports. Demand scores reflect active vacancies vs qualified applicant ratios in the SA market. Growth projections are 2025–2030 forecasts.
         </div>
       </div>
     </div>
@@ -1682,11 +1680,6 @@ function Hero({ setPage, T, dark }) {
         <rect width="100%" height="100%" fill="url(#grid)"/>
       </svg>
       <div style={{ position: "relative", maxWidth: 720 }}>
-        <div style={{
-          display: "inline-block", background: `${T.teal}18`, border: `1px solid ${T.teal}40`,
-          borderRadius: 20, padding: "4px 16px", fontSize: 11, color: T.teal,
-          letterSpacing: 2, marginBottom: 22, textTransform: "uppercase",
-        }}>South Africa's Career Guidance Platform</div>
         <h1 style={{
           fontSize: "clamp(2rem, 6vw, 3.6rem)", fontWeight: 800, color: T.chalk,
           lineHeight: 1.1, marginBottom: 16, fontFamily: "Georgia, serif",
@@ -1998,7 +1991,7 @@ function InstitutionsPage({ T, dark }) {
                 background: dark ? `${T.slate}44` : "#f9fafb", border: `1px solid ${T.border}`,
                 borderRadius: 8, padding: 16, textAlign: "left", fontSize: 12, color: T.muted, lineHeight: 1.5
               }}>
-                <strong style={{ color: T.chalk, display: "block", marginBottom: 6 }}>⚠️ Warning for Students:</strong>
+                <strong style={{ color: T.chalk, display: "block", marginBottom: 6 }}>Warning for Students:</strong>
                 Do not pay application or registration fees for qualifications that are not officially registered with DHET or SAQA. Contact the institution to request their SAQA registration number.
               </div>
             </>
