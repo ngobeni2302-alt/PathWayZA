@@ -864,6 +864,20 @@ function DiscoverPage({ T, dark }) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [activeGroup, setActiveGroup] = useState("All");
+  const [displayGroup, setDisplayGroup] = useState("All");
+  const [fadeState, setFadeState] = useState("fade-in");
+  const transitionTimer = useRef(null);
+
+  const handleGroupSelect = (newGroup) => {
+    if (newGroup === activeGroup && fadeState === "fade-in") return;
+    setActiveGroup(newGroup);
+    setFadeState("fade-out");
+    if (transitionTimer.current) clearTimeout(transitionTimer.current);
+    transitionTimer.current = setTimeout(() => {
+      setDisplayGroup(newGroup);
+      setFadeState("fade-in");
+    }, 80);
+  };
 
   const toggle = (s) => setSelected(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
 
@@ -887,7 +901,7 @@ function DiscoverPage({ T, dark }) {
   const groupNames = ["All", ...Object.keys(SUBJECT_GROUPS)];
 
   const visibleGroups = Object.entries(SUBJECT_GROUPS).reduce((acc, [group, subjects]) => {
-    if (activeGroup !== "All" && activeGroup !== group) return acc;
+    if (displayGroup !== "All" && displayGroup !== group) return acc;
     const filtered = search ? subjects.filter(s => s.toLowerCase().includes(search.toLowerCase())) : subjects;
     if (filtered.length) acc[group] = filtered;
     return acc;
@@ -914,26 +928,23 @@ function DiscoverPage({ T, dark }) {
       </div>
 
       {/* Category tabs */}
-      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", justifyContent: "center", marginBottom: 22 }}>
-        {groupNames.map(g => (
-          <button key={g} onClick={() => setActiveGroup(g)} style={{
-            background: activeGroup === g ? T.teal : T.slate,
-            color: activeGroup === g ? (dark ? T.navy : "#fff") : T.muted,
-            border: "none", borderRadius: 20, padding: "5px 12px",
-            fontSize: 11, fontWeight: 600, cursor: "pointer",
-          }}>{g}</button>
-        ))}
-      </div>
+      <CategorySystemTabs
+        tabs={groupNames}
+        activeTab={activeGroup}
+        onTabSelect={handleGroupSelect}
+        T={T}
+        dark={dark}
+      />
       <div className="mobile-filters">
-        <select value={activeGroup} onChange={(e) => setActiveGroup(e.target.value)}>
+        <select value={activeGroup} onChange={(e) => handleGroupSelect(e.target.value)}>
           {groupNames.map(g => (
             <option key={g} value={g}>{g}</option>
           ))}
         </select>
       </div>
 
-      {/* Grouped pills */}
-      <div style={{ marginBottom: 24 }}>
+      {/* Grouped pills with fade container */}
+      <div className={`category-content-container ${fadeState}`} style={{ marginBottom: 24, minHeight: 200 }}>
         {Object.entries(visibleGroups).map(([group, subjects]) => (
           <div key={group} style={{ marginBottom: 18 }}>
             <div style={{
@@ -1020,11 +1031,25 @@ function DiscoverPage({ T, dark }) {
 
 function CareersPage({ T, dark }) {
   const [field, setField] = useState("All");
+  const [displayField, setDisplayField] = useState("All");
+  const [fadeState, setFadeState] = useState("fade-in");
   const [modal, setModal] = useState(null);
+  const transitionTimer = useRef(null);
 
-  const filtered = field === "All"
+  const handleFieldSelect = (newField) => {
+    if (newField === field && fadeState === "fade-in") return;
+    setField(newField);
+    setFadeState("fade-out");
+    if (transitionTimer.current) clearTimeout(transitionTimer.current);
+    transitionTimer.current = setTimeout(() => {
+      setDisplayField(newField);
+      setFadeState("fade-in");
+    }, 80);
+  };
+
+  const filtered = displayField === "All"
     ? CAREERS
-    : CAREERS.filter(c => c.field === field);
+    : CAREERS.filter(c => c.field === displayField);
 
   return (
     <div style={{ maxWidth: 940, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
@@ -1033,69 +1058,73 @@ function CareersPage({ T, dark }) {
         <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>Career Explorer</h2>
         <p style={{ color: T.muted, fontSize: 13 }}>Browse all careers. Click any card for paths, bursaries, and internships.</p>
       </div>
-      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
-        {FIELDS.map(f => (
-          <button key={f} onClick={() => setField(f)} style={{
-            background: field === f ? T.teal : T.slate,
-            color: field === f ? (dark ? T.navy : "#fff") : T.muted,
-            border: "none", borderRadius: 6, padding: "5px 12px",
-            fontSize: 11, fontWeight: 600, cursor: "pointer",
-          }}>{f}</button>
-        ))}
-      </div>
+
+      {/* Desktop/Laptop Category System Tabs */}
+      <CategorySystemTabs
+        tabs={FIELDS}
+        activeTab={field}
+        onTabSelect={handleFieldSelect}
+        T={T}
+        dark={dark}
+      />
+
+      {/* Mobile/Tablet Fallback Select */}
       <div className="mobile-filters">
-        <select value={field} onChange={(e) => setField(e.target.value)}>
+        <select value={field} onChange={(e) => handleFieldSelect(e.target.value)}>
           {FIELDS.map(f => (
             <option key={f} value={f}>{f}</option>
           ))}
         </select>
       </div>
-      <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
-        Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> careers
-      </div>
-      <div className="career-grid">
-        {filtered.map(c => <CareerCard key={c.id} career={c} onClick={setModal} T={T} dark={dark} />)}
-      </div>
 
-      {/* Artisan & Work-Based Opportunities Section */}
-      <div style={{ marginTop: 52, paddingTop: 36, borderTop: `1px solid ${T.border}` }}>
-        <div style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 22, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>Artisan & Work-Based Opportunities</h2>
-          <p style={{ color: T.muted, fontSize: 13 }}>Earn a stipend while you learn. Explore apprenticeships, learnerships, and practical work experience.</p>
+      <div className={`category-content-container ${fadeState}`}>
+        <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
+          Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> careers
         </div>
         <div className="career-grid">
-          {OPPORTUNITIES.map(op => {
-            const badgeColor = op.type === "Apprenticeship" ? "#8B5CF6" : op.type === "Learnership" ? "#F59E0B" : T.teal;
-            return (
-              <div key={op.id} className="opportunity-card" style={{
-                background: T.navyCard, border: `1px solid ${T.border}`,
-                borderRadius: 12, padding: 20, display: "flex", flexDirection: "column", justifyContent: "space-between"
-              }}>
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
-                    <span style={{
-                      fontSize: 9, background: `${badgeColor}18`, color: badgeColor,
-                      border: `1px solid ${badgeColor}30`, borderRadius: 6, padding: "3px 8px", fontWeight: 700,
-                      textTransform: "uppercase", letterSpacing: 1
-                    }}>{op.type}</span>
-                    <span style={{ fontSize: 12, color: T.amber, fontWeight: 600 }}>{op.stipend}</span>
+          {filtered.map(c => <CareerCard key={c.id} career={c} onClick={setModal} T={T} dark={dark} />)}
+        </div>
+
+        {/* Artisan & Work-Based Opportunities Section */}
+        <div style={{ marginTop: 52, paddingTop: 36, borderTop: `1px solid ${T.border}` }}>
+          <div style={{ marginBottom: 24 }}>
+            <h2 style={{ fontSize: 22, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>Artisan & Work-Based Opportunities</h2>
+            <p style={{ color: T.muted, fontSize: 13 }}>Earn a stipend while you learn. Explore apprenticeships, learnerships, and practical work experience.</p>
+          </div>
+          <div className="career-grid">
+            {OPPORTUNITIES.map(op => {
+              const badgeColor = op.type === "Apprenticeship" ? "#8B5CF6" : op.type === "Learnership" ? "#F59E0B" : T.teal;
+              return (
+                <div key={op.id} className="opportunity-card" style={{
+                  background: T.navyCard, border: `1px solid ${T.border}`,
+                  borderRadius: 12, padding: 20, display: "flex", flexDirection: "column", justifyContent: "space-between"
+                }}>
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
+                      <span style={{
+                        fontSize: 9, background: `${badgeColor}18`, color: badgeColor,
+                        border: `1px solid ${badgeColor}30`, borderRadius: 6, padding: "3px 8px", fontWeight: 700,
+                        textTransform: "uppercase", letterSpacing: 1
+                      }}>{op.type}</span>
+                      <span style={{ fontSize: 12, color: T.amber, fontWeight: 600 }}>{op.stipend}</span>
+                    </div>
+                    <h3 style={{ fontSize: 16, color: T.chalk, fontWeight: 700, marginBottom: 8 }}>{op.title}</h3>
+                    <div style={{ fontSize: 12, color: T.muted, marginBottom: 4, fontWeight: 600 }}>{op.company}</div>
+                    <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>{op.location} · {op.duration}</div>
+                    <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>{op.description}</p>
                   </div>
-                  <h3 style={{ fontSize: 16, color: T.chalk, fontWeight: 700, marginBottom: 8 }}>{op.title}</h3>
-                  <div style={{ fontSize: 12, color: T.muted, marginBottom: 4, fontWeight: 600 }}>{op.company}</div>
-                  <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>{op.location} · {op.duration}</div>
-                  <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>{op.description}</p>
+                  <a href={op.url}
+                     target="_blank" rel="noreferrer" className="apply-button" style={{
+                       display: "block", textAlign: "center", background: T.teal,
+                       color: dark ? T.navy : "#fff", borderRadius: 6, padding: "8px 12px",
+                       fontSize: 12, fontWeight: 700, textDecoration: "none", marginTop: "auto"
+                     }}>
+                    Apply or View Details ↗
+                  </a>
                 </div>
-                <a href={op.url}
-                   target="_blank" rel="noreferrer" className="apply-button" style={{
-                     display: "block", textAlign: "center", background: T.teal,
-                     color: dark ? T.navy : "#fff", borderRadius: 6, padding: "8px 12px",
-                     fontSize: 12, fontWeight: 700, textDecoration: "none", marginTop: "auto"
-                   }}>
-                  Apply or View Details ↗
-                </a>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -1479,11 +1508,25 @@ const CERTIFICATES_DATA = [
 
 function CertificatesPage({ T, dark }) {
   const [category, setCategory] = useState("All");
+  const [displayCategory, setDisplayCategory] = useState("All");
+  const [fadeState, setFadeState] = useState("fade-in");
   const [search, setSearch] = useState("");
   const [highlightedId, setHighlightedId] = useState(null);
+  const transitionTimer = useRef(null);
+
+  const handleCategorySelect = (newCat) => {
+    if (newCat === category && fadeState === "fade-in") return;
+    setCategory(newCat);
+    setFadeState("fade-out");
+    if (transitionTimer.current) clearTimeout(transitionTimer.current);
+    transitionTimer.current = setTimeout(() => {
+      setDisplayCategory(newCat);
+      setFadeState("fade-in");
+    }, 80);
+  };
 
   const filtered = CERTIFICATES_DATA.filter(c => {
-    const matchesCategory = category === "All" || c.category === category;
+    const matchesCategory = displayCategory === "All" || c.category === displayCategory;
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) ||
       c.provider.toLowerCase().includes(search.toLowerCase()) ||
       c.description.toLowerCase().includes(search.toLowerCase());
@@ -1513,139 +1556,131 @@ function CertificatesPage({ T, dark }) {
       </div>
 
       {/* Categories Filters */}
-      <div className="desktop-filters" style={{ gap: 6, flexWrap: "wrap", marginBottom: 22 }}>
-        {CERTIFICATE_CATEGORIES.map(f => (
-          <button 
-            key={f} 
-            onClick={() => setCategory(f)} 
-            style={{
-              background: category === f ? T.teal : T.slate,
-              color: category === f ? (dark ? T.navy : "#fff") : T.muted,
-              border: "none", borderRadius: 6, padding: "5px 12px",
-              fontSize: 11, fontWeight: 600, cursor: "pointer",
-              transition: "all 0.2s ease"
-            }}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
+      <CategorySystemTabs
+        tabs={CERTIFICATE_CATEGORIES}
+        activeTab={category}
+        onTabSelect={handleCategorySelect}
+        T={T}
+        dark={dark}
+      />
 
       <div className="mobile-filters">
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <select value={category} onChange={(e) => handleCategorySelect(e.target.value)}>
           {CERTIFICATE_CATEGORIES.map(f => (
             <option key={f} value={f}>{f}</option>
           ))}
         </select>
       </div>
 
-      <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
-        Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> certificates
-      </div>
+      <div className={`category-content-container ${fadeState}`}>
+        <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
+          Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> certificates
+        </div>
 
-      {/* Certificate Grid */}
-      <div className="career-grid">
-        {filtered.map(c => {
-          const isHighlighted = highlightedId === c.id;
-          const cardBg = isHighlighted 
-            ? (dark ? "rgba(0, 194, 168, 0.12)" : "rgba(0, 122, 107, 0.08)")
-            : T.navyCard;
-          
-          return (
-            <div 
-              key={c.id}
-              onClick={() => setHighlightedId(isHighlighted ? null : c.id)}
-              style={{
-                background: cardBg,
-                border: `1px solid ${isHighlighted ? T.teal : T.border}`,
-                borderRadius: 12,
-                padding: 20,
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                transform: isHighlighted ? "scale(1.02)" : "scale(1)",
-                transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                boxShadow: isHighlighted ? `0 8px 24px ${T.teal}24` : "none",
-                position: "relative"
-              }}
-            >
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 10 }}>
-                  <span style={{ fontSize: 10, color: T.teal, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>
-                    {c.category}
-                  </span>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {isHighlighted && (
+        {/* Certificate Grid */}
+        <div className="career-grid">
+          {filtered.map(c => {
+            const isHighlighted = highlightedId === c.id;
+            const cardBg = isHighlighted 
+              ? (dark ? "rgba(0, 194, 168, 0.12)" : "rgba(0, 122, 107, 0.08)")
+              : T.navyCard;
+            
+            return (
+              <div 
+                key={c.id}
+                onClick={() => setHighlightedId(isHighlighted ? null : c.id)}
+                style={{
+                  background: cardBg,
+                  border: `1px solid ${isHighlighted ? T.teal : T.border}`,
+                  borderRadius: 12,
+                  padding: 20,
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  transform: isHighlighted ? "scale(1.02)" : "scale(1)",
+                  transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                  boxShadow: isHighlighted ? `0 8px 24px ${T.teal}24` : "none",
+                  position: "relative"
+                }}
+              >
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 10 }}>
+                    <span style={{ fontSize: 10, color: T.teal, fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>
+                      {c.category}
+                    </span>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      {isHighlighted && (
+                        <span style={{
+                          background: `${T.teal}20`,
+                          border: `1px solid ${T.teal}40`,
+                          borderRadius: 6,
+                          padding: "2px 6px",
+                          fontSize: 9,
+                          color: T.teal,
+                          fontWeight: 700
+                        }}>
+                          ★ SELECTED
+                        </span>
+                      )}
                       <span style={{
-                        background: `${T.teal}20`,
-                        border: `1px solid ${T.teal}40`,
+                        background: `${T.amber}18`,
+                        border: `1px solid ${T.amber}30`,
                         borderRadius: 6,
                         padding: "2px 6px",
                         fontSize: 9,
-                        color: T.teal,
+                        color: T.amber,
                         fontWeight: 700
                       }}>
-                        ★ SELECTED
+                        100% FREE
                       </span>
-                    )}
-                    <span style={{
-                      background: `${T.amber}18`,
-                      border: `1px solid ${T.amber}30`,
-                      borderRadius: 6,
-                      padding: "2px 6px",
-                      fontSize: 9,
-                      color: T.amber,
-                      fontWeight: 700
-                    }}>
-                      100% FREE
-                    </span>
+                    </div>
                   </div>
+
+                  <h3 style={{ fontSize: 16, color: T.chalk, fontWeight: 700, margin: "0 0 4px 0" }}>
+                    {c.title}
+                  </h3>
+                  <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>
+                    Provider: {c.provider}
+                  </div>
+                  <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>
+                    {c.description}
+                  </p>
                 </div>
 
-                <h3 style={{ fontSize: 16, color: T.chalk, fontWeight: 700, margin: "0 0 4px 0" }}>
-                  {c.title}
-                </h3>
-                <div style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>
-                  Provider: {c.provider}
-                </div>
-                <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5, marginBottom: 16 }}>
-                  {c.description}
-                </p>
+                <a 
+                  href={c.url} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  onClick={(e) => e.stopPropagation()} 
+                  style={{
+                    display: "inline-block",
+                    padding: "8px 16px",
+                    background: T.teal,
+                    color: dark ? T.navy : "#ffffff",
+                    textDecoration: "none",
+                    borderRadius: 8,
+                    fontWeight: 600,
+                    fontSize: 12,
+                    transition: "all 0.15s ease",
+                    textAlign: "center",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.filter = "brightness(1.1)";
+                    e.target.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.filter = "none";
+                    e.target.style.transform = "none";
+                  }}
+                >
+                  Visit Website ↗
+                </a>
               </div>
-
-              <a 
-                href={c.url} 
-                target="_blank" 
-                rel="noreferrer" 
-                onClick={(e) => e.stopPropagation()} 
-                style={{
-                  display: "inline-block",
-                  padding: "8px 16px",
-                  background: T.teal,
-                  color: dark ? T.navy : "#ffffff",
-                  textDecoration: "none",
-                  borderRadius: 8,
-                  fontWeight: 600,
-                  fontSize: 12,
-                  transition: "all 0.15s ease",
-                  textAlign: "center",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.filter = "brightness(1.1)";
-                  e.target.style.transform = "translateY(-1px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.filter = "none";
-                  e.target.style.transform = "none";
-                }}
-              >
-                Visit Website ↗
-              </a>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -2523,8 +2558,161 @@ function ApsCalculatorPage({ T, dark }) {
   );
 }
 
+// ── CATEGORY SYSTEM TABS (DESKTOP & LAPTOP) ─────────────────────────────────
+function CategorySystemTabs({ tabs, activeTab, onTabSelect, T, dark }) {
+  const scrollRef = useRef(null);
+  const tabRefs = useRef({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateIndicator = useCallback(() => {
+    const el = tabRefs.current[activeTab];
+    const container = scrollRef.current;
+    if (el && container) {
+      const elRect = el.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const left = elRect.left - containerRect.left + container.scrollLeft;
+      const width = elRect.width;
+      setIndicator({ left, width });
+    }
+  }, [activeTab]);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (el) {
+      setCanScrollLeft(el.scrollLeft > 4);
+      setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateIndicator();
+    checkScroll();
+    window.addEventListener("resize", updateIndicator);
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      window.removeEventListener("resize", updateIndicator);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [activeTab, updateIndicator, checkScroll]);
+
+  const handleScroll = () => {
+    checkScroll();
+    updateIndicator();
+  };
+
+  const scrollBy = (offset) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: offset, behavior: "smooth" });
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      const nextIndex = (index + 1) % tabs.length;
+      onTabSelect(tabs[nextIndex]);
+      if (tabRefs.current[tabs[nextIndex]]) tabRefs.current[tabs[nextIndex]].focus();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      const prevIndex = (index - 1 + tabs.length) % tabs.length;
+      onTabSelect(tabs[prevIndex]);
+      if (tabRefs.current[tabs[prevIndex]]) tabRefs.current[tabs[prevIndex]].focus();
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      onTabSelect(tabs[0]);
+      if (tabRefs.current[tabs[0]]) tabRefs.current[tabs[0]].focus();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      onTabSelect(tabs[tabs.length - 1]);
+      if (tabRefs.current[tabs[tabs.length - 1]]) tabRefs.current[tabs[tabs.length - 1]].focus();
+    }
+  };
+
+  const activeBg = dark ? "#6366F1" : "#4F46E5";
+
+  return (
+    <div className="desktop-filters category-system-tab-nav" aria-label="Category Filters">
+      <button
+        className="category-system-tab-chevron"
+        onClick={() => scrollBy(-200)}
+        disabled={!canScrollLeft}
+        aria-label="Scroll category tabs left"
+        style={{ color: T.chalk }}
+      >
+        ‹
+      </button>
+
+      <div
+        className="category-system-tab-fade-left"
+        style={{
+          opacity: canScrollLeft ? 1 : 0,
+          background: `linear-gradient(to right, ${dark ? T.navy : "#F8FAFC"}, transparent)`,
+        }}
+      />
+
+      <div
+        ref={scrollRef}
+        className="category-system-tab-scroll-container"
+        onScroll={handleScroll}
+        role="tablist"
+        aria-orientation="horizontal"
+      >
+        {tabs.map((tab, idx) => {
+          const isActive = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              ref={(el) => (tabRefs.current[tab] = el)}
+              role="tab"
+              aria-selected={isActive}
+              tabIndex={isActive ? 0 : -1}
+              className={`category-system-tab-item ${isActive ? "active" : ""}`}
+              style={{
+                color: isActive ? "#FFFFFF" : T.muted,
+              }}
+              onClick={() => onTabSelect(tab)}
+              onKeyDown={(e) => handleKeyDown(e, idx)}
+            >
+              {tab}
+            </button>
+          );
+        })}
+
+        <div
+          className="category-system-tab-indicator"
+          style={{
+            transform: `translateX(${indicator.left}px)`,
+            width: `${indicator.width}px`,
+            background: activeBg,
+          }}
+        />
+      </div>
+
+      <div
+        className="category-system-tab-fade-right"
+        style={{
+          opacity: canScrollRight ? 1 : 0,
+          background: `linear-gradient(to left, ${dark ? T.navy : "#F8FAFC"}, transparent)`,
+        }}
+      />
+
+      <button
+        className="category-system-tab-chevron"
+        onClick={() => scrollBy(200)}
+        disabled={!canScrollRight}
+        aria-label="Scroll category tabs right"
+        style={{ color: T.chalk }}
+      >
+        ›
+      </button>
+    </div>
+  );
+}
+
 // ── MASTER TABS SYSTEM (DESKTOP & LAPTOP) ──────────────────────────────────────
-function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
+function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark, setDark }) {
   const scrollRef = useRef(null);
   const tabRefs = useRef({});
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
@@ -2602,9 +2790,16 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
         background: dark ? "rgba(14, 19, 36, 0.94)" : "rgba(255, 255, 255, 0.94)",
         backdropFilter: "blur(12px)",
         borderBottom: `1px solid ${T.border}`,
+        padding: "0 16px",
       }}
       aria-label="Primary Navigation"
     >
+      {/* Desktop Brand Logo */}
+      <div className="desktop-brand-header" style={{ display: "flex", alignItems: "center", gap: 10, marginRight: 16, flexShrink: 0 }}>
+        <img src="/logo.png" alt="PathWise Logo" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
+        <span style={{ color: T.chalk, fontWeight: 800, fontSize: 16, letterSpacing: -0.5 }}>PathWise</span>
+      </div>
+
       <button
         className="system-tab-chevron"
         onClick={() => scrollBy(-220)}
@@ -2678,6 +2873,31 @@ function SystemTabNav({ tabs, activeTab, onTabSelect, T, dark }) {
       >
         ›
       </button>
+
+      {/* Theme Toggle */}
+      {setDark && (
+        <div className="desktop-brand-header" style={{ marginLeft: 16, flexShrink: 0 }}>
+          <button
+            onClick={() => setDark(!dark)}
+            aria-label="Toggle dark mode"
+            style={{
+              background: dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+              border: `1px solid ${T.border}`,
+              borderRadius: 20,
+              padding: "5px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+              color: T.chalk,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 6
+            }}
+          >
+            {dark ? "🌙 Dark" : "☀️ Light"}
+          </button>
+        </div>
+      )}
     </nav>
   );
 }
@@ -2756,6 +2976,7 @@ export default function App() {
           onTabSelect={handleTabSelect}
           T={T}
           dark={dark}
+          setDark={setDark}
         />
 
         <div className={`tab-content-container ${fadeClass}`}>
