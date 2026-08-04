@@ -669,8 +669,8 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
       <div className={`sidebar-backdrop ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
       <aside className={`sidebar ${open ? "open" : ""}`} style={{ backgroundColor: T.navyMid, color: T.chalk, borderRight: `1px solid ${T.border}` }}>
         <div className="sidebar-header" style={{ borderBottom: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/logo.png" alt="PathwayZA Logo" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} />
-          <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: 1 }}>PathwayZA</span>
+          <img src="/logo.png" alt="PathWise Logo" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover" }} />
+          <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: 1 }}>PathWise</span>
         </div>
         <div className="sidebar-links">
           {links.map(l => {
@@ -2572,8 +2572,8 @@ export default function App() {
       <div className="main-content">
         <div className="mobile-header" style={{ backgroundColor: T.navyMid, borderBottom: `1px solid ${T.border}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img src="/logo.png" alt="PathwayZA Logo" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
-            <span style={{ color: T.chalk, fontWeight: 700, fontSize: 16 }}>PathwayZA</span>
+            <img src="/logo.png" alt="PathWise Logo" style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
+            <span style={{ color: T.chalk, fontWeight: 700, fontSize: 16 }}>PathWise</span>
           </div>
           <button className="hamburger-btn" style={{ color: T.chalk }} onClick={() => setSidebarOpen(true)}>☰</button>
         </div>

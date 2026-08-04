@@ -1,6 +1,6 @@
-# PathwayZA — Career Guidance Hub
+# PathWise — Career Guidance Hub
 
-PathwayZA is the central platform of a digital student ecosystem, designed by **Ntsako Ngobeni** ([pathway.co.za](https://pathway.co.za)). It helps primary, high school, and college students in South Africa map their school subjects and personal interests to real, relevant, and high-demand career paths. 
+PathWise is the central platform of a digital student ecosystem, designed by **Ntsako Ngobeni** ([pathway.co.za](https://pathway.co.za)). It helps primary, high school, and college students in South Africa map their school subjects and personal interests to real, relevant, and high-demand career paths. 
 
 The platform treats all qualification routes — including university degrees, TVET college diplomas, apprenticeships, learnerships, and internships — with equal weight, backed by South African job market data, salary benchmarks, funding diagnostics, and AI-powered career scoring.
 
@@ -16,7 +16,7 @@ The platform treats all qualification routes — including university degrees, T
 6. **Recognition of Prior Learning (RPL) TVET Bridge**: Visualizes step-by-step academic credit articulation pathways from TVET N4–N6 courses to university BTech/Advanced Diplomas.
 7. **Course & Accreditation Validator**: Scans institution profiles against a simulated DHET/SAQA database of all **26 public universities**, **50 public TVET colleges**, and known bogus/unaccredited academies to safeguard students.
 8. **Claude Career AI Assistant**: Provides simulated, highly contextualized advice regarding study roadmaps and bursaries, powered by a customized Claude 3.5 Sonnet response system.
-9. **Single Sign-On (SSO) Profile Exchange**: Simulates JWT-based profile integration across the ecosystem (connecting PathwayZA directly with the *Certification Hub* and *Job Board*).
+9. **Single Sign-On (SSO) Profile Exchange**: Simulates JWT-based profile integration across the ecosystem (connecting PathWise directly with the *Certification Hub* and *Job Board*).
 
 ---
 
@@ -53,6 +53,6 @@ The application is powered by a modern **React frontend** built with **Vite** fo
 
 ## 🔗 Role in the Ecosystem
 
-PathwayZA serves as the primary entry point for students. Once a matching career pathway is established:
+PathWise serves as the primary entry point for students. Once a matching career pathway is established:
 - **SSO Profile**: The student's subject list and grade level are encoded into a secure local token.
 - **Outward Routing**: The dashboard exports this token to the **Certification Hub** (to close specific skill gaps) and the **Job Board** (to apply for entry-level vacancies) using a single, unified sign-on.
