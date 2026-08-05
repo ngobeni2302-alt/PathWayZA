@@ -3988,6 +3988,27 @@ function ProfileModal({ T, isOpen, onClose, user }) {
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>
+
+          <button
+            type="button"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              onClose();
+            }}
+            style={{
+              backgroundColor: "transparent",
+              border: `1px solid #EF4444`,
+              color: "#EF4444",
+              width: "100%",
+              padding: "10px",
+              borderRadius: 8,
+              fontSize: 13.5,
+              fontWeight: 600,
+              cursor: "pointer"
+            }}
+          >
+            Log Out
+          </button>
         </form>
       </div>
     </div>
@@ -4290,10 +4311,32 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
           color: T.chalk,
           display: "flex",
           alignItems: "center",
-          gap: 8
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap"
         }}>
-          <span style={{ color: T.teal, fontWeight: 600 }}>✓ Logged in as:</span>
-          <span>{user.email}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ color: T.teal, fontWeight: 600 }}>✓ Logged in as:</span>
+            <span>{user.email}</span>
+          </div>
+          <button
+            type="button"
+            onClick={async () => {
+              await supabase.auth.signOut();
+            }}
+            style={{
+              background: "none",
+              border: `1px solid ${T.border}`,
+              borderRadius: 6,
+              padding: "4px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#EF4444",
+              cursor: "pointer"
+            }}
+          >
+            Log Out
+          </button>
         </div>
       )}
 
