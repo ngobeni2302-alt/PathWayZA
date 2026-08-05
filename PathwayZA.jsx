@@ -3995,7 +3995,7 @@ function ProfileModal({ T, isOpen, onClose, user }) {
 }
 
 // ── REVIEW PAGE ──────────────────────────────────────────────────────────────
-function ReviewPage({ T }) {
+function ReviewPage({ T, user, setAuthModalOpen }) {
   const [formData, setFormData] = useState({
     hearAbout: "",
     hearAboutOther: "",
@@ -4025,11 +4025,20 @@ function ReviewPage({ T }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
 
-    // Prepare payload for FormSubmit
+    if (!user) {
+      setError("You need to log in or sign up before submitting a review.");
+      return;
+    }
+
+    setLoading(true);
+
+    // Prepare payload for FormSubmit with reviewer email
     const payload = {
+      "Reviewer Email": user.email,
+      "email": user.email,
+      "_replyto": user.email,
       "How did you hear about this website?": formData.hearAbout === "Other" ? formData.hearAboutOther : formData.hearAbout,
       "What browser do you use?": formData.browser === "Other" ? formData.browserOther : formData.browser,
       "How often do you visit this website?": formData.frequency === "Other" ? formData.frequencyOther : formData.frequency,
@@ -4041,7 +4050,7 @@ function ReviewPage({ T }) {
       "What did you like most about the website?": formData.likedMost || "None",
       "What improvements would you suggest?": formData.improvements || "None",
       "Any additional comments?": formData.comments || "None",
-      "_subject": "New PathWise Website Review",
+      "_subject": `New PathWise Website Review from ${user.email}`,
       "_honey": "" // Honeypot field for spam prevention
     };
 
@@ -4236,9 +4245,93 @@ function ReviewPage({ T }) {
 
   return (
     <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: "0 1rem 4rem" }}>
+      {!user ? (
+        <div style={{
+          backgroundColor: `${T.teal}15`,
+          border: `1px solid ${T.teal}40`,
+          borderRadius: 10,
+          padding: "14px 18px",
+          marginBottom: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap"
+        }}>
+          <div style={{ fontSize: 13.5, color: T.chalk, fontWeight: 500 }}>
+            ℹ️ You need to log in or sign up before submitting a review.
+          </div>
+          {setAuthModalOpen && (
+            <button
+              type="button"
+              onClick={() => setAuthModalOpen(true)}
+              className="cookie-btn"
+              style={{
+                backgroundColor: T.teal,
+                color: "#FFFFFF",
+                padding: "6px 16px",
+                fontSize: 13,
+                whiteSpace: "nowrap",
+                cursor: "pointer"
+              }}
+            >
+              Log In / Sign Up
+            </button>
+          )}
+        </div>
+      ) : (
+        <div style={{
+          backgroundColor: `${T.teal}10`,
+          border: `1px solid ${T.teal}30`,
+          borderRadius: 10,
+          padding: "10px 16px",
+          marginBottom: 20,
+          fontSize: 13,
+          color: T.chalk,
+          display: "flex",
+          alignItems: "center",
+          gap: 8
+        }}>
+          <span style={{ color: T.teal, fontWeight: 600 }}>✓ Logged in as:</span>
+          <span>{user.email}</span>
+        </div>
+      )}
+
       {error && (
-        <div style={{ backgroundColor: "#FCA5A5", border: "1px solid #EF4444", color: "#7F1D1D", borderRadius: 8, padding: 14, marginBottom: 20, fontSize: 14 }}>
-          {error}
+        <div style={{
+          backgroundColor: "rgba(239, 68, 68, 0.15)",
+          border: "1px solid #EF4444",
+          color: T.chalk,
+          borderRadius: 10,
+          padding: 16,
+          marginBottom: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap"
+        }}>
+          <div style={{ fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
+            <span>⚠️</span>
+            <span>{error}</span>
+          </div>
+          {!user && setAuthModalOpen && (
+            <button
+              type="button"
+              onClick={() => setAuthModalOpen(true)}
+              className="cookie-btn"
+              style={{
+                backgroundColor: T.teal,
+                color: "#FFFFFF",
+                padding: "6px 16px",
+                fontSize: 13,
+                whiteSpace: "nowrap",
+                cursor: "pointer"
+              }}
+            >
+              Log In / Sign Up
+            </button>
+          )}
         </div>
       )}
 
@@ -4470,7 +4563,7 @@ export default function App() {
           {displayPage === "APS Calculator"&& <>{pageHeader("APS Calculator & Course Matcher", "Input your subjects and marks to see which courses you qualify for.")}<ApsCalculatorPage T={T} dark={dark} /></>}
           {displayPage === "Trends"   && <>{pageHeader("SA Career Trends", "What South Africa needs most — right now and in 2030.")}<TrendsPage T={T} /></>}
           {displayPage === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
-          {displayPage === "Review" && <>{pageHeader("Share Your Feedback", "Help us improve PathWise by submitting a review.")}<ReviewPage T={T} /></>}
+          {displayPage === "Review" && <>{pageHeader("Share Your Feedback", "Help us improve PathWise by submitting a review.")}<ReviewPage T={T} user={user} setAuthModalOpen={setAuthModalOpen} /></>}
         </div>
       </div>
       <CookieConsentBanner T={T} dark={dark} />
