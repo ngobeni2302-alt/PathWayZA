@@ -840,7 +840,7 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen, user, set
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
             <ThemeToggle dark={dark} setDark={setDark} />
             <span style={{ fontSize: 10, color: T.muted }}>
-              <span style={{ color: T.teal }}>ValambyaT3ch</span>
+              <span style={{ color: T.teal }}>ValambyaT3ch</span> in partnership with <span style={{ color: T.teal }}>Orankiiey_Tech</span>
             </span>
           </div>
         </div>
@@ -4861,7 +4861,7 @@ function Footer({ T, dark, setPage }) {
           color: T.muted
         }}>
           <div>
-            © {new Date().getFullYear()} PathWise (PathWayZA). All rights reserved.
+            © {new Date().getFullYear()} PathWise (PathWayZA) — <span style={{ color: T.teal, fontWeight: 600 }}>ValambyaT3ch</span> in partnership with <span style={{ color: T.teal, fontWeight: 600 }}>Orankiiey_Tech</span>. All rights reserved.
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
