@@ -4055,11 +4055,11 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
 
     setLoading(true);
 
-    // Prepare payload for FormSubmit with reviewer email
     const payload = {
       "Reviewer Email": user.email,
       "email": user.email,
       "_replyto": user.email,
+      "_cc": "Valambyat3ch@gmail.com",
       "How did you hear about this website?": formData.hearAbout === "Other" ? formData.hearAboutOther : formData.hearAbout,
       "What browser do you use?": formData.browser === "Other" ? formData.browserOther : formData.browser,
       "How often do you visit this website?": formData.frequency === "Other" ? formData.frequencyOther : formData.frequency,
@@ -4076,21 +4076,30 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
     };
 
     try {
-      const response = await fetch("https://formsubmit.co/ajax/oratiledineo75@gmail.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+      const endpoints = [
+        "https://formsubmit.co/ajax/oratiledineo75@gmail.com",
+        "https://formsubmit.co/ajax/Valambyat3ch@gmail.com"
+      ];
 
-      const resData = await response.json();
+      const results = await Promise.allSettled(
+        endpoints.map(url =>
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify(payload)
+          })
+        )
+      );
 
-      if (response.ok && resData.success) {
+      const isSuccess = results.some(res => res.status === "fulfilled" && res.value.ok);
+
+      if (isSuccess) {
         setSubmitted(true);
       } else {
-        throw new Error(resData.message || "Failed to submit feedback. Please try again.");
+        throw new Error("Failed to submit feedback. Please try again.");
       }
     } catch (err) {
       setError(err.message || "Something went wrong. Please check your network connection.");
@@ -4832,6 +4841,12 @@ function Footer({ T, dark, setPage }) {
                 style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
               >
                 oratiledineo75@gmail.com
+              </a>
+              <a 
+                href="mailto:Valambyat3ch@gmail.com" 
+                style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
+              >
+                Valambyat3ch@gmail.com
               </a>
             </div>
             <div style={{
