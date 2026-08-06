@@ -4077,7 +4077,7 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
 
     try {
       const endpoints = [
-        "https://formsubmit.co/ajax/oratiledineo75@gmail.com",
+        "https://formsubmit.co/ajax/orankiieytech@gmail.com",
         "https://formsubmit.co/ajax/Valambyat3ch@gmail.com"
       ];
 
@@ -4837,10 +4837,10 @@ function Footer({ T, dark, setPage }) {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
               <a 
-                href="mailto:oratiledineo75@gmail.com" 
+                href="mailto:orankiieytech@gmail.com" 
                 style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
               >
-                oratiledineo75@gmail.com
+                orankiieytech@gmail.com
               </a>
               <a 
                 href="mailto:Valambyat3ch@gmail.com" 
