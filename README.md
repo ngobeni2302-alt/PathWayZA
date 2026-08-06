@@ -6,7 +6,7 @@ The platform treats all qualification routes — including university degrees, T
 
 ---
 
-## 🌟 Core Features
+## Core Features
 
 1. **AI-Powered Subject-to-Career Matcher**: Computes real-time career suitability scores based on Grade 10–12 subject selections and interest profiles, respecting South African university admission constraints (e.g., Pure Mathematics vs. Math Literacy).
 2. **South African Career Explorer**: Displays a searchable, filterable database of 20+ major local careers with live market demand statuses, average salaries, and minimum academic qualifications.
@@ -20,7 +20,7 @@ The platform treats all qualification routes — including university degrees, T
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Structure**: Semantic HTML5
 - **Styling**: Vanilla CSS3 (Custom design system featuring CSS Grid, Flexbox, glassmorphic card overlays, neon accent glow elements, and micro-animations)
@@ -29,7 +29,7 @@ The platform treats all qualification routes — including university degrees, T
 
 ---
 
-## 🚀 How to Open and Run
+## How to Open and Run
 
 The application is powered by a modern **React frontend** built with **Vite** for incredibly fast local development and instant hot module replacement.
 
@@ -51,7 +51,7 @@ The application is powered by a modern **React frontend** built with **Vite** fo
 
 ---
 
-## 🔗 Role in the Ecosystem
+## Role in the Ecosystem
 
 PathWise serves as the primary entry point for students. Once a matching career pathway is established:
 - **SSO Profile**: The student's subject list and grade level are encoded into a secure local token.

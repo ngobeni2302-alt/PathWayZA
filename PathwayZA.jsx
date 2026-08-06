@@ -4280,7 +4280,7 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
           flexWrap: "wrap"
         }}>
           <div style={{ fontSize: 13.5, color: T.chalk, fontWeight: 500 }}>
-            ℹ️ You need to log in or sign up before submitting a review.
+            Note: You need to log in or sign up before submitting a review.
           </div>
           {setAuthModalOpen && (
             <button
@@ -4355,7 +4355,7 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
           flexWrap: "wrap"
         }}>
           <div style={{ fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
-            <span>⚠️</span>
+            <span>Notice:</span>
             <span>{error}</span>
           </div>
           {!user && setAuthModalOpen && (
@@ -4608,10 +4608,287 @@ export default function App() {
           {displayPage === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
           {displayPage === "Review" && <>{pageHeader("Share Your Feedback", "Help us improve PathWise by submitting a review.")}<ReviewPage T={T} user={user} setAuthModalOpen={setAuthModalOpen} /></>}
         </div>
+
+        <Footer T={T} dark={dark} setPage={handleTabSelect} />
       </div>
       <CookieConsentBanner T={T} dark={dark} />
       <AuthModal T={T} isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
       <ProfileModal T={T} isOpen={profileModalOpen} onClose={() => setProfileModalOpen(false)} user={user} />
     </div>
+  );
+}
+
+// ── FOOTER COMPONENT ──────────────────────────────────────────────────────────
+function Footer({ T, dark, setPage }) {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const navLinks = [
+    { name: "Home" },
+    { name: "Discover" },
+    { name: "APS Calculator" },
+    { name: "Bursaries" },
+    { name: "Careers" },
+    { name: "Certificates" },
+    { name: "Institutions" },
+    { name: "Trends" },
+    { name: "Review" }
+  ];
+
+  const quickResources = [
+    { label: "APS Requirement Index", page: "APS Calculator" },
+    { label: "Bursary & NSFAS Finder", page: "Bursaries" },
+    { label: "DHET Accredited Checker", page: "Institutions" },
+    { label: "High Demand Skills 2030", page: "Trends" },
+    { label: "Booster Credentials Archive", page: "Certificates" },
+    { label: "Grade 9 Subject Guidance", page: "Discover" }
+  ];
+
+  return (
+    <footer className="app-footer" style={{
+      backgroundColor: T.navyMid,
+      borderTop: `1px solid ${T.border}`,
+      color: T.chalk,
+      marginTop: "auto",
+      padding: "50px 24px 28px",
+      transition: "background-color 0.3s ease, border-color 0.3s ease"
+    }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        {/* Top Callout Banner */}
+        <div style={{
+          background: dark 
+            ? "linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(20, 184, 166, 0.15) 100%)" 
+            : "linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(20, 184, 166, 0.08) 100%)",
+          border: `1px solid ${T.teal}40`,
+          borderRadius: 16,
+          padding: "24px 32px",
+          marginBottom: 48,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 20
+        }}>
+          <div>
+            <h3 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 6px 0", color: T.chalk }}>
+              Ready to map your future path?
+            </h3>
+            <p style={{ fontSize: 14, color: T.muted, margin: 0 }}>
+              Calculate your APS score, explore accredited qualifications, and find bursaries today.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <button
+              onClick={() => { setPage("APS Calculator"); scrollToTop(); }}
+              className="cookie-btn"
+              style={{
+                backgroundColor: T.teal,
+                color: "#FFFFFF",
+                padding: "10px 20px",
+                fontSize: 14,
+                fontWeight: 600,
+                boxShadow: `0 4px 14px ${T.teal}40`
+              }}
+            >
+              Calculate APS Score
+            </button>
+            <button
+              onClick={() => { setPage("Review"); scrollToTop(); }}
+              className="cookie-btn"
+              style={{
+                backgroundColor: "transparent",
+                border: `1px solid ${T.border}`,
+                color: T.chalk,
+                padding: "10px 20px",
+                fontSize: 14,
+                fontWeight: 600
+              }}
+            >
+              Give Feedback
+            </button>
+          </div>
+        </div>
+
+        {/* Main Footer Grid */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 40,
+          marginBottom: 48
+        }}>
+          {/* Col 1: Brand Info */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <img src="/logo.png" alt="PathWise Logo" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover" }} />
+              <span style={{ fontSize: 20, fontWeight: 800, color: T.chalk, letterSpacing: "-0.5px" }}>PathWise</span>
+            </div>
+            <p style={{ fontSize: 13.5, color: T.muted, lineHeight: 1.6, margin: 0 }}>
+              Empowering South African learners and high school graduates with smart subject matching, accredited university & TVET course guidance, and funding resources.
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+              <span style={{ fontSize: 12.5, fontWeight: 600, color: T.teal }}>Built for South African Students</span>
+            </div>
+          </div>
+
+          {/* Col 2: Platform Navigation */}
+          <div>
+            <h4 style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: T.chalk, marginBottom: 16 }}>
+              Platform Navigation
+            </h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {navLinks.slice(0, 5).map(link => (
+                <li key={link.name}>
+                  <button
+                    onClick={() => { setPage(link.name); scrollToTop(); }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: T.muted,
+                      fontSize: 13.5,
+                      cursor: "pointer",
+                      padding: 0,
+                      textAlign: "left",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      transition: "all 0.2s ease"
+                    }}
+                    className="footer-link-hover"
+                  >
+                    <span>{link.name}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 3: Key Tools & Resources */}
+          <div>
+            <h4 style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: T.chalk, marginBottom: 16 }}>
+              Key Tools
+            </h4>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {navLinks.slice(5).map(link => (
+                <li key={link.name}>
+                  <button
+                    onClick={() => { setPage(link.name); scrollToTop(); }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: T.muted,
+                      fontSize: 13.5,
+                      cursor: "pointer",
+                      padding: 0,
+                      textAlign: "left",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      transition: "all 0.2s ease"
+                    }}
+                    className="footer-link-hover"
+                  >
+                    <span>{link.name}</span>
+                  </button>
+                </li>
+              ))}
+              {quickResources.slice(0, 2).map((res, i) => (
+                <li key={i}>
+                  <button
+                    onClick={() => { setPage(res.page); scrollToTop(); }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: T.muted,
+                      fontSize: 13.5,
+                      cursor: "pointer",
+                      padding: 0,
+                      textAlign: "left",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      transition: "all 0.2s ease"
+                    }}
+                    className="footer-link-hover"
+                  >
+                    <span>{res.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4: Contact & Disclaimer */}
+          <div>
+            <h4 style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: T.chalk, marginBottom: 16 }}>
+              Contact & Support
+            </h4>
+            <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6, marginBottom: 14 }}>
+              Questions about university admission or feedback? Reach out to our team.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+              <a 
+                href="mailto:oratiledineo75@gmail.com" 
+                style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
+              >
+                oratiledineo75@gmail.com
+              </a>
+            </div>
+            <div style={{
+              fontSize: 11.5,
+              color: T.muted,
+              backgroundColor: T.navyCard,
+              padding: "10px 12px",
+              borderRadius: 8,
+              border: `1px solid ${T.border}`,
+              lineHeight: 1.4
+            }}>
+              Educational guidance tool. Always verify course requirements directly with prospective institutions.
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Bottom Bar */}
+        <div style={{
+          borderTop: `1px solid ${T.border}`,
+          paddingTop: 24,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 16,
+          fontSize: 13,
+          color: T.muted
+        }}>
+          <div>
+            © {new Date().getFullYear()} PathWise (PathWayZA). All rights reserved.
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <button
+              onClick={scrollToTop}
+              style={{
+                background: "none",
+                border: `1px solid ${T.border}`,
+                color: T.chalk,
+                padding: "6px 14px",
+                borderRadius: 20,
+                fontSize: 12.5,
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                transition: "all 0.2s ease"
+              }}
+              className="cookie-btn"
+            >
+              <span>Back to top</span>
+              <span>↑</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }
