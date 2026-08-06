@@ -1,6 +1,6 @@
 # PathWise — Career Guidance Hub
 
-PathWise is the central platform of a digital student ecosystem, designed by **Ntsako Ngobeni** ([pathway.co.za](https://pathway.co.za)). It helps primary, high school, and college students in South Africa map their school subjects and personal interests to real, relevant, and high-demand career paths. 
+PathWise is the central platform of a digital student ecosystem, developed by **ValambyaT3ch** in partnership with **Orankiiey_Tech** ([pathwise.co.za](https://pathwise.co.za)). It helps primary, high school, and college students in South Africa map their school subjects and personal interests to real, relevant, and high-demand career paths. 
 
 The platform treats all qualification routes — including university degrees, TVET college diplomas, apprenticeships, learnerships, and internships — with equal weight, backed by South African job market data, salary benchmarks, funding diagnostics, and AI-powered career scoring.
 
@@ -56,3 +56,9 @@ The application is powered by a modern **React frontend** built with **Vite** fo
 PathWise serves as the primary entry point for students. Once a matching career pathway is established:
 - **SSO Profile**: The student's subject list and grade level are encoded into a secure local token.
 - **Outward Routing**: The dashboard exports this token to the **Certification Hub** (to close specific skill gaps) and the **Job Board** (to apply for entry-level vacancies) using a single, unified sign-on.
+
+---
+
+## Credits & Partnership
+
+Developed by **ValambyaT3ch** in partnership with **Orankiiey_Tech**.
