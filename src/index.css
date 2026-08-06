@@ -723,6 +723,16 @@ body {
   transform-origin: top right;
 }
 
+/* ── FOOTER STYLES ── */
+.footer-link-hover {
+  transition: color 0.2s ease, transform 0.2s ease !important;
+}
+
+.footer-link-hover:hover {
+  color: #6366F1 !important;
+  transform: translateX(4px);
+}
+
 
 
 
