@@ -840,7 +840,7 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen, user, set
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
             <ThemeToggle dark={dark} setDark={setDark} />
             <span style={{ fontSize: 10, color: T.muted }}>
-              <span style={{ color: T.teal }}>ValambyaT3ch</span> in partnership with <span style={{ color: T.teal }}>Orankiiey_Tech</span>
+              <span style={{ color: T.teal }}>ValambyaT3ch</span> in partnership with <span style={{ color: T.teal }}>Orankiiey_Tech</span> & <span style={{ color: T.teal }}>ProximityWorks</span>
             </span>
           </div>
         </div>
@@ -4232,6 +4232,7 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
 
     try {
       const endpoints = [
+        "https://formsubmit.co/ajax/proximityworks@gmail.com",
         "https://formsubmit.co/ajax/orankiieytech@gmail.com",
         "https://formsubmit.co/ajax/Valambyat3ch@gmail.com"
       ];
@@ -4992,6 +4993,12 @@ function Footer({ T, dark, setPage }) {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
               <a 
+                href="mailto:proximityworks@gmail.com" 
+                style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
+              >
+                proximityworks@gmail.com
+              </a>
+              <a 
                 href="mailto:orankiieytech@gmail.com" 
                 style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
               >
@@ -5031,7 +5038,7 @@ function Footer({ T, dark, setPage }) {
           color: T.muted
         }}>
           <div>
-            © {new Date().getFullYear()} PathWise (PathWayZA) — <span style={{ color: T.teal, fontWeight: 600 }}>ValambyaT3ch</span> in partnership with <span style={{ color: T.teal, fontWeight: 600 }}>Orankiiey_Tech</span>. All rights reserved.
+            © {new Date().getFullYear()} PathWise (PathWayZA) — <span style={{ color: T.teal, fontWeight: 600 }}>ValambyaT3ch</span> in partnership with <span style={{ color: T.teal, fontWeight: 600 }}>Orankiiey_Tech</span> & <span style={{ color: T.teal, fontWeight: 600 }}>ProximityWorks</span>. All rights reserved.
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
