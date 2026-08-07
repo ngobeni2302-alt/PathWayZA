@@ -583,7 +583,7 @@ function getExternalLink(name) {
     "SANRAL Bursary": "https://www.sanral.co.za",
     "Murray & Roberts": "https://www.murrob.com",
     "ESKOM Engineering Bursary": "https://www.eskom.co.za",
-    "Funza Lushaka Bursary": "https://www.funzalushaka.gov.za",
+    "Funza Lushaka Bursary": "https://www.eservices.gov.za",
     "Department of Education Bursary": "https://www.education.gov.za",
     "SANBI Bursary": "https://www.sanbi.org",
     "WWF South Africa": "https://www.wwf.org.za",
@@ -1289,7 +1289,7 @@ function CareersPage({ T, dark }) {
 function BursariesPage({ T, dark }) {
   const bursaries = [
     { name: "NSFAS", type: "Government", fields: "All fields", amount: "Up to R105 000/yr", apply: "nsfas.org.za", url: "https://www.nsfas.org.za", deadline: "Nov - Jan" },
-    { name: "Funza Lushaka", type: "Government", fields: "Teaching / Education", amount: "Full cost of study", apply: "funzalushaka.gov.za", url: "https://www.funzalushaka.gov.za", deadline: "Nov - Jan" },
+    { name: "Funza Lushaka", type: "Government", fields: "Teaching / Education", amount: "Full cost of study", apply: "eservices.gov.za", url: "https://www.eservices.gov.za", deadline: "Nov - Jan" },
     { name: "Sasol Bursary Programme", type: "Corporate", fields: "Engineering, Science, IT", amount: "Full cost of study", apply: "sasolbursaries.com", url: "https://www.sasolbursaries.com", deadline: "April" },
     { name: "Anglo American Bursary", type: "Corporate", fields: "Mining, Engineering", amount: "Full cost + allowance", apply: "angloamerican.com", url: "https://www.angloamerican.com", deadline: "May" },
     { name: "Nedbank Bursary", type: "Corporate", fields: "Finance, IT, Accounting", amount: "Up to R80 000/yr", apply: "nedbank.co.za", url: "https://www.nedbank.co.za", deadline: "June" },
