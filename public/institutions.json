@@ -40,6 +40,7 @@
   { "name": "SAE Institute", "type": "Private College", "location": "Western Cape / Gauteng", "legit": true },
   { "name": "CTI Education Group", "type": "Private College", "location": "National", "legit": true },
   { "name": "Milpark Education", "type": "Private College", "location": "National", "legit": true },
+  { "name": "Gauteng City College (GCC)", "type": "Private College", "location": "Gauteng (Braamfontein, Springs)", "legit": true, "dhetReg": "2017/FE07/001" },
   { "name": "Port Elizabeth TVET College", "type": "Public TVET", "location": "Eastern Cape", "legit": true },
   { "name": "East Cape Midlands TVET College", "type": "Public TVET", "location": "Eastern Cape", "legit": true },
   { "name": "Buffalo City TVET College", "type": "Public TVET", "location": "Eastern Cape", "legit": true },

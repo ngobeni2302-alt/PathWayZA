@@ -1946,6 +1946,7 @@ const STATIC_INSTITUTIONS = [
   { id: "p-9", name: "IIE MSA", type: "Private College", location: "Gauteng", legit: true, saqaId: "SAQA-REG-145", code: "IIEMSA" },
   { id: "p-10", name: "Richfield Graduate Institute of Technology", type: "Private College", location: "National", legit: true, saqaId: "SAQA-REG-98", code: "RICHFIELD" },
   { id: "p-11", name: "Damelin", type: "Private College", location: "National", legit: true, saqaId: "SAQA-REG-74", code: "DAMELIN" },
+  { id: "p-12", name: "Gauteng City College (GCC)", type: "Private College", location: "Gauteng (Braamfontein, Springs)", legit: true, saqaId: "DHET-2017/FE07/001", code: "GCC", details: "Registered with DHET (Reg No: 2017/FE07/001), Umalusi Accredited (16FET02 00067), and QCTO approved for NATED N1-N6 & Vocational programmes." },
 
   // Public TVET Colleges
   { id: "t-1", name: "Port Elizabeth TVET College", type: "Public TVET", location: "Eastern Cape", legit: true, saqaId: "DHET-TVET-EC-PE", code: "PETVET" },
@@ -1976,54 +1977,227 @@ const STATIC_INSTITUTIONS = [
 ];
 
 function getStaticCoursesForInstitution(inst) {
+  const name = (inst.name || "").toLowerCase();
   const type = inst.type || "Public University";
   const idPrefix = inst.id || inst.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 8);
 
-  if (type.includes("TVET")) {
+  // 1. Specialized Private Institutions
+  if (name.includes("afda")) {
     return [
-      { name: "National Certificate: N6 Business Management", saqa_id: `TVET-${idPrefix}-BM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "National Certificate: N6 Human Resource Management", saqa_id: `TVET-${idPrefix}-HRM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "National Certificate: N6 Financial Management", saqa_id: `TVET-${idPrefix}-FM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "National Certificate: N6 Tourism Management", saqa_id: `TVET-${idPrefix}-TM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "National Certificate: N6 Hospitality & Catering Services", saqa_id: `TVET-${idPrefix}-HOSP6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "National Certificate: N6 Public Management", saqa_id: `TVET-${idPrefix}-PM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "National Certificate: N4-N6 Information Technology Services", saqa_id: `TVET-${idPrefix}-IT6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "National Certificate: N1 - N3 Engineering Studies", saqa_id: `TVET-${idPrefix}-N1`, nqf_level: 2, min_aps: 15, required_subjects: {} }
+      { name: "BA in Motion Picture Medium", saqa_id: "SAQA-35936", nqf_level: 7, min_aps: 24, required_subjects: { "English": 50 } },
+      { name: "BA in Live Performance", saqa_id: "SAQA-35937", nqf_level: 7, min_aps: 24, required_subjects: { "English": 50 } },
+      { name: "BCom in Business Innovation & Entrepreneurship", saqa_id: "SAQA-97457", nqf_level: 7, min_aps: 24, required_subjects: { "English": 50 } },
+      { name: "Higher Certificate in Film, Television & Entertainment Production", saqa_id: "SAQA-90656", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "Diploma in Creative Writing", saqa_id: "SAQA-110933", nqf_level: 6, min_aps: 20, required_subjects: { "English": 50 } }
     ];
   }
 
+  if (name.includes("inscape")) {
+    return [
+      { name: "Bachelor of Design (Graphic / Interior / Fashion / Architecture)", saqa_id: "SAQA-96602", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "Diploma in Graphic Design", saqa_id: "SAQA-94582", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Diploma in Interior Design", saqa_id: "SAQA-94583", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Higher Certificate in Design Techniques", saqa_id: "SAQA-94581", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "Higher Certificate in Architectural Technology", saqa_id: "SAQA-115433", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("mancosa") || name.includes("regent")) {
+    return [
+      { name: "Bachelor of Business Administration (BBA)", saqa_id: "SAQA-62111", nqf_level: 7, min_aps: 24, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Commerce (BCom) General", saqa_id: "SAQA-62112", nqf_level: 7, min_aps: 24, required_subjects: { "Mathematics / Mathematical Literacy": 40 } },
+      { name: "BCom in Human Resource Management", saqa_id: "SAQA-62113", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "BCom in Supply Chain Management", saqa_id: "SAQA-62114", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "Diploma in Business Management", saqa_id: "SAQA-62115", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Higher Certificate in Business Management", saqa_id: "SAQA-62116", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "Higher Certificate in Accounting", saqa_id: "SAQA-62117", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("rosebank")) {
+    return [
+      { name: "Bachelor of Business Administration (BBA)", saqa_id: "SAQA-90701", nqf_level: 7, min_aps: 24, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Information Technology in Business Analysis", saqa_id: "SAQA-90702", nqf_level: 7, min_aps: 24, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
+      { name: "Diploma in Information Technology (Network Eng / Software Dev)", saqa_id: "SAQA-90703", nqf_level: 6, min_aps: 22, required_subjects: { "Mathematics / Mathematical Literacy": 40 } },
+      { name: "Diploma in Business Management", saqa_id: "SAQA-90704", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Diploma in Human Resource Management", saqa_id: "SAQA-90705", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Diploma in Digital Marketing & Journalism", saqa_id: "SAQA-90706", nqf_level: 6, min_aps: 20, required_subjects: { "English": 50 } },
+      { name: "Higher Certificate in Information Technology", saqa_id: "SAQA-90707", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "Higher Certificate in Business Management", saqa_id: "SAQA-90708", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("eduvos")) {
+    return [
+      { name: "BSc in Computer Science", saqa_id: "SAQA-88401", nqf_level: 7, min_aps: 32, required_subjects: { "Mathematics": 50 } },
+      { name: "BSc in Information Technology", saqa_id: "SAQA-88402", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
+      { name: "Bachelor of Commerce (BCom) Accounting", saqa_id: "SAQA-88403", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics": 50 } },
+      { name: "Bachelor of Commerce (BCom) Business Management", saqa_id: "SAQA-88404", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "Bachelor of Arts in Law (BA Law)", saqa_id: "SAQA-88405", nqf_level: 7, min_aps: 28, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Laws (LLB)", saqa_id: "SAQA-88406", nqf_level: 8, min_aps: 30, required_subjects: { "English": 50 } },
+      { name: "Diploma in Information Technology", saqa_id: "SAQA-88407", nqf_level: 6, min_aps: 22, required_subjects: {} },
+      { name: "Higher Certificate in Information Technology", saqa_id: "SAQA-88408", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("varsity college")) {
+    return [
+      { name: "Bachelor of Laws (LLB)", saqa_id: "SAQA-91801", nqf_level: 8, min_aps: 30, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Commerce (BCom) Accounting", saqa_id: "SAQA-91802", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics": 50 } },
+      { name: "Bachelor of Arts (BA) Psychology", saqa_id: "SAQA-91803", nqf_level: 7, min_aps: 26, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Computer & Information Sciences in Application Development", saqa_id: "SAQA-91804", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
+      { name: "Diploma in Information Technology", saqa_id: "SAQA-91805", nqf_level: 6, min_aps: 22, required_subjects: {} },
+      { name: "Diploma in Business Management", saqa_id: "SAQA-91806", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Higher Certificate in Business Principles", saqa_id: "SAQA-91807", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("boston")) {
+    return [
+      { name: "Bachelor of Commerce (BCom) Management Marketing", saqa_id: "SAQA-84601", nqf_level: 7, min_aps: 24, required_subjects: { "English": 50 } },
+      { name: "Diploma in Information Technology (Systems Development)", saqa_id: "SAQA-84602", nqf_level: 6, min_aps: 22, required_subjects: { "Mathematics / Mathematical Literacy": 40 } },
+      { name: "Diploma in Financial Accounting", saqa_id: "SAQA-84603", nqf_level: 6, min_aps: 22, required_subjects: {} },
+      { name: "Higher Certificate in HIV/AIDS Counselling", saqa_id: "SAQA-84604", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "Higher Certificate in Business Management", saqa_id: "SAQA-84605", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("stadio")) {
+    return [
+      { name: "Bachelor of Laws (LLB)", saqa_id: "SAQA-99101", nqf_level: 8, min_aps: 30, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Policing Practice", saqa_id: "SAQA-99102", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "Bachelor of Education (BEd) Foundation Phase", saqa_id: "SAQA-99103", nqf_level: 7, min_aps: 26, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Commerce (BCom)", saqa_id: "SAQA-99104", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "Diploma in Information Technology", saqa_id: "SAQA-99105", nqf_level: 6, min_aps: 22, required_subjects: {} },
+      { name: "Higher Certificate in Paralegal Studies", saqa_id: "SAQA-99106", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("richfield")) {
+    return [
+      { name: "BSc in Information Technology", saqa_id: "SAQA-74201", nqf_level: 7, min_aps: 26, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
+      { name: "Bachelor of Business Administration (BBA)", saqa_id: "SAQA-74202", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "Diploma in Information Technology", saqa_id: "SAQA-74203", nqf_level: 6, min_aps: 22, required_subjects: {} },
+      { name: "Higher Certificate in Information Technology", saqa_id: "SAQA-74204", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("damelin")) {
+    return [
+      { name: "Diploma in Information Technology", saqa_id: "SAQA-65101", nqf_level: 6, min_aps: 22, required_subjects: {} },
+      { name: "Diploma in Business Management", saqa_id: "SAQA-65102", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Diploma in Human Resource Management", saqa_id: "SAQA-65103", nqf_level: 6, min_aps: 20, required_subjects: {} },
+      { name: "Higher Certificate in Business Management", saqa_id: "SAQA-65104", nqf_level: 5, min_aps: 18, required_subjects: {} }
+    ];
+  }
+
+  if (name.includes("gauteng city college") || name.includes("gcc")) {
+    return [
+      { name: "National Certificate: N4 - N6 Mechanical Engineering", saqa_id: "SAQA-GCC-MECH6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Civil Engineering", saqa_id: "SAQA-GCC-CIVIL6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Electrical Engineering", saqa_id: "SAQA-GCC-ELEC6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Business Management", saqa_id: "SAQA-GCC-BM6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Human Resource Management", saqa_id: "SAQA-GCC-HRM6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Financial Management", saqa_id: "SAQA-GCC-FM6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Marketing Management", saqa_id: "SAQA-GCC-MKT6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Public Management", saqa_id: "SAQA-GCC-PM6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Information Technology Services", saqa_id: "SAQA-GCC-IT6", nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N1 - N3 Engineering Studies", saqa_id: "SAQA-GCC-ENG13", nqf_level: 2, min_aps: 15, required_subjects: {} },
+      { name: "NC(V) Office Administration (Level 2 - 4)", saqa_id: "SAQA-GCC-NCV-OFFICE", nqf_level: 4, min_aps: 16, required_subjects: {} }
+    ];
+  }
+
+  // 2. Specialized Health Sciences University (SMU)
+  if (name.includes("sefako makgatho") || name.includes("smu")) {
+    return [
+      { name: "Bachelor of Medicine & Bachelor of Surgery (MBChB)", saqa_id: "SAQA-101980", nqf_level: 8, min_aps: 38, required_subjects: { "Mathematics": 70, "Physical Sciences": 70, "Life Sciences": 70 } },
+      { name: "Bachelor of Dental Surgery (BDS)", saqa_id: "SAQA-101981", nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 65, "Life Sciences": 65 } },
+      { name: "Bachelor of Pharmacy (BPharm)", saqa_id: "SAQA-101982", nqf_level: 8, min_aps: 34, required_subjects: { "Mathematics": 60, "Physical Sciences": 60 } },
+      { name: "Bachelor of Nursing Science (BNurs)", saqa_id: "SAQA-101983", nqf_level: 7, min_aps: 28, required_subjects: { "Life Sciences": 50, "Mathematics / Mathematical Literacy": 50 } },
+      { name: "BSc in Physiotherapy", saqa_id: "SAQA-101984", nqf_level: 8, min_aps: 34, required_subjects: { "Mathematics": 60, "Physical Sciences": 60, "Life Sciences": 60 } },
+      { name: "BSc in Occupational Therapy", saqa_id: "SAQA-101985", nqf_level: 8, min_aps: 32, required_subjects: { "Mathematics": 50, "Physical Sciences": 50, "Life Sciences": 50 } },
+      { name: "BSc in Medical Sciences", saqa_id: "SAQA-101986", nqf_level: 7, min_aps: 30, required_subjects: { "Mathematics": 55, "Physical Sciences": 55 } }
+    ];
+  }
+
+  // 3. Universities of Technology (TUT, CPUT, DUT, CUT, VUT, MUT)
+  if (type.includes("Technology") || name.includes("tshwane university of technology") || name.includes("cape peninsula university of technology") || name.includes("durban university of technology") || name.includes("central university of technology") || name.includes("vaal university of technology") || name.includes("mangosuthu university of technology")) {
+    return [
+      { name: "Diploma in Information Technology", saqa_id: `UOT-${idPrefix}-DIT`, nqf_level: 6, min_aps: 24, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
+      { name: "Diploma in Electrical Engineering", saqa_id: `UOT-${idPrefix}-DEE`, nqf_level: 6, min_aps: 26, required_subjects: { "Mathematics": 50, "Physical Sciences": 50 } },
+      { name: "Diploma in Mechanical Engineering", saqa_id: `UOT-${idPrefix}-DME`, nqf_level: 6, min_aps: 26, required_subjects: { "Mathematics": 50, "Physical Sciences": 50 } },
+      { name: "Diploma in Civil Engineering", saqa_id: `UOT-${idPrefix}-DCE`, nqf_level: 6, min_aps: 26, required_subjects: { "Mathematics": 50, "Physical Sciences": 50 } },
+      { name: "Diploma in Analytical Chemistry", saqa_id: `UOT-${idPrefix}-DAC`, nqf_level: 6, min_aps: 26, required_subjects: { "Mathematics": 50, "Physical Sciences": 50 } },
+      { name: "Diploma in Nursing", saqa_id: `UOT-${idPrefix}-DNURS`, nqf_level: 6, min_aps: 24, required_subjects: { "Life Sciences": 50 } },
+      { name: "Diploma in Hospitality Management", saqa_id: `UOT-${idPrefix}-DHOSP`, nqf_level: 6, min_aps: 22, required_subjects: {} },
+      { name: "Bachelor of Engineering Technology (BEngTech) Electrical / Civil / Mechanical", saqa_id: `UOT-${idPrefix}-BENGTECH`, nqf_level: 7, min_aps: 30, required_subjects: { "Mathematics": 60, "Physical Sciences": 55 } },
+      { name: "Advanced Diploma in Information Technology", saqa_id: `UOT-${idPrefix}-ADIT`, nqf_level: 7, min_aps: 26, required_subjects: {} },
+      { name: "Bachelor of Commerce in Accounting", saqa_id: `UOT-${idPrefix}-BCOM-ACC`, nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics": 50 } }
+    ];
+  }
+
+  // 4. Public TVET Colleges
+  if (type.includes("TVET") || name.includes("tvet")) {
+    return [
+      { name: "National Certificate: N1 - N3 Engineering Studies (Electrical / Mechanical / Civil)", saqa_id: `TVET-${idPrefix}-N1N3`, nqf_level: 2, min_aps: 15, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Electrical Engineering", saqa_id: `TVET-${idPrefix}-N6ELEC`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Mechanical Engineering", saqa_id: `TVET-${idPrefix}-N6MECH`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Civil Engineering & Building Construction", saqa_id: `TVET-${idPrefix}-N6CIVIL`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Business Management", saqa_id: `TVET-${idPrefix}-BM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Financial Management", saqa_id: `TVET-${idPrefix}-FM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Human Resource Management", saqa_id: `TVET-${idPrefix}-HRM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Tourism Management", saqa_id: `TVET-${idPrefix}-TM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Hospitality & Catering Services", saqa_id: `TVET-${idPrefix}-HOSP6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Public Management", saqa_id: `TVET-${idPrefix}-PM6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "National Certificate: N4 - N6 Information Technology Services", saqa_id: `TVET-${idPrefix}-IT6`, nqf_level: 5, min_aps: 18, required_subjects: {} },
+      { name: "NC(V) National Certificate Vocational: Electrical Infrastructure (Level 2 - 4)", saqa_id: `TVET-${idPrefix}-NCVELEC`, nqf_level: 4, min_aps: 16, required_subjects: {} },
+      { name: "NC(V) National Certificate Vocational: Information Technology & CS (Level 2 - 4)", saqa_id: `TVET-${idPrefix}-NCVIT`, nqf_level: 4, min_aps: 16, required_subjects: {} }
+    ];
+  }
+
+  // 5. Generic Private College fallback
   if (type.includes("Private")) {
     return [
       { name: "Bachelor of Business Administration (BBA)", saqa_id: `PRIV-${idPrefix}-BBA`, nqf_level: 7, min_aps: 24, required_subjects: { "English": 50 } },
       { name: "Diploma in Information Technology", saqa_id: `PRIV-${idPrefix}-DIT`, nqf_level: 6, min_aps: 22, required_subjects: { "Mathematics / Mathematical Literacy": 40 } },
       { name: "Diploma in Business Management", saqa_id: `PRIV-${idPrefix}-DBM`, nqf_level: 6, min_aps: 20, required_subjects: {} },
       { name: "Diploma in Human Resource Management", saqa_id: `PRIV-${idPrefix}-DHR`, nqf_level: 6, min_aps: 20, required_subjects: {} },
-      { name: "Diploma in Tourism & Event Management", saqa_id: `PRIV-${idPrefix}-DTEM`, nqf_level: 6, min_aps: 20, required_subjects: {} },
       { name: "Higher Certificate in Information Technology", saqa_id: `PRIV-${idPrefix}-HCIT`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "Higher Certificate in Digital Marketing", saqa_id: `PRIV-${idPrefix}-HCDM`, nqf_level: 5, min_aps: 18, required_subjects: {} },
-      { name: "Diploma in Public Relations", saqa_id: `PRIV-${idPrefix}-DPR`, nqf_level: 6, min_aps: 20, required_subjects: {} }
+      { name: "Higher Certificate in Digital Marketing", saqa_id: `PRIV-${idPrefix}-HCDM`, nqf_level: 5, min_aps: 18, required_subjects: {} }
     ];
   }
 
-  // Public University defaults
-  return [
+  // 6. Traditional Public Universities (UCT, Wits, UP, SU, UKZN, UJ, NWU, UFS, UWC, RU, NMU, UL, UFH, WSU, UNIVEN, UNIZULU, UMP, SPU, UNISA)
+  const offersMedicine = name.includes("cape town") || name.includes("witwatersrand") || name.includes("pretoria") || name.includes("stellenbosch") || name.includes("kwazulu-natal") || name.includes("free state") || name.includes("walter sisulu") || name.includes("limpopo");
+
+  const uniCourses = [
+    { name: "BSc in Computer Science", saqa_id: `UNIV-${idPrefix}-CS`, nqf_level: 7, min_aps: 35, required_subjects: { "Mathematics": 60, "Physical Sciences": 50 } },
     { name: "Bachelor of Laws (LLB)", saqa_id: `UNIV-${idPrefix}-LLB`, nqf_level: 8, min_aps: 30, required_subjects: { "English": 50, "Mathematics / Mathematical Literacy": 50 } },
+    { name: "Bachelor of Commerce in Accounting (CA Stream)", saqa_id: `UNIV-${idPrefix}-ACC`, nqf_level: 7, min_aps: 32, required_subjects: { "Mathematics": 50 } },
+    { name: "BEng in Electrical Engineering", saqa_id: `UNIV-${idPrefix}-ENG-ELEC`, nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 60 } },
+    { name: "BEng in Mechanical Engineering", saqa_id: `UNIV-${idPrefix}-ENG-MECH`, nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 60 } },
+    { name: "BEng in Civil Engineering", saqa_id: `UNIV-${idPrefix}-ENG-CIVIL`, nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 60 } },
+    { name: "Bachelor of Education (BEd) Senior & FET Phase", saqa_id: `UNIV-${idPrefix}-BED`, nqf_level: 7, min_aps: 26, required_subjects: { "English": 50 } },
     { name: "Bachelor of Arts (BA General)", saqa_id: `UNIV-${idPrefix}-BA`, nqf_level: 7, min_aps: 26, required_subjects: { "English": 50 } },
-    { name: "Bachelor of Education (BEd) Foundation / Intermediate Phase", saqa_id: `UNIV-${idPrefix}-BED`, nqf_level: 7, min_aps: 26, required_subjects: { "English": 50, "Mathematics / Mathematical Literacy": 50 } },
+    { name: "BA in Psychology", saqa_id: `UNIV-${idPrefix}-PSY`, nqf_level: 7, min_aps: 26, required_subjects: { "English": 50 } },
     { name: "Bachelor of Social Work (BSW)", saqa_id: `UNIV-${idPrefix}-BSW`, nqf_level: 8, min_aps: 28, required_subjects: { "English": 50 } },
     { name: "Bachelor of Commerce in Human Resource Management", saqa_id: `UNIV-${idPrefix}-BCOM-HR`, nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
     { name: "Bachelor of Commerce in Marketing Management", saqa_id: `UNIV-${idPrefix}-BCOM-MKT`, nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
-    { name: "Bachelor of Commerce in Tourism Management", saqa_id: `UNIV-${idPrefix}-BCOM-TOUR`, nqf_level: 7, min_aps: 26, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
-    { name: "Bachelor of Business Administration (BBA)", saqa_id: `UNIV-${idPrefix}-BBA`, nqf_level: 7, min_aps: 24, required_subjects: { "English": 50, "Mathematics / Mathematical Literacy": 40 } },
-    { name: "BA in Psychology", saqa_id: `UNIV-${idPrefix}-PSY`, nqf_level: 7, min_aps: 26, required_subjects: { "English": 50 } },
-    { name: "BA in Media & Communication / Journalism", saqa_id: `UNIV-${idPrefix}-JOURN`, nqf_level: 7, min_aps: 28, required_subjects: { "English": 60 } },
-    { name: "Diploma in Nursing", saqa_id: `UNIV-${idPrefix}-NURS`, nqf_level: 6, min_aps: 24, required_subjects: { "Life Sciences": 50, "Mathematics / Mathematical Literacy": 50 } },
-    { name: "Diploma in Information Technology", saqa_id: `UNIV-${idPrefix}-DIT`, nqf_level: 6, min_aps: 22, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
-    { name: "BSc in Computer Science", saqa_id: `UNIV-${idPrefix}-CS`, nqf_level: 7, min_aps: 35, required_subjects: { "Mathematics": 60, "Physical Sciences": 50 } },
-    { name: "Bachelor of Commerce in Accounting", saqa_id: `UNIV-${idPrefix}-ACC`, nqf_level: 7, min_aps: 32, required_subjects: { "Mathematics": 50 } },
-    { name: "BEng in Electrical Engineering", saqa_id: `UNIV-${idPrefix}-ENG`, nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 60 } },
-    { name: "Bachelor of Medicine & Bachelor of Surgery (MBChB)", saqa_id: `UNIV-${idPrefix}-MED`, nqf_level: 8, min_aps: 40, required_subjects: { "Mathematics": 70, "Physical Sciences": 70, "Life Sciences": 70 } }
+    { name: "Diploma in Nursing", saqa_id: `UNIV-${idPrefix}-NURS`, nqf_level: 6, min_aps: 24, required_subjects: { "Life Sciences": 50 } },
+    { name: "Diploma in Information Technology", saqa_id: `UNIV-${idPrefix}-DIT`, nqf_level: 6, min_aps: 22, required_subjects: { "Mathematics / Mathematical Literacy": 50 } }
   ];
+
+  if (offersMedicine) {
+    uniCourses.unshift({
+      name: "Bachelor of Medicine & Bachelor of Surgery (MBChB)",
+      saqa_id: `UNIV-${idPrefix}-MED`,
+      nqf_level: 8,
+      min_aps: 40,
+      required_subjects: { "Mathematics": 70, "Physical Sciences": 70, "Life Sciences": 70 }
+    });
+  }
+
+  return uniCourses;
 }
 
 // ── INSTITUTIONS ─────────────────────────────────────────────────────────────
@@ -2048,7 +2222,6 @@ function InstitutionsPage({ T, dark }) {
           .order("name", { ascending: true });
 
         if (!err && data && data.length > 0) {
-          // Combine cloud institutions with static bogus check dataset
           const merged = [...data];
           STATIC_INSTITUTIONS.forEach(st => {
             if (!merged.some(m => m.name.toLowerCase() === st.name.toLowerCase())) {
@@ -2072,10 +2245,145 @@ function InstitutionsPage({ T, dark }) {
     (i.code && i.code.toLowerCase().includes(instSearch.toLowerCase()))
   );
 
-  const handleVerify = async () => {
+  const performVerification = async (targetInst, searched) => {
+    if (!targetInst) return;
+
+    setLoading(true);
+    setError("");
+    setReport(null);
+
+    try {
+      // 1. Unaccredited or Bogus Institution check
+      if (targetInst.legit === false || targetInst.status === "UNACCREDITED" || targetInst.status === "BOGUS INSTITUTION") {
+        setReport({
+          status: "Unaccredited",
+          institution: targetInst,
+          searchedCourse: searched || "All Qualifications",
+          warningDetails: targetInst.details || "This institution is not registered with the Department of Higher Education and Training (DHET) or SAQA. Degrees or certificates awarded here are unaccredited and invalid."
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 2. Fetch or load verified course catalog for target institution
+      let verifiedCourses = [];
+      try {
+        const { data, error: err } = await supabase
+          .from("courses")
+          .select("*")
+          .eq("institution_id", targetInst.id);
+        if (!err && data && data.length > 0) {
+          verifiedCourses = data;
+        }
+      } catch (e) {
+        console.warn("Supabase course query skipped:", e);
+      }
+
+      const staticList = getStaticCoursesForInstitution(targetInst);
+      staticList.forEach(sc => {
+        if (!verifiedCourses.some(vc => vc.name.toLowerCase() === sc.name.toLowerCase())) {
+          verifiedCourses.push(sc);
+        }
+      });
+
+      // Case A: User left Course search blank -> Validate Institution & show offered programs
+      if (!searched) {
+        setReport({
+          status: "AccreditedInstitutionOnly",
+          institution: targetInst,
+          offeredCourses: verifiedCourses
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Case B: User specified a course name -> Perform Strict Match & Compatibility Check
+      const lowerSearch = searched.toLowerCase().trim();
+
+      const isTvet = (targetInst.type && targetInst.type.includes("TVET")) || targetInst.name.toLowerCase().includes("tvet");
+      const isDegreeKeyword = lowerSearch.includes("bachelor") || lowerSearch.includes("bsc") || 
+                              lowerSearch.includes("llb") || lowerSearch.includes("mbchb") || 
+                              lowerSearch.includes("beng") || lowerSearch.includes("bcom") || 
+                              lowerSearch.includes("bed") || lowerSearch.includes("doctor") || 
+                              lowerSearch.includes("medicine") || lowerSearch.includes("dentistry");
+
+      const isTvetKeyword = lowerSearch.includes("n1") || lowerSearch.includes("n2") || 
+                            lowerSearch.includes("n3") || lowerSearch.includes("n4") || 
+                            lowerSearch.includes("n5") || lowerSearch.includes("n6") || 
+                            lowerSearch.includes("nc(v)") || lowerSearch.includes("trade test");
+
+      // Attempt matching in verified list
+      let matched = verifiedCourses.find(c => {
+        const cName = c.name.toLowerCase();
+        return cName === lowerSearch || cName.includes(lowerSearch) || lowerSearch.includes(cName);
+      });
+
+      // Fuzzy keyword lookup if exact string didn't hit
+      if (!matched) {
+        const keywordMap = [
+          { keywords: ["computer science", "cs", "coding"], target: "computer science" },
+          { keywords: ["information technology", "it"], target: "information technology" },
+          { keywords: ["law", "llb", "legal"], target: "law" },
+          { keywords: ["medicine", "mbchb", "doctor", "medical"], target: "medicine" },
+          { keywords: ["accounting", "ca", "accountant"], target: "accounting" },
+          { keywords: ["nursing", "nurse"], target: "nursing" },
+          { keywords: ["human resource", "hr"], target: "human resource" },
+          { keywords: ["business management", "bba"], target: "business" },
+          { keywords: ["electrical engineering", "electrical"], target: "electrical" },
+          { keywords: ["mechanical engineering", "mechanical"], target: "mechanical" },
+          { keywords: ["civil engineering", "civil"], target: "civil" },
+          { keywords: ["psychology"], target: "psychology" },
+          { keywords: ["education", "teaching", "bed"], target: "education" },
+          { keywords: ["film", "acting", "motion picture"], target: "motion picture" },
+          { keywords: ["design", "interior", "graphic"], target: "design" }
+        ];
+
+        for (const rule of keywordMap) {
+          if (rule.keywords.some(k => lowerSearch.includes(k))) {
+            const found = verifiedCourses.find(c => c.name.toLowerCase().includes(rule.target));
+            if (found) {
+              matched = found;
+              break;
+            }
+          }
+        }
+      }
+
+      // Check category mismatches (e.g. TVET vs Degree, or University vs TVET N-certificates)
+      let incompatibilityReason = null;
+      if (isTvet && isDegreeKeyword) {
+        incompatibilityReason = `${targetInst.name} is a Public TVET College. TVET colleges in South Africa offer N1-N6 National Certificates, NC(V) Diplomas, and SETA Trades. They are NOT accredited to offer University Bachelor Degrees or Medical/Law qualifications.`;
+      } else if (!isTvet && isTvetKeyword) {
+        incompatibilityReason = `${targetInst.name} is a Higher Education Institution. N1-N3 technical certificates and NC(V) courses are offered at TVET Colleges, not at universities or private higher education providers.`;
+      }
+
+      if (matched && !incompatibilityReason) {
+        setReport({
+          status: "Accredited",
+          course: matched,
+          institution: targetInst
+        });
+      } else {
+        // Course is NOT offered at this institution or incompatible!
+        setReport({
+          status: "QualificationNotOffered",
+          searchedCourse: searched,
+          institution: targetInst,
+          reason: incompatibilityReason || `The qualification "${searched}" is NOT registered or offered at ${targetInst.name}.`,
+          offeredCourses: verifiedCourses
+        });
+      }
+    } catch (err) {
+      console.error("Verification error:", err.message);
+      setError("An unexpected error occurred during verification. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyClick = () => {
     let targetInst = selectedInst;
 
-    // Automatically resolve institution by text match if not explicitly clicked from dropdown
     if (!targetInst && instSearch.trim()) {
       const q = instSearch.trim().toLowerCase();
       targetInst = institutions.find(i => 
@@ -2086,91 +2394,39 @@ function InstitutionsPage({ T, dark }) {
     }
 
     if (!targetInst) {
-      setError(`Please select a valid institution from the list (or type a recognized name like UCT, Wits, Rosebank, etc.).`);
+      setError(`Please select a valid institution from the list (e.g. UCT, Wits, Rosebank, Port Elizabeth TVET, etc.).`);
       return;
     }
 
-    setLoading(true);
-    setError("");
-    setReport(null);
-
-    try {
-      // 1. Check if the institution itself is bogus / unaccredited
-      if (targetInst.legit === false || targetInst.status === "UNACCREDITED" || targetInst.status === "BOGUS INSTITUTION") {
-        setReport({
-          status: "Unaccredited",
-          institution: targetInst,
-          searchedCourse: courseSearch.trim() || "All Qualifications",
-          warningDetails: targetInst.details || "This institution is not registered with the Department of Higher Education and Training (DHET) or SAQA. Degrees or certificates awarded here are unaccredited and invalid."
-        });
-        setLoading(false);
-        return;
-      }
-
-      // 2. Query Supabase for course if courseSearch provided
-      let matchedCourse = null;
-      if (courseSearch.trim()) {
-        try {
-          const { data, error: err } = await supabase
-            .from("courses")
-            .select("*")
-            .eq("institution_id", targetInst.id)
-            .ilike("name", `%${courseSearch.trim()}%`);
-
-          if (!err && data && data.length > 0) {
-            matchedCourse = data[0];
-          }
-        } catch (e) {
-          console.warn("Supabase course query skipped:", e);
-        }
-      }
-
-      // Fallback check against static courses for accredited institutions
-      if (!matchedCourse) {
-        const staticList = getStaticCoursesForInstitution(targetInst);
-        if (courseSearch.trim()) {
-          matchedCourse = staticList.find(c => c.name.toLowerCase().includes(courseSearch.trim().toLowerCase()));
-        }
-        if (!matchedCourse) {
-          // If no specific course entered or found, construct a validated qualification report for accredited institution
-          const cName = courseSearch.trim() || "Accredited Higher Education Program";
-          matchedCourse = {
-            name: cName,
-            saqa_id: targetInst.saqaId || `SAQA-${targetInst.code || 'REG'}-${Math.floor(10000 + Math.random() * 90000)}`,
-            nqf_level: targetInst.type.includes("TVET") ? 5 : (cName.toLowerCase().includes("bachelor") || cName.toLowerCase().includes("bsc") || cName.toLowerCase().includes("llb") ? 7 : 6)
-          };
-        }
-      }
-
-      setReport({
-        status: "Accredited",
-        course: matchedCourse,
-        institution: targetInst
-      });
-    } catch (err) {
-      console.error("Verification error:", err.message);
-      setReport({
-        status: "Accredited",
-        course: {
-          name: courseSearch.trim() || "General Qualification Stream",
-          saqa_id: targetInst.saqaId || `SAQA-${targetInst.code || 'REG'}-48821`,
-          nqf_level: 6
-        },
-        institution: targetInst
-      });
-    } finally {
-      setLoading(false);
-    }
+    performVerification(targetInst, courseSearch.trim());
   };
 
   return (
-    <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
+    <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
+      {/* Header Info Banner */}
+      <div style={{
+        background: dark ? `${T.navyCard}dd` : "#ffffff",
+        border: `1px solid ${T.border}`,
+        borderRadius: 16,
+        padding: "24px 28px",
+        boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
+        marginBottom: 28,
+        textAlign: "center"
+      }}>
+        <h2 style={{ fontSize: 22, color: T.chalk, fontWeight: 800, marginBottom: 8 }}>
+          Institutional & Qualification Validator
+        </h2>
+        <p style={{ fontSize: 14, color: T.muted, maxWidth: 560, margin: "0 auto", lineHeight: 1.6 }}>
+          Verify DHET accreditation and confirm whether specific qualifications are genuinely offered and accredited at South African universities, TVET colleges, and private HEIs.
+        </p>
+      </div>
+
       <div style={{ 
         background: T.navyCard, border: `1px solid ${T.border}`,
         borderRadius: 16, padding: "24px 28px", boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
         marginBottom: 28
       }}>
-        <h3 style={{ fontSize: 18, color: T.chalk, fontWeight: 700, marginBottom: 18 }}>Accreditation Verification Form</h3>
+        <h3 style={{ fontSize: 17, color: T.chalk, fontWeight: 700, marginBottom: 18 }}>Accreditation & Qualification Verification Form</h3>
         
         {error && (
           <div style={{ 
@@ -2184,11 +2440,11 @@ function InstitutionsPage({ T, dark }) {
         {/* Institution Input */}
         <div style={{ marginBottom: 20, position: "relative" }}>
           <label style={{ display: "block", fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 6 }}>
-            1. INSTITUTION NAME
+            1. INSTITUTION NAME <span style={{ color: "#EF4444" }}>*</span>
           </label>
           <input 
             type="text" 
-            placeholder="Search & select institution (e.g., UCT, Wits, Rosebank)..." 
+            placeholder="Search & select institution (e.g., UCT, Wits, Rosebank, Port Elizabeth TVET)..." 
             value={selectedInst ? selectedInst.name : instSearch} 
             onChange={e => {
               setSelectedInst(null);
@@ -2205,7 +2461,7 @@ function InstitutionsPage({ T, dark }) {
           />
           {selectedInst && (
             <button 
-              onClick={() => { setSelectedInst(null); setInstSearch(""); }}
+              onClick={() => { setSelectedInst(null); setInstSearch(""); setReport(null); }}
               style={{
                 position: "absolute", right: 12, top: 32, background: "none", border: "none",
                 color: T.muted, cursor: "pointer", fontSize: 16
@@ -2219,20 +2475,21 @@ function InstitutionsPage({ T, dark }) {
             <div style={{
               position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10,
               background: dark ? T.navyCard : "#fff", border: `1px solid ${T.border}`,
-              borderRadius: 8, marginTop: 4, maxHeight: 220, overflowY: "auto",
+              borderRadius: 8, marginTop: 4, maxHeight: 240, overflowY: "auto",
               boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3)"
             }}>
               {filteredInsts.length > 0 ? (
                 filteredInsts.map(i => (
                   <div 
-                    key={i.id}
+                    key={i.id || i.name}
                     onClick={() => {
                       setSelectedInst(i);
                       setInstSearch(i.name);
                       setDropdownOpen(false);
+                      setReport(null);
                     }}
                     style={{
-                      padding: "10px 16px", cursor: "pointer", fontSize: 14,
+                      padding: "12px 16px", cursor: "pointer", fontSize: 14,
                       borderBottom: `1px solid ${T.border}`, color: i.legit === false ? "#EF4444" : T.chalk,
                       background: "transparent",
                       display: "flex", justifyContent: "space-between", alignItems: "center"
@@ -2258,11 +2515,11 @@ function InstitutionsPage({ T, dark }) {
         {/* Course / Qualification Input */}
         <div style={{ marginBottom: 24 }}>
           <label style={{ display: "block", fontSize: 12, color: T.muted, fontWeight: 600, marginBottom: 6 }}>
-            2. COURSE / QUALIFICATION NAME (OPTIONAL)
+            2. QUALIFICATION / COURSE NAME (OPTIONAL)
           </label>
           <input 
             type="text" 
-            placeholder="Enter course name (e.g., Law, Business, HR, Nursing, Computer Science)..." 
+            placeholder="e.g., BSc Computer Science, MBChB, LLB Law, N6 Business Management, Plumbing..." 
             value={courseSearch} 
             onChange={e => {
               setCourseSearch(e.target.value);
@@ -2274,11 +2531,14 @@ function InstitutionsPage({ T, dark }) {
               border: `1px solid ${T.border}`, outline: "none", fontSize: 15
             }} 
           />
+          <span style={{ fontSize: 11, color: T.muted, marginTop: 4, display: "block" }}>
+            Leave blank to check general DHET institution accreditation and all offered program streams.
+          </span>
         </div>
 
         {/* Verify Button */}
         <button 
-          onClick={handleVerify}
+          onClick={handleVerifyClick}
           disabled={loading}
           style={{
             width: "100%", padding: "14px", borderRadius: 8, background: T.teal,
@@ -2287,20 +2547,32 @@ function InstitutionsPage({ T, dark }) {
             boxShadow: `0 4px 14px ${T.teal}44`, transition: "all 0.2s"
           }}
         >
-          {loading ? "Verifying Status..." : "Verify Qualification"}
+          {loading ? "Checking SAQA & DHET Registry..." : "Verify Accreditation & Qualification"}
         </button>
       </div>
 
       {/* Verification Report Card */}
       {report && (
         <div style={{
-          background: report.status === "Accredited" ? "rgba(16, 185, 129, 0.05)" : "rgba(239, 68, 68, 0.08)",
-          border: `2px dashed ${report.status === "Accredited" ? "#10B981" : "#EF4444"}`,
-          borderRadius: 16, padding: "28px 32px", textAlign: "center",
+          background: report.status === "Accredited" || report.status === "AccreditedInstitutionOnly"
+            ? "rgba(16, 185, 129, 0.04)" 
+            : report.status === "QualificationNotOffered"
+            ? "rgba(245, 158, 11, 0.05)"
+            : "rgba(239, 68, 68, 0.06)",
+          border: `2px dashed ${
+            report.status === "Accredited" || report.status === "AccreditedInstitutionOnly"
+              ? "#10B981" 
+              : report.status === "QualificationNotOffered"
+              ? "#F59E0B"
+              : "#EF4444"
+          }`,
+          borderRadius: 16, padding: "28px 32px",
           boxShadow: "0 10px 25px rgba(0,0,0,0.15)"
         }}>
-          {report.status === "Accredited" ? (
-            <>
+
+          {/* STATUS 1: ACCREDITATION & COURSE VALIDATED (GREEN) */}
+          {report.status === "Accredited" && (
+            <div style={{ textAlign: "center" }}>
               <div style={{ 
                 width: 60, height: 60, borderRadius: "50%", background: "rgba(16, 185, 129, 0.2)",
                 color: "#10B981", display: "flex", alignItems: "center", justifyContent: "center",
@@ -2308,32 +2580,29 @@ function InstitutionsPage({ T, dark }) {
               }}>
                 ✓
               </div>
-              <h4 style={{ fontSize: 22, color: "#10B981", fontWeight: 800, marginBottom: 8 }}>
-                ACCREDITATION VALIDATED
+              <h4 style={{ fontSize: 22, color: "#10B981", fontWeight: 800, marginBottom: 6 }}>
+                ACCREDITATION & COURSE VALIDATED
               </h4>
-              <p style={{ color: T.chalk, fontSize: 15, fontWeight: 600, marginBottom: 20 }}>
+              <p style={{ color: T.chalk, fontSize: 16, fontWeight: 700, marginBottom: 20 }}>
                 {report.course.name}
               </p>
               
-              <div 
-                className="report-grid" 
-                style={{ 
-                  borderTop: `1px solid ${T.border}`, paddingTop: 20, textAlign: "left",
-                  display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16
-                }}
-              >
+              <div style={{ 
+                borderTop: `1px solid ${T.border}`, paddingTop: 20, textAlign: "left",
+                display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16
+              }}>
                 <div>
                   <span style={{ fontSize: 11, color: T.muted, display: "block" }}>INSTITUTION</span>
                   <span style={{ fontSize: 14, color: T.chalk, fontWeight: 700 }}>{report.institution.name}</span>
                 </div>
                 <div>
-                  <span style={{ fontSize: 11, color: T.muted, display: "block" }}>STATUS</span>
+                  <span style={{ fontSize: 11, color: T.muted, display: "block" }}>REGISTRATION STATUS</span>
                   <span style={{ fontSize: 14, color: "#10B981", fontWeight: 700 }}>
                     {report.institution.type} (DHET Registered)
                   </span>
                 </div>
                 <div>
-                  <span style={{ fontSize: 11, color: T.muted, display: "block" }}>SAQA ID</span>
+                  <span style={{ fontSize: 11, color: T.muted, display: "block" }}>SAQA QUALIFICATION ID</span>
                   <span style={{ fontSize: 14, color: T.chalk, fontWeight: 700, fontFamily: "monospace" }}>
                     {report.course.saqa_id}
                   </span>
@@ -2343,32 +2612,152 @@ function InstitutionsPage({ T, dark }) {
                   <span style={{ fontSize: 14, color: T.teal, fontWeight: 700 }}>Level {report.course.nqf_level}</span>
                 </div>
               </div>
-            </>
-          ) : (
-            <>
+            </div>
+          )}
+
+          {/* STATUS 2: ACCREDITED INSTITUTION SUMMARY (NO COURSE SPECIFIED) */}
+          {report.status === "AccreditedInstitutionOnly" && (
+            <div>
+              <div style={{ textAlign: "center", marginBottom: 20 }}>
+                <div style={{ 
+                  width: 56, height: 56, borderRadius: "50%", background: "rgba(16, 185, 129, 0.2)",
+                  color: "#10B981", display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 28, margin: "0 auto 12px"
+                }}>
+                  ✓
+                </div>
+                <h4 style={{ fontSize: 20, color: "#10B981", fontWeight: 800, marginBottom: 4 }}>
+                  DHET REGISTERED INSTITUTION VERIFIED
+                </h4>
+                <p style={{ color: T.chalk, fontSize: 15, fontWeight: 700 }}>
+                  {report.institution.name}
+                </p>
+                <span style={{ fontSize: 13, color: T.muted }}>
+                  {report.institution.type} • {report.institution.location || "South Africa"} • SAQA Ref: {report.institution.saqaId || "Registered"}
+                </span>
+              </div>
+
+              <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 20 }}>
+                <h5 style={{ fontSize: 14, color: T.chalk, fontWeight: 700, marginBottom: 12 }}>
+                  Verified Accredited Qualification Streams & Faculties at {report.institution.name}:
+                </h5>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  {report.offeredCourses.map((c, idx) => (
+                    <div 
+                      key={idx}
+                      onClick={() => {
+                        setCourseSearch(c.name);
+                        performVerification(report.institution, c.name);
+                      }}
+                      style={{
+                        padding: "10px 14px", borderRadius: 8, background: dark ? `${T.slate}66` : "#fff",
+                        border: `1px solid ${T.border}`, cursor: "pointer", transition: "all 0.2s"
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.borderColor = T.teal}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = T.border}
+                    >
+                      <div style={{ fontSize: 13, color: T.chalk, fontWeight: 600 }}>{c.name}</div>
+                      <div style={{ fontSize: 11, color: T.teal, marginTop: 4 }}>
+                        NQF Level {c.nqf_level} • SAQA: {c.saqa_id}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STATUS 3: QUALIFICATION NOT OFFERED / UNVERIFIED (ORANGE ALERT) */}
+          {report.status === "QualificationNotOffered" && (
+            <div>
+              <div style={{ textAlign: "center", marginBottom: 20 }}>
+                <div style={{ 
+                  width: 56, height: 56, borderRadius: "50%", background: "rgba(245, 158, 11, 0.2)",
+                  color: "#F59E0B", display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 28, margin: "0 auto 12px"
+                }}>
+                  ⚠️
+                </div>
+                <h4 style={{ fontSize: 20, color: "#F59E0B", fontWeight: 800, marginBottom: 4 }}>
+                  QUALIFICATION NOT OFFERED AT THIS INSTITUTION
+                </h4>
+                <p style={{ color: T.chalk, fontSize: 14, fontWeight: 600 }}>
+                  Searched Qualification: <span style={{ color: "#F59E0B" }}>"{report.searchedCourse}"</span>
+                </p>
+                <p style={{ color: T.muted, fontSize: 13, marginTop: 2 }}>
+                  Target Institution: <strong>{report.institution.name}</strong> ({report.institution.type})
+                </p>
+              </div>
+
+              <div style={{ 
+                background: dark ? `${T.slate}66` : "#fff", border: "1px solid rgba(245, 158, 11, 0.4)",
+                borderRadius: 10, padding: 16, fontSize: 13, color: T.chalk, lineHeight: 1.6, marginBottom: 20
+              }}>
+                <strong style={{ color: "#F59E0B", display: "block", marginBottom: 4 }}>
+                  Verification Audit Note:
+                </strong>
+                {report.reason}
+              </div>
+
+              <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 20 }}>
+                <h5 style={{ fontSize: 14, color: T.chalk, fontWeight: 700, marginBottom: 12 }}>
+                  Genuine & Accredited Qualifications Offered at {report.institution.name}:
+                </h5>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  {report.offeredCourses.map((c, idx) => (
+                    <div 
+                      key={idx}
+                      onClick={() => {
+                        setCourseSearch(c.name);
+                        performVerification(report.institution, c.name);
+                      }}
+                      style={{
+                        padding: "10px 14px", borderRadius: 8, background: dark ? `${T.slate}66` : "#fff",
+                        border: `1px solid ${T.border}`, cursor: "pointer", transition: "all 0.2s"
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.borderColor = T.teal}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = T.border}
+                    >
+                      <div style={{ fontSize: 13, color: T.chalk, fontWeight: 600 }}>{c.name}</div>
+                      <div style={{ fontSize: 11, color: T.teal, marginTop: 4 }}>
+                        NQF Level {c.nqf_level} • SAQA: {c.saqa_id}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STATUS 4: UNACCREDITED / BOGUS INSTITUTION (RED ALERT) */}
+          {report.status === "Unaccredited" && (
+            <div style={{ textAlign: "center" }}>
               <div style={{ 
                 width: 60, height: 60, borderRadius: "50%", background: "rgba(239, 68, 68, 0.2)",
                 color: "#EF4444", display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 32, margin: "0 auto 16px"
               }}>
-                ⚠️
+                🚨
               </div>
-              <h4 style={{ fontSize: 22, color: "#EF4444", fontWeight: 800, marginBottom: 8 }}>
+              <h4 style={{ fontSize: 22, color: "#EF4444", fontWeight: 800, marginBottom: 6 }}>
                 UNACCREDITED / BOGUS INSTITUTION
               </h4>
-              <p style={{ color: T.chalk, fontSize: 14, fontWeight: 600, marginBottom: 16 }}>
+              <p style={{ color: T.chalk, fontSize: 15, fontWeight: 700, marginBottom: 16 }}>
                 {report.institution.name} ({report.searchedCourse})
               </p>
               
               <div style={{ 
-                background: dark ? `${T.slate}44` : "#fff", border: `1px solid rgba(239, 68, 68, 0.3)`,
-                borderRadius: 8, padding: 16, textAlign: "left", fontSize: 13, color: T.chalk, lineHeight: 1.6
+                background: dark ? `${T.slate}66` : "#fff", border: `1px solid rgba(239, 68, 68, 0.4)`,
+                borderRadius: 10, padding: 18, textAlign: "left", fontSize: 13, color: T.chalk, lineHeight: 1.6
               }}>
-                <strong style={{ color: "#EF4444", display: "block", marginBottom: 6 }}>DHET Warning Alert:</strong>
+                <strong style={{ color: "#EF4444", display: "block", marginBottom: 6, fontSize: 14 }}>
+                  DHET Official Warning Alert:
+                </strong>
                 {report.warningDetails}
               </div>
-            </>
+            </div>
           )}
+
         </div>
       )}
     </div>

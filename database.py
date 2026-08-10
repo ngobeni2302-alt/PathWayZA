@@ -379,7 +379,8 @@ INSTITUTION_DB = {
         {"name": "Regent Business School", "type": "Private HE Institution", "code": "RBS", "status": "Fully Accredited", "saqaId": "SAQA-REG-112"},
         {"name": "Boston City Campus", "type": "Private Higher Education Institution", "code": "BOSTON", "status": "Fully Accredited", "saqaId": "SAQA-REG-43"},
         {"name": "Stadio", "type": "Private Higher Education Institution", "code": "STADIO", "status": "Fully Accredited", "saqaId": "SAQA-REG-159"},
-        {"name": "Milpark Education", "type": "Private College", "code": "MILPARK", "status": "Fully Accredited", "saqaId": "SAQA-REG-211"}
+        {"name": "Milpark Education", "type": "Private College", "code": "MILPARK", "status": "Fully Accredited", "saqaId": "SAQA-REG-211"},
+        {"name": "Gauteng City College (GCC)", "type": "Private College", "code": "GCC", "status": "DHET Registered (2017/FE07/001) & Umalusi/QCTO Accredited", "saqaId": "DHET-2017/FE07/001"}
     ],
     "unaccredited": [
         # Bogus or unaccredited institutions
