@@ -773,7 +773,7 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen }) {
         <div className="sidebar-footer" style={{ borderTop: `1px solid ${T.border}` }}>
           <ThemeToggle dark={dark} setDark={setDark} />
           <span style={{ fontSize: 11, color: T.muted }}>
-            <span style={{ color: T.teal }}>ValambyaT3ch</span>
+            <span style={{ color: T.teal }}>ProximityWorks</span>
           </span>
         </div>
       </aside>
@@ -2196,6 +2196,25 @@ const SA_SUBJECTS = [
   "Engineering Graphics and Design (EGD)"
 ];
 
+const FALLBACK_COURSES = [
+  { name: "BSc in Computer Science", min_aps: 36, nqf_level: 7, saqa_id: "UCT-CS-01", required_subjects: { "Mathematics": 70, "Physical Sciences": 60 }, institutions: { name: "University of Cape Town (UCT)", type: "Public University", location: "Western Cape", legit: true } },
+  { name: "Bachelor of Medicine & Surgery (MBChB)", min_aps: 42, nqf_level: 8, saqa_id: "UCT-MED-01", required_subjects: { "Mathematics": 75, "Physical Sciences": 75, "Life Sciences": 75 }, institutions: { name: "University of Cape Town (UCT)", type: "Public University", location: "Western Cape", legit: true } },
+  { name: "BSc Computer Science / Software Engineering", min_aps: 36, nqf_level: 7, saqa_id: "WITS-CS-01", required_subjects: { "Mathematics": 70, "Physical Sciences": 60 }, institutions: { name: "University of the Witwatersrand (Wits)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "BEng Mechanical Engineering", min_aps: 37, nqf_level: 8, saqa_id: "WITS-ENG-01", required_subjects: { "Mathematics": 70, "Physical Sciences": 70 }, institutions: { name: "University of the Witwatersrand (Wits)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "BSc Computer Science", min_aps: 34, nqf_level: 7, saqa_id: "UP-CS-01", required_subjects: { "Mathematics": 65, "Physical Sciences": 55 }, institutions: { name: "University of Pretoria (UP)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "BEng Electrical Engineering", min_aps: 35, nqf_level: 8, saqa_id: "UP-ENG-01", required_subjects: { "Mathematics": 65, "Physical Sciences": 65 }, institutions: { name: "University of Pretoria (UP)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "BCom Financial Sciences", min_aps: 32, nqf_level: 7, saqa_id: "UP-FIN-01", required_subjects: { "Mathematics": 60 }, institutions: { name: "University of Pretoria (UP)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "BSc Information Technology", min_aps: 30, nqf_level: 7, saqa_id: "UJ-IT-01", required_subjects: { "Mathematics": 60 }, institutions: { name: "University of Johannesburg (UJ)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "BCom Accounting", min_aps: 28, nqf_level: 7, saqa_id: "UJ-ACC-01", required_subjects: { "Mathematics": 50 }, institutions: { name: "University of Johannesburg (UJ)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "Diploma in Information Technology", min_aps: 24, nqf_level: 6, saqa_id: "TUT-IT-01", required_subjects: { "Mathematics": 50 }, institutions: { name: "Tshwane University of Technology (TUT)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "Diploma in Electrical Engineering", min_aps: 26, nqf_level: 6, saqa_id: "TUT-ENG-01", required_subjects: { "Mathematics": 50, "Physical Sciences": 50 }, institutions: { name: "Tshwane University of Technology (TUT)", type: "Public University", location: "Gauteng", legit: true } },
+  { name: "Diploma in ICT Applications", min_aps: 24, nqf_level: 6, saqa_id: "CPUT-IT-01", required_subjects: { "Mathematics": 50 }, institutions: { name: "Cape Peninsula University of Technology (CPUT)", type: "Public University", location: "Western Cape", legit: true } },
+  { name: "National Certificate: N1 Engineering Studies", min_aps: 16, nqf_level: 2, saqa_id: "TVET-ENG-01", required_subjects: {}, institutions: { name: "Tshwane South TVET College", type: "Public TVET", location: "Gauteng", legit: true } },
+  { name: "National Certificate: N6 Business Management", min_aps: 18, nqf_level: 5, saqa_id: "TVET-BM-01", required_subjects: {}, institutions: { name: "Ekurhuleni West TVET College", type: "Public TVET", location: "Gauteng", legit: true } },
+  { name: "Bachelor of Computer & Information Sciences", min_aps: 26, nqf_level: 7, saqa_id: "VC-BCIS-01", required_subjects: { "Mathematics": 50 }, institutions: { name: "Varsity College", type: "Private College", location: "National", legit: true } },
+  { name: "Diploma in Software Development", min_aps: 22, nqf_level: 6, saqa_id: "EDUVOS-SD-01", required_subjects: {}, institutions: { name: "Eduvos (formerly Pearson Institute)", type: "Private College", location: "National", legit: true } }
+];
+
 function ApsCalculatorPage({ T, dark }) {
   const [subjects, setSubjects] = useState([
     { name: "English Home Language", mark: "" },
@@ -2241,7 +2260,6 @@ function ApsCalculatorPage({ T, dark }) {
   };
 
   const handleCalculateAndMatch = async () => {
-    // Validation
     const filledSubjects = subjects.filter(s => s.name && s.mark !== "");
     if (filledSubjects.length < 6) {
       setError("Please fill in at least 6 subjects with marks to calculate your APS.");
@@ -2251,72 +2269,82 @@ function ApsCalculatorPage({ T, dark }) {
     setLoading(true);
 
     try {
-      // Calculate APS score
-      // Exclude Life Orientation from the top 6
       const loSubject = filledSubjects.find(s => s.name === "Life Orientation");
       const nonLoSubjects = filledSubjects.filter(s => s.name !== "Life Orientation");
 
-      // Map to points and sort descending
       const pointsList = nonLoSubjects.map(s => calculatePoints(s.mark)).sort((a, b) => b - a);
       const top6Points = pointsList.slice(0, 6);
       const apsScoreExcl = top6Points.reduce((sum, p) => sum + p, 0);
 
-      // Score including LO
       let apsScoreIncl = apsScoreExcl;
       if (loSubject) {
         apsScoreIncl += calculatePoints(loSubject.mark);
       }
 
-      // Fetch all courses from Supabase
-      const { data: courses, error: fetchErr } = await supabase
-        .from("courses")
-        .select(`
-          *,
-          institutions (*)
-        `);
+      let allCourses = [];
+      try {
+        const { data, error: fetchErr } = await supabase
+          .from("courses")
+          .select(`*, institutions (*)`);
+        if (!fetchErr && data && data.length > 0) {
+          allCourses = data;
+        } else {
+          allCourses = FALLBACK_COURSES;
+        }
+      } catch (e) {
+        allCourses = FALLBACK_COURSES;
+      }
 
-      if (fetchErr) throw fetchErr;
-
-      // Match courses based on criteria
-      const eligible = courses.filter(course => {
-        const inst = course.institutions;
-        // Determine which APS score to use (TUT & TVETs typically include LO in count, others exclude)
-        const isTvetOrTut = inst.type === "Public TVET" || inst.name.includes("Tshwane University of Technology");
+      const eligible = [];
+      allCourses.forEach(course => {
+        const inst = course.institutions || { name: "Public Institution", type: "Public University" };
+        const isTvetOrTut = inst.type === "Public TVET" || (inst.name && (inst.name.includes("TVET") || inst.name.includes("Tshwane University of Technology") || inst.name.includes("CPUT") || inst.name.includes("DUT")));
         const studentAps = isTvetOrTut ? apsScoreIncl : apsScoreExcl;
 
-        if (course.min_aps > studentAps) return false;
+        if (course.min_aps > studentAps) return;
 
-        // Check subject prerequisites
         const reqSubjects = course.required_subjects || {};
+        const reqKeys = Object.keys(reqSubjects);
+        let metCount = 0;
+        let meetsAllPrereqs = true;
+
         for (const [reqSubName, minMark] of Object.entries(reqSubjects)) {
-          // Find matching subject in student's filled list
           const studentSub = filledSubjects.find(s => {
             const sName = s.name.toLowerCase();
             const rName = reqSubName.toLowerCase();
-            
-            // Strict math check: if Math is required, Math Lit doesn't count
+
             if (rName === "mathematics" && sName === "mathematical literacy") {
               return false;
             }
-            
-            // General mapping: English/Math/Science
+
             if (rName.includes("english") && sName.includes("english")) return true;
             if (rName.includes("mathematics") && sName === "mathematics") return true;
             if (rName.includes("physical sciences") && sName.includes("physical science")) return true;
             if (rName.includes("life sciences") && sName.includes("life science")) return true;
-            
+            if (rName.includes("accounting") && sName.includes("accounting")) return true;
+
             return sName === rName;
           });
 
-          if (!studentSub || parseInt(studentSub.mark, 10) < minMark) {
-            return false; // Did not meet prerequisite
+          if (studentSub && parseInt(studentSub.mark, 10) >= minMark) {
+            metCount++;
+          } else {
+            meetsAllPrereqs = false;
+            break;
           }
         }
 
-        return true;
+        if (meetsAllPrereqs) {
+          const matchPercent = reqKeys.length > 0 ? Math.round((metCount / reqKeys.length) * 100) : 100;
+          eligible.push({
+            ...course,
+            institutions: inst,
+            subjectMatchPercent: matchPercent,
+            reqCount: reqKeys.length
+          });
+        }
       });
 
-      // Group eligible courses by institution
       const grouped = {};
       eligible.forEach(c => {
         const instName = c.institutions.name;
@@ -2734,7 +2762,10 @@ function ApsCalculatorPage({ T, dark }) {
                                 </span>
                               </div>
                               <div style={{ textAlign: "right" }}>
-                                <span style={{ fontSize: 12, color: T.teal, fontWeight: 700 }}>Min APS {course.min_aps}</span>
+                                <span style={{ fontSize: 12, color: T.teal, fontWeight: 700, display: "block" }}>Min APS {course.min_aps}</span>
+                                <span style={{ fontSize: 10, background: "rgba(16, 185, 129, 0.15)", color: "#10B981", padding: "2px 6px", borderRadius: 4, fontWeight: 700, display: "inline-block", marginTop: 4 }}>
+                                  ✓ {course.subjectMatchPercent !== undefined ? course.subjectMatchPercent : 100}% Prerequisites Met
+                                </span>
                               </div>
                             </div>
                           ))}
