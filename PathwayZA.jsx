@@ -2499,7 +2499,7 @@ function InstitutionsPage({ T, dark }) {
                   >
                     <span>{i.name}</span>
                     <span style={{ fontSize: 11, color: i.legit === false ? "#EF4444" : T.muted }}>
-                      {i.legit === false ? "⚠️ Unaccredited" : `(${i.type})`}
+                      {i.legit === false ? "(Unaccredited)" : `(${i.type})`}
                     </span>
                   </div>
                 ))
@@ -2573,13 +2573,6 @@ function InstitutionsPage({ T, dark }) {
           {/* STATUS 1: ACCREDITATION & COURSE VALIDATED (GREEN) */}
           {report.status === "Accredited" && (
             <div style={{ textAlign: "center" }}>
-              <div style={{ 
-                width: 60, height: 60, borderRadius: "50%", background: "rgba(16, 185, 129, 0.2)",
-                color: "#10B981", display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 32, margin: "0 auto 16px"
-              }}>
-                ✓
-              </div>
               <h4 style={{ fontSize: 22, color: "#10B981", fontWeight: 800, marginBottom: 6 }}>
                 ACCREDITATION & COURSE VALIDATED
               </h4>
@@ -2619,13 +2612,6 @@ function InstitutionsPage({ T, dark }) {
           {report.status === "AccreditedInstitutionOnly" && (
             <div>
               <div style={{ textAlign: "center", marginBottom: 20 }}>
-                <div style={{ 
-                  width: 56, height: 56, borderRadius: "50%", background: "rgba(16, 185, 129, 0.2)",
-                  color: "#10B981", display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 28, margin: "0 auto 12px"
-                }}>
-                  ✓
-                </div>
                 <h4 style={{ fontSize: 20, color: "#10B981", fontWeight: 800, marginBottom: 4 }}>
                   DHET REGISTERED INSTITUTION VERIFIED
                 </h4>
@@ -2671,13 +2657,6 @@ function InstitutionsPage({ T, dark }) {
           {report.status === "QualificationNotOffered" && (
             <div>
               <div style={{ textAlign: "center", marginBottom: 20 }}>
-                <div style={{ 
-                  width: 56, height: 56, borderRadius: "50%", background: "rgba(245, 158, 11, 0.2)",
-                  color: "#F59E0B", display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 28, margin: "0 auto 12px"
-                }}>
-                  ⚠️
-                </div>
                 <h4 style={{ fontSize: 20, color: "#F59E0B", fontWeight: 800, marginBottom: 4 }}>
                   QUALIFICATION NOT OFFERED AT THIS INSTITUTION
                 </h4>
@@ -2732,13 +2711,6 @@ function InstitutionsPage({ T, dark }) {
           {/* STATUS 4: UNACCREDITED / BOGUS INSTITUTION (RED ALERT) */}
           {report.status === "Unaccredited" && (
             <div style={{ textAlign: "center" }}>
-              <div style={{ 
-                width: 60, height: 60, borderRadius: "50%", background: "rgba(239, 68, 68, 0.2)",
-                color: "#EF4444", display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 32, margin: "0 auto 16px"
-              }}>
-                🚨
-              </div>
               <h4 style={{ fontSize: 22, color: "#EF4444", fontWeight: 800, marginBottom: 6 }}>
                 UNACCREDITED / BOGUS INSTITUTION
               </h4>
