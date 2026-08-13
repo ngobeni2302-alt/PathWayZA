@@ -2033,6 +2033,7 @@ function getStaticCoursesForInstitution(inst) {
       { name: "BSc in Information Technology", saqa_id: "SAQA-88402", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
       { name: "Bachelor of Commerce (BCom) Accounting", saqa_id: "SAQA-88403", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics": 50 } },
       { name: "Bachelor of Commerce (BCom) Business Management", saqa_id: "SAQA-88404", nqf_level: 7, min_aps: 24, required_subjects: {} },
+      { name: "Bachelor of Commerce in Law (BCom Law)", saqa_id: "SAQA-88409", nqf_level: 7, min_aps: 28, required_subjects: { "English": 50, "Mathematics / Mathematical Literacy": 50 } },
       { name: "Bachelor of Arts in Law (BA Law)", saqa_id: "SAQA-88405", nqf_level: 7, min_aps: 28, required_subjects: { "English": 50 } },
       { name: "Bachelor of Laws (LLB)", saqa_id: "SAQA-88406", nqf_level: 8, min_aps: 30, required_subjects: { "English": 50 } },
       { name: "Diploma in Information Technology", saqa_id: "SAQA-88407", nqf_level: 6, min_aps: 22, required_subjects: {} },
@@ -2043,6 +2044,8 @@ function getStaticCoursesForInstitution(inst) {
   if (name.includes("varsity college")) {
     return [
       { name: "Bachelor of Laws (LLB)", saqa_id: "SAQA-91801", nqf_level: 8, min_aps: 30, required_subjects: { "English": 50 } },
+      { name: "Bachelor of Commerce in Law (BCom Law)", saqa_id: "SAQA-91808", nqf_level: 7, min_aps: 28, required_subjects: { "English": 50, "Mathematics / Mathematical Literacy": 50 } },
+      { name: "Bachelor of Arts in Law (BA Law)", saqa_id: "SAQA-91809", nqf_level: 7, min_aps: 28, required_subjects: { "English": 50 } },
       { name: "Bachelor of Commerce (BCom) Accounting", saqa_id: "SAQA-91802", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics": 50 } },
       { name: "Bachelor of Arts (BA) Psychology", saqa_id: "SAQA-91803", nqf_level: 7, min_aps: 26, required_subjects: { "English": 50 } },
       { name: "Bachelor of Computer & Information Sciences in Application Development", saqa_id: "SAQA-91804", nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
@@ -2172,8 +2175,13 @@ function getStaticCoursesForInstitution(inst) {
 
   const uniCourses = [
     { name: "BSc in Computer Science", saqa_id: `UNIV-${idPrefix}-CS`, nqf_level: 7, min_aps: 35, required_subjects: { "Mathematics": 60, "Physical Sciences": 50 } },
+    { name: "BSc in Information Technology", saqa_id: `UNIV-${idPrefix}-IT`, nqf_level: 7, min_aps: 30, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
     { name: "Bachelor of Laws (LLB)", saqa_id: `UNIV-${idPrefix}-LLB`, nqf_level: 8, min_aps: 30, required_subjects: { "English": 50, "Mathematics / Mathematical Literacy": 50 } },
+    { name: "Bachelor of Commerce in Law (BCom Law)", saqa_id: `UNIV-${idPrefix}-BCOMLAW`, nqf_level: 7, min_aps: 30, required_subjects: { "English": 50, "Mathematics": 50 } },
+    { name: "Bachelor of Arts in Law (BA Law)", saqa_id: `UNIV-${idPrefix}-BALAW`, nqf_level: 7, min_aps: 28, required_subjects: { "English": 50 } },
+    { name: "Bachelor of Commerce (BCom General)", saqa_id: `UNIV-${idPrefix}-BCOM`, nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
     { name: "Bachelor of Commerce in Accounting (CA Stream)", saqa_id: `UNIV-${idPrefix}-ACC`, nqf_level: 7, min_aps: 32, required_subjects: { "Mathematics": 50 } },
+    { name: "Bachelor of Commerce in Business Management", saqa_id: `UNIV-${idPrefix}-BCOM-BM`, nqf_level: 7, min_aps: 28, required_subjects: { "Mathematics / Mathematical Literacy": 50 } },
     { name: "BEng in Electrical Engineering", saqa_id: `UNIV-${idPrefix}-ENG-ELEC`, nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 60 } },
     { name: "BEng in Mechanical Engineering", saqa_id: `UNIV-${idPrefix}-ENG-MECH`, nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 60 } },
     { name: "BEng in Civil Engineering", saqa_id: `UNIV-${idPrefix}-ENG-CIVIL`, nqf_level: 8, min_aps: 36, required_subjects: { "Mathematics": 65, "Physical Sciences": 60 } },
@@ -2312,13 +2320,56 @@ function InstitutionsPage({ T, dark }) {
                             lowerSearch.includes("n5") || lowerSearch.includes("n6") || 
                             lowerSearch.includes("nc(v)") || lowerSearch.includes("trade test");
 
-      // Attempt matching in verified list
-      let matched = verifiedCourses.find(c => {
-        const cName = c.name.toLowerCase();
-        return cName === lowerSearch || cName.includes(lowerSearch) || lowerSearch.includes(cName);
-      });
+      // Degree Prefix & Field Specific Matching logic to avoid mislabeling (e.g., BCom Law vs BA Law)
+      const hasBcom = lowerSearch.includes("bcom") || lowerSearch.includes("b.com") || lowerSearch.includes("bachelor of commerce");
+      const hasBa = (lowerSearch.includes("ba ") || lowerSearch.startsWith("ba ") || lowerSearch === "ba" || lowerSearch.includes("b.a.") || lowerSearch.includes("bachelor of arts")) && !hasBcom;
+      const hasBsc = lowerSearch.includes("bsc") || lowerSearch.includes("b.sc") || lowerSearch.includes("bachelor of science");
+      const hasLlb = lowerSearch.includes("llb") || lowerSearch.includes("bachelor of laws");
+      const hasLaw = lowerSearch.includes("law") || lowerSearch.includes("legal");
 
-      // Fuzzy keyword lookup if exact string didn't hit
+      let matched = null;
+
+      // 1. Exact string match
+      matched = verifiedCourses.find(c => c.name.toLowerCase() === lowerSearch);
+
+      // 2. Specific Degree + Law combinations
+      if (!matched && hasLaw) {
+        if (hasBcom) {
+          // Explicitly match BCom Law
+          matched = verifiedCourses.find(c => {
+            const cn = c.name.toLowerCase();
+            return (cn.includes("bcom") || cn.includes("bachelor of commerce")) && cn.includes("law");
+          });
+        } else if (hasBa) {
+          // Explicitly match BA Law
+          matched = verifiedCourses.find(c => {
+            const cn = c.name.toLowerCase();
+            return (cn.includes("ba ") || cn.includes("bachelor of arts")) && cn.includes("law") && !cn.includes("bcom") && !cn.includes("commerce");
+          });
+        } else if (hasLlb) {
+          // Explicitly match LLB
+          matched = verifiedCourses.find(c => {
+            const cn = c.name.toLowerCase();
+            return cn.includes("llb") || cn.includes("bachelor of laws");
+          });
+        }
+      }
+
+      // 3. Strict degree protection matching for other queries (bcom, ba, bsc, etc.)
+      if (!matched) {
+        matched = verifiedCourses.find(c => {
+          const cn = c.name.toLowerCase();
+
+          // Reject BCom match if user explicitly asked for BA or vice versa
+          if (hasBcom && (!cn.includes("bcom") && !cn.includes("commerce"))) return false;
+          if (hasBa && (cn.includes("bcom") || cn.includes("commerce") || cn.includes("bsc") || cn.includes("science"))) return false;
+          if (hasBsc && (!cn.includes("bsc") && !cn.includes("science"))) return false;
+
+          return cn.includes(lowerSearch) || lowerSearch.includes(cn);
+        });
+      }
+
+      // 4. Keyword Fallback with degree protection
       if (!matched) {
         const keywordMap = [
           { keywords: ["computer science", "cs", "coding"], target: "computer science" },
@@ -2340,7 +2391,12 @@ function InstitutionsPage({ T, dark }) {
 
         for (const rule of keywordMap) {
           if (rule.keywords.some(k => lowerSearch.includes(k))) {
-            const found = verifiedCourses.find(c => c.name.toLowerCase().includes(rule.target));
+            const found = verifiedCourses.find(c => {
+              const cn = c.name.toLowerCase();
+              if (hasBcom && (!cn.includes("bcom") && !cn.includes("commerce"))) return false;
+              if (hasBa && (cn.includes("bcom") || cn.includes("commerce") || cn.includes("bsc"))) return false;
+              return cn.includes(rule.target);
+            });
             if (found) {
               matched = found;
               break;
