@@ -2825,14 +2825,41 @@ function ApsCalculatorPage({ T, dark }) {
 
   const calculatePoints = (mark) => {
     const val = parseInt(mark, 10);
-    if (isNaN(val)) return 0;
+    if (isNaN(val) || val < 0) return 0;
     if (val >= 80) return 7;
     if (val >= 70) return 6;
     if (val >= 60) return 5;
     if (val >= 50) return 4;
     if (val >= 40) return 3;
     if (val >= 30) return 2;
-    return 1;
+    if (val >= 0) return 1;
+    return 0;
+  };
+
+  const shouldIncludeLO = (inst) => {
+    if (!inst) return false;
+    const name = (inst.name || "").toLowerCase();
+    const type = (inst.type || "").toLowerCase();
+    
+    // TVETs and Private Colleges/Institutions include LO
+    if (type.includes("tvet") || type.includes("private") || type.includes("college") || type.includes("academy")) {
+      return true;
+    }
+    
+    // Universities of Technology (TUT, CPUT, DUT, CUT, VUT, MUT) include LO
+    if (type.includes("technology") || name.includes("technology") || 
+        name.includes("tut") || name.includes("cput") || name.includes("dut") || 
+        name.includes("cut") || name.includes("vut") || name.includes("mut")) {
+      return true;
+    }
+    
+    // UNISA includes LO
+    if (name.includes("unisa") || name.includes("south africa")) {
+      return true;
+    }
+
+    // Traditional Public Universities exclude LO
+    return false;
   };
 
   const handleSubjectChange = (index, field, value) => {
@@ -2911,8 +2938,8 @@ function ApsCalculatorPage({ T, dark }) {
         const inst = course.institutions;
         if (!inst) return false;
 
-        const isTvetOrTut = inst.type === "Public TVET" || (inst.name && inst.name.includes("Tshwane University of Technology"));
-        const studentAps = isTvetOrTut ? apsScoreIncl : apsScoreExcl;
+        const includesLO = shouldIncludeLO(inst);
+        const studentAps = includesLO ? apsScoreIncl : apsScoreExcl;
 
         if (course.min_aps > studentAps) return false;
 
@@ -2920,8 +2947,8 @@ function ApsCalculatorPage({ T, dark }) {
         const reqSubjects = course.required_subjects || {};
         for (const [reqSubName, minMark] of Object.entries(reqSubjects)) {
           const studentSub = filledSubjects.find(s => {
-            const sName = s.name.toLowerCase();
-            const rName = reqSubName.toLowerCase();
+            const sName = s.name.toLowerCase().trim();
+            const rName = reqSubName.toLowerCase().trim();
 
             // Flexible Math & Math Lit matching
             if (rName.includes("mathematics / mathematical literacy") || rName.includes("math or math lit")) {
@@ -2938,12 +2965,16 @@ function ApsCalculatorPage({ T, dark }) {
             }
 
             if (rName.includes("english") && sName.includes("english")) return true;
-            if (rName.includes("physical sciences") && sName.includes("physical science")) return true;
-            if (rName.includes("life sciences") && sName.includes("life science")) return true;
+            if (rName.includes("physical science") && sName.includes("physical science")) return true;
+            if (rName.includes("life science") && sName.includes("life science")) return true;
             if (rName.includes("accounting") && sName.includes("accounting")) return true;
             if (rName.includes("economics") && sName.includes("economics")) return true;
             if (rName.includes("history") && sName.includes("history")) return true;
+            if (rName.includes("geography") && sName.includes("geography")) return true;
             if (rName.includes("tourism") && sName.includes("tourism")) return true;
+            if (rName.includes("business studies") && sName.includes("business studies")) return true;
+            if ((rName.includes("information technology") || rName === "it") && (sName.includes("information technology") || sName.includes("it"))) return true;
+            if ((rName.includes("computer applications technology") || rName === "cat") && (sName.includes("computer applications technology") || sName.includes("cat"))) return true;
 
             return sName === rName;
           });
@@ -3107,15 +3138,20 @@ function ApsCalculatorPage({ T, dark }) {
                 <h4 style={{ fontSize: 13, textTransform: "uppercase", color: T.teal, letterSpacing: 1, marginBottom: 12 }}>
                   YOUR SCORE SUMMARY
                 </h4>
-                <div style={{ display: "flex", gap: 24 }}>
+                <div style={{ display: "flex", gap: 24, marginBottom: 12 }}>
                   <div>
                     <span style={{ fontSize: 32, fontWeight: 800, color: "#fff" }}>{results.apsExcl}</span>
-                    <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Excl. LO)</span>
+                    <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Excl. LO / Max 42)</span>
                   </div>
                   <div style={{ borderLeft: `1px solid ${T.border}`, paddingLeft: 24 }}>
                     <span style={{ fontSize: 32, fontWeight: 800, color: T.teal }}>{results.apsIncl}</span>
-                    <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Incl. LO)</span>
+                    <span style={{ fontSize: 11, color: T.muted, display: "block", marginTop: 2 }}>APS (Incl. LO / Max 49)</span>
                   </div>
+                </div>
+                <div style={{ fontSize: 11, color: T.muted, borderTop: `1px solid ${T.border}44`, paddingTop: 10, lineHeight: 1.5 }}>
+                  <strong style={{ color: T.chalk }}>How institutions score:</strong><br />
+                  • <strong>Traditional Universities:</strong> Best 6 subjects (Excl. Life Orientation)<br />
+                  • <strong>Universities of Technology, TVETs & Private Colleges:</strong> Include Life Orientation
                 </div>
               </div>
 
@@ -3126,20 +3162,31 @@ function ApsCalculatorPage({ T, dark }) {
                 </h4>
 
                 {results.matches.length > 0 ? (
-                  results.matches.map(inst => (
-                    <div key={inst.details.name} style={{
-                      background: T.navyCard, border: `1px solid ${T.border}`,
-                      borderRadius: 12, padding: 18, marginBottom: 16
-                    }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, gap: 10 }}>
-                        <div style={{ flex: 1 }}>
-                          <h5 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 4 }}>{inst.details.name}</h5>
-                          <span style={{ 
-                            background: inst.details.type.includes("Public") ? `${T.teal}22` : "rgba(255, 165, 0, 0.2)",
-                            color: inst.details.type.includes("Public") ? T.teal : "orange",
-                            fontSize: 10, fontWeight: 700, padding: "3px 6px", borderRadius: 4
-                          }}>{inst.details.type}</span>
-                        </div>
+                  results.matches.map(inst => {
+                    const usesLO = shouldIncludeLO(inst.details);
+                    return (
+                      <div key={inst.details.name} style={{
+                        background: T.navyCard, border: `1px solid ${T.border}`,
+                        borderRadius: 12, padding: 18, marginBottom: 16
+                      }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12, gap: 10 }}>
+                          <div style={{ flex: 1 }}>
+                            <h5 style={{ fontSize: 14, fontWeight: 700, color: T.chalk, marginBottom: 4 }}>{inst.details.name}</h5>
+                            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                              <span style={{ 
+                                background: inst.details.type.includes("Public") ? `${T.teal}22` : "rgba(255, 165, 0, 0.2)",
+                                color: inst.details.type.includes("Public") ? T.teal : "orange",
+                                fontSize: 10, fontWeight: 700, padding: "3px 6px", borderRadius: 4
+                              }}>{inst.details.type}</span>
+                              <span style={{
+                                background: dark ? `${T.slate}66` : "#e5e7eb",
+                                color: T.muted,
+                                fontSize: 10, fontWeight: 600, padding: "3px 6px", borderRadius: 4
+                              }}>
+                                {usesLO ? "Evaluated with LO (Incl. LO)" : "Evaluated without LO (Excl. LO)"}
+                              </span>
+                            </div>
+                          </div>
                         <a 
                           href={getApplyLink(inst.details.name)} 
                           target="_blank" 
@@ -3193,7 +3240,8 @@ function ApsCalculatorPage({ T, dark }) {
                         ))}
                       </div>
                     </div>
-                  ))
+                  );
+                })
                 ) : (
                   <div style={{ 
                     textAlign: "center", padding: "40px 20px", color: T.muted,
