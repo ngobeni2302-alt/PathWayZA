@@ -1,8 +1,13 @@
 {
   "crons": [
     {
-      "path": "/api/keep-alive",
-      "schedule": "*/10 * * * *"
+      "path": "/api/check-bursaries",
+      "schedule": "0 4 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "api/check-bursaries.js": {
+      "maxDuration": 60
+    }
+  }
 }
