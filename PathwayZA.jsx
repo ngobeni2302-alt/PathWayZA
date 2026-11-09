@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "./src/supabaseClient.js";
+import { BURSARIES, BURSARIES_REVIEWED, bursaryStatus } from "./src/data/bursaries.js";
+import { mapBursaryRows, southAfricaDate } from "./src/data/bursary-records.js";
 import { FaMoon } from "react-icons/fa6";
 import { CiLight } from "react-icons/ci";
 
@@ -462,61 +464,6 @@ const PATH_META = {
 // ── ARTISAN & WORK-BASED OPPORTUNITIES DATA ──────────────────────────────────
 const OPPORTUNITIES = [
   {
-    id: 1,
-    title: "Apprentice Electrician (Solar Energy Focus)",
-    type: "Apprenticeship",
-    company: "Rubicon Clean Energy SA",
-    stipend: "R5 500 / month",
-    location: "Gauteng (Midrand)",
-    duration: "36 Months",
-    url: "https://www.rubiconsa.com",
-    description: "Gain hands-on experience under master electricians. Focuses on commercial solar installation, inverter diagnostics, and smart grid automation. Prepares for the Red Seal trade test."
-  },
-  {
-    id: 2,
-    title: "Learnership: IT Systems Development (NQF 5)",
-    type: "Learnership",
-    company: "BCX South Africa",
-    stipend: "R4 800 / month",
-    location: "Cape Town",
-    duration: "12 Months",
-    url: "https://www.bcx.co.za",
-    description: "Combination of theoretical classroom training (NQF 5 Systems Development certificate) and practical application. Covers database schemas, software testing, and core web languages."
-  },
-  {
-    id: 3,
-    title: "Software Engineering Graduate Internship",
-    type: "Internship",
-    company: "First National Bank (FNB)",
-    stipend: "R12 500 / month",
-    location: "Johannesburg",
-    duration: "12 Months",
-    url: "https://www.fnb.co.za",
-    description: "Open to recent graduates holding a Diploma or BSc in Computer Science. Work inside active sprint teams building banking solutions. High likelihood of permanent placement."
-  },
-  {
-    id: 4,
-    title: "Apprentice Diesel Fitter / Mechanic",
-    type: "Apprenticeship",
-    company: "Transnet Engineering",
-    stipend: "R6 200 / month",
-    location: "Durban",
-    duration: "48 Months",
-    url: "https://www.transnet.net",
-    description: "Structured artisan training at Transnet workshops. Focuses on repair and maintenance of massive rail diesel locomotives and heavy machinery. Prepares for red seal trade test."
-  },
-  {
-    id: 5,
-    title: "Learnership: Wealth Management & Banking",
-    type: "Learnership",
-    company: "Nedbank Group",
-    stipend: "R4 500 / month",
-    location: "Gauteng",
-    duration: "12 Months",
-    url: "https://www.nedbank.co.za",
-    description: "Earn a Wealth Management NQF level 5 certification while working in retail branch operations and advisor support. Matric with Maths/MathLit required."
-  },
-  {
     id: 6,
     title: "SA Youth Network (SAYouth.mobi)",
     type: "Platform",
@@ -559,6 +506,17 @@ const OPPORTUNITIES = [
     duration: "Ongoing",
     url: "https://www.lulaway.co.za",
     description: "Specializes in entry-level placements, artisan roles, and learnerships. They partner with government and large corporates to place youth in structured jobs."
+  },
+  {
+    id: 11,
+    title: "Indeed South Africa",
+    type: "Platform",
+    company: "Indeed",
+    stipend: "N/A",
+    location: "Online / Nationwide",
+    duration: "Ongoing",
+    url: "https://za.indeed.com/",
+    description: "Search South African entry-level jobs, learnerships, apprenticeships, and graduate opportunities. Check each listing for requirements and application dates."
   }
 ];
 
@@ -839,9 +797,7 @@ function Sidebar({ active, setActive, dark, setDark, T, open, setOpen, user, set
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
             <ThemeToggle dark={dark} setDark={setDark} />
-            <span style={{ fontSize: 10, color: T.muted }}>
-              <span style={{ color: T.teal }}>ValambyaT3ch</span> in partnership with <span style={{ color: T.teal }}>Orankiiey_Tech</span> & <span style={{ color: T.teal }}>ProximityWorks</span>
-            </span>
+
           </div>
         </div>
       </aside>
@@ -909,14 +865,10 @@ function CareerCard({ career, onClick, T, dark }) {
           </div>
           <div style={{ fontSize: 16, color: T.chalk, fontWeight: 700 }}>{career.title}</div>
         </div>
-        <div style={{
-          background: `${T.amber}18`, border: `1px solid ${T.amber}30`,
-          borderRadius: 6, padding: "4px 8px", fontSize: 10, color: T.amber, fontWeight: 600,
-          whiteSpace: "nowrap", marginLeft: 8,
-        }}>{career.growth}</div>
+
       </div>
       <div style={{ fontSize: 12, color: T.muted, marginBottom: 10 }}>{career.salary}</div>
-      <DemandBar value={career.demand} T={T} />
+
       <div style={{ marginTop: 10, display: "flex", gap: 5, flexWrap: "wrap" }}>
         {career.subjects.slice(0, 3).map(s => (
           <span key={s} style={{
@@ -957,7 +909,7 @@ function CareerModal({ career, onClose, T, dark }) {
         </div>
 
         <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
-          {[["Salary", career.salary, T.chalk], ["Growth", career.growth, T.amber], ["Demand", `${career.demand}%`, T.teal]].map(([k,v,c]) => (
+          {[["Salary estimate", career.salary, T.chalk]].map(([k,v,c]) => (
             <div key={k} style={{ background: T.slate, borderRadius: 8, padding: "8px 14px" }}>
               <div style={{ fontSize: 10, color: T.muted }}>{k}</div>
               <div style={{ fontSize: 13, color: c, fontWeight: 600 }}>{v}</div>
@@ -1071,6 +1023,12 @@ function DiscoverPage({ T, dark }) {
         <p style={{ color: T.muted, fontSize: 14 }}>Select all that apply. We'll rank career matches for you.</p>
       </div>
 
+      <p style={{ color: T.muted, fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>
+        Discover searches our curated catalogue of {CAREERS.length} careers, rather than every course or career in South Africa.
+        Only careers sharing at least one selected subject appear. Match percentages show subject overlap, not admission eligibility;
+        marks, APS scores, and institution requirements still apply. Use the APS Calculator for course guidance.
+      </p>
+
       {/* Search */}
       <div style={{ maxWidth: 420, margin: "0 auto 18px" }}>
         <input type="text" placeholder="Search subjects…" value={search}
@@ -1117,11 +1075,11 @@ function DiscoverPage({ T, dark }) {
         )}
       </div>
 
-      {/* Sticky CTA */}
+      {/* Subject controls stay in normal flow so they cannot cover results. */}
       {selected.length > 0 && (
         <div style={{
-          position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
-          width: "calc(100% - 3rem)", maxWidth: 860,
+          position: "relative", marginBottom: 24,
+          width: "100%", boxSizing: "border-box",
           background: T.navyCard, border: `1px solid ${T.teal}50`,
           borderRadius: 12, padding: "12px 18px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -1185,63 +1143,11 @@ function DiscoverPage({ T, dark }) {
 }
 
 function CareersPage({ T, dark }) {
-  const [field, setField] = useState("All");
-  const [displayField, setDisplayField] = useState("All");
-  const [fadeState, setFadeState] = useState("fade-in");
-  const [modal, setModal] = useState(null);
-  const transitionTimer = useRef(null);
-
-  const handleFieldSelect = (newField) => {
-    if (newField === field && fadeState === "fade-in") return;
-    setField(newField);
-    setFadeState("fade-out");
-    if (transitionTimer.current) clearTimeout(transitionTimer.current);
-    transitionTimer.current = setTimeout(() => {
-      setDisplayField(newField);
-      setFadeState("fade-in");
-    }, 80);
-  };
-
-  const filtered = displayField === "All"
-    ? CAREERS
-    : CAREERS.filter(c => c.field === displayField);
-
   return (
     <div style={{ maxWidth: 940, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
-      <CareerModal career={modal} onClose={() => setModal(null)} T={T} dark={dark} />
-      <div style={{ marginBottom: 22 }}>
-        <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>Career Explorer</h2>
-        <p style={{ color: T.muted, fontSize: 13 }}>Browse all careers. Click any card for paths, bursaries, and internships.</p>
-      </div>
-
-      {/* Desktop/Laptop Category System Tabs */}
-      <CategorySystemTabs
-        tabs={FIELDS}
-        activeTab={field}
-        onTabSelect={handleFieldSelect}
-        T={T}
-        dark={dark}
-      />
-
-      {/* Mobile/Tablet Fallback Select */}
-      <div className="mobile-filters">
-        <select value={field} onChange={(e) => handleFieldSelect(e.target.value)}>
-          {FIELDS.map(f => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className={`category-content-container ${fadeState}`}>
-        <div style={{ marginBottom: 12, fontSize: 12, color: T.muted }}>
-          Showing <span style={{ color: T.teal, fontWeight: 700 }}>{filtered.length}</span> careers
-        </div>
-        <div className="career-grid">
-          {filtered.map(c => <CareerCard key={c.id} career={c} onClick={setModal} T={T} dark={dark} />)}
-        </div>
-
+      <div>
         {/* Artisan & Work-Based Opportunities Section */}
-        <div style={{ marginTop: 52, paddingTop: 36, borderTop: `1px solid ${T.border}` }}>
+        <div style={{ marginTop: 0 }}>
           <div style={{ marginBottom: 24 }}>
             <h2 style={{ fontSize: 22, color: T.chalk, fontWeight: 800, marginBottom: 6 }}>Artisan & Work-Based Opportunities</h2>
             <p style={{ color: T.muted, fontSize: 13 }}>Earn a stipend while you learn. Explore apprenticeships, learnerships, and practical work experience.</p>
@@ -1287,21 +1193,40 @@ function CareersPage({ T, dark }) {
 }
 
 function BursariesPage({ T, dark }) {
-  const bursaries = [
-    { name: "NSFAS", type: "Government", fields: "All fields", amount: "Up to R105 000/yr", apply: "nsfas.org.za", url: "https://www.nsfas.org.za", deadline: "Nov - Jan" },
-    { name: "Funza Lushaka", type: "Government", fields: "Teaching / Education", amount: "Full cost of study", apply: "funzalushaka.doe.gov.za", url: "https://www.funzalushaka.doe.gov.za", deadline: "Nov - Jan" },
-    { name: "Sasol Bursary Programme", type: "Corporate", fields: "Engineering, Science, IT", amount: "Full cost of study", apply: "sasolbursaries.com", url: "https://www.sasolbursaries.com", deadline: "April" },
-    { name: "Anglo American Bursary", type: "Corporate", fields: "Mining, Engineering", amount: "Full cost + allowance", apply: "angloamerican.com", url: "https://www.angloamerican.com", deadline: "May" },
-    { name: "Nedbank Bursary", type: "Corporate", fields: "Finance, IT, Accounting", amount: "Up to R80 000/yr", apply: "nedbank.co.za", url: "https://www.nedbank.co.za", deadline: "June" },
-    { name: "MERSETA Bursary", type: "SETA", fields: "Trades, Manufacturing", amount: "Varies by programme", apply: "merseta.org.za", url: "https://www.merseta.org.za", deadline: "Rolling" },
-    { name: "MTN Foundation", type: "Foundation", fields: "ICT, Engineering", amount: "Partial + mentorship", apply: "mtn.co.za", url: "https://www.mtn.co.za", deadline: "August" },
-    { name: "Vodacom Foundation", type: "Foundation", fields: "Technology, STEM", amount: "Full cost of study", apply: "vodacom.co.za", url: "https://www.vodacom.co.za", deadline: "July" },
-    { name: "Netcare Education Bursary", type: "Corporate", fields: "Nursing, Healthcare", amount: "Full tuition", apply: "netcare.co.za", url: "https://www.netcare.co.za", deadline: "September" },
-    { name: "DAFF Bursary", type: "Government", fields: "Agriculture, Forestry", amount: "Full cost of study", apply: "dalrrd.gov.za", url: "https://www.dalrrd.gov.za", deadline: "October" },
-    { name: "SANRAL Bursary", type: "Government", fields: "Civil Engineering", amount: "Full cost + stipend", apply: "sanral.co.za", url: "https://www.sanral.co.za", deadline: "August" },
-    { name: "SAICA Bursary", type: "Professional Body", fields: "Accounting, Finance", amount: "Full tuition + articles", apply: "saica.co.za", url: "https://www.saica.co.za", deadline: "July" },
-    { name: "ZABursaries Portal", type: "Platform", fields: "All bursaries and scholarships", amount: "Varies by bursary", apply: "zabursaries.co.za", url: "https://www.zabursaries.co.za", deadline: "Ongoing" },
-  ];
+  const [bursaries, setBursaries] = useState(() => BURSARIES.map(b => ({ ...b, reviewedAt: BURSARIES_REVIEWED })));
+  const [fundingState, setFundingState] = useState("loading");
+  const [today, setToday] = useState(southAfricaDate);
+  useEffect(() => {
+    let active = true;
+    let inFlight = false;
+    let controller;
+    const refresh = async () => {
+      setToday(southAfricaDate());
+      if (inFlight) return;
+      inFlight = true;
+      controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      try {
+        const { data, error } = await supabase.from("bursaries")
+          .select("id,details,reviewed_at").eq("published", true)
+          .order("display_order").abortSignal(controller.signal);
+        if (error) throw error;
+        const records = mapBursaryRows(data);
+        if (active) { setBursaries(records); setFundingState("live"); }
+      } catch {
+        if (active) setFundingState("unavailable");
+      } finally { clearTimeout(timeout); inFlight = false; }
+    };
+    refresh();
+    const interval = setInterval(refresh, 5 * 60 * 1000);
+    window.addEventListener("focus", refresh);
+    return () => {
+      active = false;
+      clearInterval(interval);
+      controller?.abort();
+      window.removeEventListener("focus", refresh);
+    };
+  }, []);
 
   const typeColors = {
     Government: T.teal, Corporate: T.amber,
@@ -1312,8 +1237,15 @@ function BursariesPage({ T, dark }) {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
       <div style={{ marginBottom: 24 }}>
         <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>Bursaries & Funding</h2>
-        <p style={{ color: T.muted, fontSize: 13 }}>Real South African bursaries — your education should not be held back by money.</p>
+        <p style={{ color: T.muted, fontSize: 13 }}>Funding programmes and published application rounds. Check the status before applying.</p>
       </div>
+      <p style={{ color: T.muted, fontSize: 13, lineHeight: 1.6, marginBottom: 20 }}>
+        {fundingState === "loading" && "Checking for the latest published funding information… "}
+        {fundingState === "live" && "Showing the latest published funding information. "}
+        {fundingState === "unavailable" && "Live funding information is temporarily unavailable. Showing the last available listings. "}
+        Each listing shows when its details were reviewed. Confirm full rules with the provider before applying.
+      </p>
+      {!bursaries.length && <p style={{ color: T.muted }}>No published bursaries are available at the moment.</p>}
       <div className="career-grid">
         {bursaries.map(b => (
           <div key={b.name} style={{
@@ -1330,13 +1262,17 @@ function BursariesPage({ T, dark }) {
               }}>{b.type}</span>
             </div>
             <div style={{ fontSize: 12, color: T.muted, marginBottom: 3 }}>{b.fields}</div>
-            <div style={{ fontSize: 12, color: T.amber, marginBottom: 3, fontWeight: 600 }}>{b.amount}</div>
-            <div style={{ fontSize: 12, color: T.muted, marginBottom: 12 }}>Deadline: {b.deadline}</div>
+            <div style={{ fontSize: 12, color: T.amber, marginBottom: 3, fontWeight: 600 }}>{b.coverage}</div>
+            <div style={{ fontSize: 12, color: T.teal, fontWeight: 700, marginBottom: 8 }}>{bursaryStatus(b, today)}</div>
+            <div style={{ fontSize: 12, color: T.muted, marginBottom: 8 }}>Intake: {b.year}</div>
+            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, marginBottom: 8 }}>Eligibility: {b.eligibility}</p>
+            <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, marginBottom: 12 }}>Application dates: {b.deadline}</p>
+            <p style={{ fontSize: 11, color: T.muted, marginBottom: 12 }}>Details reviewed: {b.reviewedAt}</p>
             <a href={b.url} target="_blank" rel="noreferrer" style={{
               display: "block", textAlign: "center", background: T.slate,
               color: T.teal, borderRadius: 6, padding: "7px",
               fontSize: 12, fontWeight: 600, textDecoration: "none",
-            }}>Apply at {b.apply} →</a>
+            }}>{b.type === "Platform" ? "Visit directory" : "View official details & application links"} ↗</a>
           </div>
         ))}
       </div>
@@ -1345,96 +1281,38 @@ function BursariesPage({ T, dark }) {
 }
 
 function TrendsPage({ T }) {
-  const [expandedId, setExpandedId] = useState(null);
-
-  const trends = [
-    { rank: 1, title: "AI & Machine Learning Engineer", demand: 97, delta: "+31%", tag: "RISING", qualification: "BSc Computer Science / BEng Data Engineering", where: "UCT, Wits, UP, Stellenbosch" },
-    { rank: 2, title: "Cybersecurity Analyst", demand: 93, delta: "+27%", tag: "RISING", qualification: "BSc IT / Advanced Certificate in Information Security", where: "UNISA, UJ, Richfield, CTU Training" },
-    { rank: 3, title: "Data Analyst", demand: 90, delta: "+28%", tag: "RISING", qualification: "Diploma in Data Analytics / BSc Statistics", where: "Boston City Campus, Eduvos, UWC, Rosebank College" },
-    { rank: 4, title: "Master Electrician", demand: 88, delta: "+18%", tag: null, qualification: "NTC 3 to NTC 6 / Trade Test Certificate", where: "Northlink TVET, Ekurhuleni East TVET, College of Cape Town" },
-    { rank: 5, title: "Registered Nurse", demand: 87, delta: "+15%", tag: null, qualification: "Bachelor of Nursing / Diploma in Nursing", where: "Netcare Education, UFS, UKZN, Sefako Makgatho Health Sciences" },
-    { rank: 6, title: "Civil Engineer", demand: 85, delta: "+14%", tag: null, qualification: "BEng Civil Engineering / National Diploma in Engineering", where: "CPUT, TUT, UJ, Stellenbosch University" },
-    { rank: 7, title: "Social Worker", demand: 83, delta: "+13%", tag: null, qualification: "Bachelor of Social Work (BSW)", where: "UWC, Fort Hare, UP, NWU" },
-    { rank: 8, title: "Plumber / Water Technician", demand: 82, delta: "+16%", tag: null, qualification: "NQF Level 4 Trade Certificate (Plumbing)", where: "Tshwane South TVET, False Bay TVET, Majuba TVET" },
-    { rank: 9, title: "Chartered Accountant", demand: 80, delta: "+9%", tag: null, qualification: "BCom Accounting + CTA + SAICA Board Exams", where: "UCT, UP, UJ, Nelson Mandela University" },
-    { rank: 10, title: "Entrepreneur / Business Owner", demand: 80, delta: "+20%", tag: "RISING", qualification: "Business Management Diploma / Self-Taught", where: "Regenesys, MANCOSA, Varsity College, ALX" },
-    { rank: 11, title: "Environmental Scientist", demand: 74, delta: "+16%", tag: "RISING", qualification: "BSc Environmental Sciences", where: "Rhodes University, UKZN, UWC, Stellenbosch" },
-    { rank: 12, title: "UX / Product Designer", demand: 73, delta: "+19%", tag: "RISING", qualification: "BA Graphic Design / Interaction Design Bootcamp", where: "Vega School, Red & Yellow, UJ, HyperionDev" },
-    { rank: 13, title: "Agricultural Scientist", demand: 72, delta: "+17%", tag: null, qualification: "BSc Agriculture / Diploma in Agriculture", where: "Elsenburg Agricultural Training Institute, UFS, Fort Hare" },
-    { rank: 14, title: "IT Technician / Network Engineer", demand: 89, delta: "+24%", tag: "RISING", qualification: "CompTIA A+/N+ / Higher Certificate in IT", where: "Damelin, CTU Training Solutions, UNISA, Boston" },
-  ].sort((a, b) => b.demand - a.demand).map((t, i) => ({ ...t, rank: i + 1 }));
-
+  const occupations = [
+    ["Software Developer", "2021-251201"],
+    ["Data Scientist", "2021-251102"],
+    ["ICT Security Specialist", "2021-252901"],
+    ["Computer Network and Systems Engineer", "2021-252301"],
+    ["Civil Engineer", "2021-214201"],
+    ["Environmental Scientist", "2021-213302"],
+    ["Agricultural Scientist", "2021-213202"],
+    ["General Accountant", "2021-241101"],
+    ["Electrician", "2021-671101"],
+    ["Diesel Mechanic", "2021-653306"],
+    ["Fitter and Turner", "2021-652302"],
+    ["Millwright", "2021-671202"],
+  ];
   return (
     <div style={{ maxWidth: 740, margin: "0 auto", padding: "0 1.5rem 4rem" }}>
-      <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 24, color: T.chalk, fontWeight: 800, marginBottom: 5 }}>SA Career Trends</h2>
-        <p style={{ color: T.muted, fontSize: 13 }}>Most in-demand careers in South Africa — projected to 2030.</p>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {trends.map(t => {
-          const isExpanded = expandedId === t.rank;
-          return (
-          <div key={t.rank} style={{
-            background: T.navyCard, border: `1px solid ${isExpanded ? T.teal : T.border}`,
-            borderRadius: 10, overflow: "hidden",
-            cursor: "pointer", transition: "all 0.2s ease",
-            boxShadow: isExpanded ? `0 4px 12px ${T.teal}15` : "none"
-          }} onClick={() => setExpandedId(isExpanded ? null : t.rank)}>
-            <div style={{
-              padding: "12px 16px",
-              display: "flex", alignItems: "center", gap: 14,
-            }}>
-              <div style={{
-                fontSize: 18, fontWeight: 800,
-                color: t.rank <= 3 ? T.teal : T.muted,
-                minWidth: 28, textAlign: "center",
-              }}>#{t.rank}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
-                  <span style={{ fontSize: 14, color: T.chalk, fontWeight: 600 }}>{t.title}</span>
-                  {t.tag && (
-                    <span style={{
-                      fontSize: 9, background: "#F472B620", color: "#F472B6",
-                      border: "1px solid #F472B640", borderRadius: 4,
-                      padding: "1px 5px", fontWeight: 700,
-                    }}>{t.tag}</span>
-                  )}
-                </div>
-                <DemandBar value={t.demand} T={T} />
-              </div>
-              <div style={{ fontSize: 13, color: T.amber, fontWeight: 700, minWidth: 46, textAlign: "right" }}>{t.delta}</div>
-            </div>
-            
-            {isExpanded && (
-              <div style={{
-                padding: "16px", borderTop: `1px solid ${T.border}`,
-                background: `${T.teal}0A`
-              }}>
-                <div style={{ marginBottom: 12, display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <div>
-                    <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 3 }}>Required Qualification</div>
-                    <div style={{ fontSize: 13, color: T.chalk, fontWeight: 500, lineHeight: 1.4 }}>{t.qualification}</div>
-                  </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <div>
-                    <div style={{ fontSize: 11, color: T.muted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 3 }}>Where to get it</div>
-                    <div style={{ fontSize: 13, color: T.chalk, fontWeight: 500, lineHeight: 1.4 }}>{t.where}</div>
-                  </div>
-                </div>
-              </div>
-            )}
+      <p style={{ color: T.muted, fontSize: 14, lineHeight: 1.7, marginBottom: 20 }}>
+        Reviewed 9 November 2026. These examples appear in DHET’s 2024 National List of Occupations in High Demand,
+        the latest national list we could verify. This is a dated planning guide, not a ranking of current vacancies or a forecast to 2030.
+      </p>
+      <div className="career-grid">
+        {occupations.map(([title, code]) => (
+          <div key={code} style={{ background: T.navyCard, border: `1px solid ${T.border}`, borderRadius: 10, padding: 18 }}>
+            <h3 style={{ color: T.chalk, fontSize: 16, marginBottom: 8 }}>{title}</h3>
+            <p style={{ color: T.teal, fontSize: 12 }}>Listed by DHET · 2024</p>
+            <p style={{ color: T.muted, fontSize: 12 }}>OFO code: {code}</p>
           </div>
-          );
-        })}
+        ))}
       </div>
-      <div style={{
-        marginTop: 24, background: T.navyCard, border: `1px solid ${T.border}`,
-        borderRadius: 10, padding: 16,
-      }}>
-        <div style={{ fontSize: 11, color: T.muted, lineHeight: 1.7 }}>
-          Data sourced from Stats SA, LinkedIn Labour Insights, and DHET reports. Demand scores reflect active vacancies vs qualified applicant ratios in the SA market. Growth projections are 2025–2030 forecasts.
-        </div>
+      <div style={{ marginTop: 24, color: T.muted, fontSize: 13, lineHeight: 1.7 }}>
+        <p>Demand varies by province, experience, and employer. The previous demand percentages and growth forecasts could not be substantiated and have been removed.</p>
+        <a href="https://www.gov.za/sites/default/files/gcis_document/202404/50510gen2414.pdf" target="_blank" rel="noreferrer" style={{ color: T.teal }}>Source: DHET National List of Occupations in High Demand (2024) ↗</a>
       </div>
     </div>
   );
@@ -1885,10 +1763,7 @@ function Hero({ setPage, T, dark }) {
             background: T.teal, color: dark ? T.navy : "#fff", border: "none",
             padding: "13px 28px", borderRadius: 8, fontSize: 14, fontWeight: 700, cursor: "pointer",
           }}>Find my career path</button>
-          <button onClick={() => setPage("Careers")} style={{
-            background: "transparent", color: T.chalk, border: `1px solid ${T.border}`,
-            padding: "13px 28px", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer",
-          }}>Browse all careers</button>
+
         </div>
         <div style={{ marginTop: 52, display: "flex", gap: 32, justifyContent: "center", flexWrap: "wrap" }}>
           {[["20+", "Careers mapped"], ["70+", "Subjects covered"], ["R0", "Free to use"]].map(([v, l]) => (
@@ -4679,7 +4554,7 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
       "Reviewer Email": user.email,
       "email": user.email,
       "_replyto": user.email,
-      "_cc": "Valambyat3ch@gmail.com",
+      "_cc": "ValambyT3ch@gmail.com",
       "How did you hear about this website?": formData.hearAbout === "Other" ? formData.hearAboutOther : formData.hearAbout,
       "What browser do you use?": formData.browser === "Other" ? formData.browserOther : formData.browser,
       "How often do you visit this website?": formData.frequency === "Other" ? formData.frequencyOther : formData.frequency,
@@ -4699,7 +4574,7 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
       const endpoints = [
         "https://formsubmit.co/ajax/proximityworks@gmail.com",
         "https://formsubmit.co/ajax/orankiieytech@gmail.com",
-        "https://formsubmit.co/ajax/Valambyat3ch@gmail.com"
+        "https://formsubmit.co/ajax/ValambyT3ch@gmail.com"
       ];
 
       const results = await Promise.allSettled(
@@ -5017,7 +4892,7 @@ function ReviewPage({ T, user, setAuthModalOpen }) {
       {/* Q2 */}
       <div style={cardStyle}>
         <span style={questionTitleStyle}>What browser do you use?</span>
-        {renderRadioOptions("browser", ["Google Chrome", "Firefox", "Mozilla Firefox", "Opera"], "browserOther")}
+        {renderRadioOptions("browser", ["Google Chrome", "Firefox", "Opera"], "browserOther")}
       </div>
 
       {/* Q3 */}
@@ -5230,11 +5105,11 @@ export default function App() {
         <div className={`tab-content-container ${fadeClass}`}>
           {displayPage === "Home"     && <Hero setPage={handleTabSelect} T={T} dark={dark} />}
           {displayPage === "Discover" && <>{pageHeader("Find Your Career Path", "Select your subjects and see where they lead.")}<DiscoverPage T={T} dark={dark} /></>}
-          {displayPage === "Careers"  && <>{pageHeader("Career Explorer", "Browse every career — with all paths to get there.")}<CareersPage T={T} dark={dark} /></>}
+          {displayPage === "Careers"  && <>{pageHeader("Artisan & Work-Based Opportunities", "Explore training and job platforms across South Africa.")}<CareersPage T={T} dark={dark} /></>}
           {displayPage === "Bursaries"&& <>{pageHeader("Bursaries & Funding", "Find money for your studies before you need it.")}<BursariesPage T={T} dark={dark} /></>}
           {displayPage === "Institutions"&& <>{pageHeader("Institution Validator", "Verify if a university or college is registered (Public vs Private).")}<InstitutionsPage T={T} dark={dark} /></>}
           {displayPage === "APS Calculator"&& <>{pageHeader("APS Calculator & Course Matcher", "Input your subjects and marks to see which courses you qualify for.")}<ApsCalculatorPage T={T} dark={dark} /></>}
-          {displayPage === "Trends"   && <>{pageHeader("SA Career Trends", "What South Africa needs most — right now and in 2030.")}<TrendsPage T={T} /></>}
+          {displayPage === "Trends"   && <>{pageHeader("SA Career Trends", "Explore occupations identified in published South African skills research.")}<TrendsPage T={T} /></>}
           {displayPage === "Certificates" && <>{pageHeader("Certificates Archive", "Booster certificates archive to upskill and enhance your credentials.")}<CertificatesPage T={T} dark={dark} /></>}
           {displayPage === "Review" && <>{pageHeader("Share Your Feedback", "Help us improve PathWise by submitting a review.")}<ReviewPage T={T} user={user} setAuthModalOpen={setAuthModalOpen} /></>}
         </div>
@@ -5361,93 +5236,6 @@ function Footer({ T, dark, setPage }) {
             </div>
           </div>
 
-          {/* Col 2: Platform Navigation */}
-          <div>
-            <h4 style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: T.chalk, marginBottom: 16 }}>
-              Platform Navigation
-            </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-              {navLinks.slice(0, 5).map(link => (
-                <li key={link.name}>
-                  <button
-                    onClick={() => { setPage(link.name); scrollToTop(); }}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: T.muted,
-                      fontSize: 13.5,
-                      cursor: "pointer",
-                      padding: 0,
-                      textAlign: "left",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      transition: "all 0.2s ease"
-                    }}
-                    className="footer-link-hover"
-                  >
-                    <span>{link.name}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 3: Key Tools & Resources */}
-          <div>
-            <h4 style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: T.chalk, marginBottom: 16 }}>
-              Key Tools
-            </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-              {navLinks.slice(5).map(link => (
-                <li key={link.name}>
-                  <button
-                    onClick={() => { setPage(link.name); scrollToTop(); }}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: T.muted,
-                      fontSize: 13.5,
-                      cursor: "pointer",
-                      padding: 0,
-                      textAlign: "left",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      transition: "all 0.2s ease"
-                    }}
-                    className="footer-link-hover"
-                  >
-                    <span>{link.name}</span>
-                  </button>
-                </li>
-              ))}
-              {quickResources.slice(0, 2).map((res, i) => (
-                <li key={i}>
-                  <button
-                    onClick={() => { setPage(res.page); scrollToTop(); }}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: T.muted,
-                      fontSize: 13.5,
-                      cursor: "pointer",
-                      padding: 0,
-                      textAlign: "left",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      transition: "all 0.2s ease"
-                    }}
-                    className="footer-link-hover"
-                  >
-                    <span>{res.label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Col 4: Contact & Disclaimer */}
           <div>
             <h4 style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.8px", color: T.chalk, marginBottom: 16 }}>
@@ -5457,23 +5245,12 @@ function Footer({ T, dark, setPage }) {
               Questions about university admission or feedback? Reach out to our team.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+
               <a 
-                href="mailto:proximityworks@gmail.com" 
+                href="mailto:ValambyT3ch@gmail.com"
                 style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
               >
-                proximityworks@gmail.com
-              </a>
-              <a 
-                href="mailto:orankiieytech@gmail.com" 
-                style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
-              >
-                orankiieytech@gmail.com
-              </a>
-              <a 
-                href="mailto:Valambyat3ch@gmail.com" 
-                style={{ fontSize: 13, color: T.teal, textDecoration: "none", fontWeight: 500 }}
-              >
-                Valambyat3ch@gmail.com
+                ValambyT3ch@gmail.com
               </a>
             </div>
             <div style={{
