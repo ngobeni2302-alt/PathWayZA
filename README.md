@@ -1,5 +1,20 @@
 # PathWise — Career Guidance Hub
 
+## Android App
+
+Download and install the latest Android APK from the [PathWise GitHub Release](https://github.com/ngobeni2302-alt/PathWayZA/releases/download/android-latest/PathWise-Android.apk). The APK is built automatically whenever changes are pushed to `main` or `android-app`. Android may ask you to allow installation from your browser or file manager.
+
+To build the Android app locally, install the Android SDK and Java 21, then run:
+
+```bash
+npm install
+npx cap add android
+npm run android:sync
+cd android && gradle assembleDebug
+```
+
+The debug APK is generated at `android/app/build/outputs/apk/debug/app-debug.apk`.
+
 PathWise is the central platform of a digital student ecosystem, developed by **ValambyaT3ch** in partnership with **Orankiiey_Tech** and **ProximityWorks** ([pathwise.co.za](https://pathwise.co.za)). It helps primary, high school, and college students in South Africa map their school subjects and personal interests to real, relevant, and high-demand career paths. 
 
 The platform treats all qualification routes — including university degrees, TVET college diplomas, apprenticeships, learnerships, and internships — with equal weight, backed by South African job market data, salary benchmarks, funding diagnostics, and AI-powered career scoring.
