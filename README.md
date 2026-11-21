@@ -2,7 +2,7 @@
 
 ## Android App
 
-Download and install the latest Android APK from the [PathWise GitHub Release](https://github.com/ngobeni2302-alt/PathWayZA/releases/download/android-latest/PathWise-Android.apk). The APK is built automatically whenever changes are pushed to `main` or `android-app`. Android may ask you to allow installation from your browser or file manager.
+Download and install the latest Android app from the [PathWise release](https://github.com/ngobeni2302-alt/PathWayZA/releases/download/pathwise-latest/PathWise.apk). The APK is built automatically whenever changes are pushed to `main` or `android-app`. Android may ask you to allow installation from your browser or file manager.
 
 To build the Android app locally, install the Android SDK and Java 21, then run:
 
@@ -10,7 +10,7 @@ To build the Android app locally, install the Android SDK and Java 21, then run:
 npm install
 npx cap add android
 npm run android:sync
-cd android && gradle assembleDebug
+cd android && ./gradlew assembleDebug
 ```
 
 The debug APK is generated at `android/app/build/outputs/apk/debug/app-debug.apk`.

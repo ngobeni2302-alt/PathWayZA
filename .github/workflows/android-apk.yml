@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build PathWise Android App
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
         working-directory: android
         run: ./gradlew assembleDebug
 
-      - name: Publish APK release
+      - name: Publish PathWise release
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -51,10 +51,10 @@ jobs:
           if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
             TAG="$GITHUB_REF_NAME"
           else
-            TAG="android-latest"
+            TAG="pathwise-latest"
           fi
           gh release delete "$TAG" --yes --cleanup-tag 2>/dev/null || true
-          gh release create "$TAG" "$APK#PathWise-Android.apk" \
-            --title "PathWise Android APK ($TAG)" \
-            --notes "Install PathWise on an Android device. This is a debug-signed build." \
+          gh release create "$TAG" "$APK#PathWise.apk" \
+            --title "PathWise ($TAG)" \
+            --notes "Install PathWise on an Android device. This is a debug-signed PathWise build." \
             --latest

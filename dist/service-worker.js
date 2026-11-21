@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pathwise-app-v1'
+const CACHE_NAME = 'pathwise-app-v2'
 const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/pwa-192.png', '/pwa-512.png', '/pwa-512-maskable.png']
 
 self.addEventListener('install', (event) => {
